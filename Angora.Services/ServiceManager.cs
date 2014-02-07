@@ -8,10 +8,9 @@ namespace Angora.Services
 {
     public static class ServiceManager
     {
-
+        private delegate object Constructor();
         private static Dictionary<Type, object> Services;
         private static Dictionary<Type, Constructor> Constructors;
-        private delegate object Constructor();
 
         static ServiceManager()
         {
@@ -19,7 +18,6 @@ namespace Angora.Services
             Constructors = new Dictionary<Type, Constructor>();
 
             Constructors.Add(typeof(IFooService), () => new FooService());
-
         }
 
         public static T GetService<T>()

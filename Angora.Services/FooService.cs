@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Angora.Services
 {
-    public class FooService : IFooService
+    public class FooService : ServiceBase, IFooService
     {
         public string DoSomething(object value)
         {
