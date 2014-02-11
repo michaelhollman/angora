@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.Text;
 
 namespace Angora.Services
 {
@@ -11,6 +7,6 @@ namespace Angora.Services
     public interface IFooService
     {
         [OperationContract]
-        string DoSomething(object value);
+        string DoSomething(string value);
     }
 }

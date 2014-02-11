@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Angora.Services
 {
@@ -15,9 +12,11 @@ namespace Angora.Services
         static ServiceManager()
         {
             Services = new Dictionary<Type, object>();
-            Constructors = new Dictionary<Type, Constructor>();
+            Constructors = new Dictionary<Type, Constructor>
+            {
+                {typeof (IFooService), () => new FooService()},
 
-            Constructors.Add(typeof(IFooService), () => new FooService());
+            };
         }
 
         public static T GetService<T>()
@@ -28,13 +27,11 @@ namespace Angora.Services
 
         private static void InitService<T>()
         {
-            Type t = typeof(T);
-            if (!Services.ContainsKey(t))
+            var t = typeof(T);
+            if (Services.ContainsKey(t)) return;
+            if (Constructors.ContainsKey(t))
             {
-                if (Constructors.ContainsKey(t))
-                {
-                    Services.Add(t, Constructors[t].DynamicInvoke());
-                }
+                Services.Add(t, Constructors[t].DynamicInvoke());
             }
         }
 

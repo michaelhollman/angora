@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Angora.Services
 {
     public abstract class ServiceBase : IDisposable
     {
         # region IDisposable
+
         private bool _disposed;
+
         public void Dispose()
         {
             Dispose(true);
@@ -28,10 +26,10 @@ namespace Angora.Services
 
             if (disposing)
             {
-
             }
             _disposed = true;
         }
+
         # endregion
     }
 }

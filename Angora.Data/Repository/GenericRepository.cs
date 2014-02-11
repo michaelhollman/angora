@@ -1,100 +1,80 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Linq.Expressions;
-using Angora.Data.Models;
 
-namespace Angora.Data.Repository
+namespace Angora.Data
 {
+    // TODO implement IDisposable
     public class GenericRepository<T> : IRepository<T> where T : BaseModel
     {
-        private readonly DbContext _context;
-        private readonly DbSet<T> _dbSet;
-        public UnitOfWork Diff { get; private set; }
+        private ObjectContext _objectContext;
+        private IObjectSet<T> _objectSet;
 
-        public GenericRepository(DbContext context)
+        public GenericRepository(IObjectContextAdapter context)
         {
-            Diff = new UnitOfWork(context);
-            _context = context;
-            _dbSet = context.Set<T>();
+            _objectContext = context.ObjectContext;
+            _objectSet = context.ObjectContext.CreateObjectSet<T>();
         }
 
-        public virtual T GetById(object id)
-        {
-            return _dbSet.Find(id);
-        }
-
-        public virtual void Insert(T entity)
-        {
-            _dbSet.Add(entity);
-        }
-
-        public virtual void Delete(object id)
-        {
-            T entityToDelete = _dbSet.Find(id);
-            Delete(entityToDelete);
-        }
-
-        public virtual void Delete(T entityToDelete)
-        {
-            if (_context.Entry(entityToDelete).State == EntityState.Detached)
-            {
-                _dbSet.Attach(entityToDelete);
-            }
-            _dbSet.Remove(entityToDelete);
-        }
-
-        public virtual void Update(T entityToUpdate)
-        {
-            _dbSet.Attach(entityToUpdate);
-            _context.Entry(entityToUpdate).State = EntityState.Modified;
-        }
-
-        public T Refresh(T entity)
-        {
-            _context.Entry(entity).Reload();
-            return entity;
-        }
 
         public IQueryable<T> AsQueryable()
         {
-            return _dbSet.AsQueryable();
+            return _objectSet;
         }
 
-        public IEnumerable<T> GetAll(params Expression<Func<T, object>>[] includeProperties)
+        public IEnumerable<T> GetAll()
         {
-            var query = AsQueryable();
-            return PerformInclusions(includeProperties, query);
+            return _objectSet.ToList();
         }
 
-        public IEnumerable<T> Find(Expression<Func<T, bool>> where, params Expression<Func<T, object>>[] includeProperties)
+        public IEnumerable<T> Find(Expression<Func<T, bool>> where)
         {
-            var query = AsQueryable();
-            query = PerformInclusions(includeProperties, query);
-            return query.Where(where);
+            return _objectSet.Where(where);
         }
 
-        public T Single(Expression<Func<T, bool>> where, params Expression<Func<T, object>>[] includeProperties)
+        public virtual T GetById(long id)
         {
-            var query = AsQueryable();
-            query = PerformInclusions(includeProperties, query);
-            return query.Single(where);
+            return _objectSet.Single(t => t.Id == id);
         }
 
-        public T First(Expression<Func<T, bool>> where, params Expression<Func<T, object>>[] includeProperties)
+        public T Single(Expression<Func<T, bool>> where)
         {
-            var query = AsQueryable();
-            query = PerformInclusions(includeProperties, query);
-            return query.First(where);
+            return _objectSet.Single(where);
         }
 
-        private static IQueryable<T> PerformInclusions(IEnumerable<Expression<Func<T, object>>> includeProperties,
-                                                       IQueryable<T> query)
+        public T First(Expression<Func<T, bool>> where)
         {
-            return includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+            return _objectSet.First(where);
         }
 
+        public void Delete(T entity)
+        {
+            _objectSet.DeleteObject(entity);
+        }
+
+        public void Insert(T entity)
+        {
+            _objectSet.AddObject(entity);
+        }
+
+        public void Update(T entity)
+        {
+            _objectSet.Attach(entity);
+        }
+
+        public void Refresh()
+        {
+            // TODO test me!
+            _objectContext.Refresh(RefreshMode.StoreWins, _objectSet);
+        }
+
+        public void SaveChanges()
+        {
+            _objectContext.SaveChanges();
+        }
     }
-
 }
