@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Angora.Services;
 
 namespace Angora.Web.Controllers
 {
@@ -12,6 +13,7 @@ namespace Angora.Web.Controllers
         // GET: /Home/
         public ActionResult Index()
         {
+            ViewBag.Foo = ServiceManager.GetService<IFooService>().DoSomething(HttpContext.Request.UserAgent);
             return View();
         }
 	}
