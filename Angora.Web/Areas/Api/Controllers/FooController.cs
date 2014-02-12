@@ -1,24 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Mvc;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using System.Web.Http.Results;
 
 namespace Angora.Web.Areas.Api.Controllers
 {
-    [RouteArea("api")]
     [RoutePrefix("foo")]
-    public class FooController : ApiBaseController
+    public class FooController : ApiController
     {
-        [Route]
-        public ActionResult GetFoo()
+        // GET api/<controller>
+        [HttpGet]
+        public IEnumerable<string> Get()
         {
-            return Json("bar", JsonRequestBehavior.AllowGet);
+            return new string[] { "value1", "value2" };
+        }
+
+        // GET api/<controller>/5
+        [HttpGet]
+        public string Get(int id)
+        {
+            return "value";
+        }
+
+        // POST api/<controller>
+        [HttpPost]
+        public void Post([FromBody]string value)
+        {
+        }
+
+        // PUT api/<controller>/5
+        [HttpPut]
+        public void Put(int id, [FromBody]string value)
+        {
+        }
+
+        // DELETE api/<controller>/5
+        [HttpDelete]
+        public void Delete(int id)
+        {
+        }
+
+
+        public JsonResult<string> GetFoo()
+        {
+            return Json("foo");
         }
 
         [Route("{p}")]
-        public ActionResult FooFoo(string p)
+        public JsonResult<string> FooFoo(string p)
         {
-            return Json("lol " + p, JsonRequestBehavior.AllowGet);
+            return Json("lol " + p);
         }
 
     }
