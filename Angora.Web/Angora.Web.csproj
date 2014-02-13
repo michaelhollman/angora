@@ -38,6 +38,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -128,6 +136,10 @@
     <Folder Include="Scripts\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Angora.Data\Angora.Data.csproj">
+      <Project>{b76c60aa-89be-42c5-8b8d-b439cf189435}</Project>
+      <Name>Angora.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Angora.Services\Angora.Services.csproj">
       <Project>{04829a99-b727-495b-8406-7c31676f0b54}</Project>
       <Name>Angora.Services</Name>
