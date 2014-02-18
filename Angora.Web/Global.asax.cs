@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using Angora.Data;
 using System.Data.Entity;
+using System.Web.Optimization;
 
 namespace Angora.Web
 {
@@ -16,6 +17,7 @@ namespace Angora.Web
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
     }
 }
