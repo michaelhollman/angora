@@ -9,6 +9,7 @@ namespace Angora.Data
     {
         public AngoraConfiguration()
         {
+            // TODO connect to Azure
             SetExecutionStrategy("System.Data.SqlClient", () => new SqlAzureExecutionStrategy());
             SetDefaultConnectionFactory(new LocalDbConnectionFactory("v11.0"));
         }

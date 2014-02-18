@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
-using System.Web.Http;
-using System.Web.Http.WebHost;
+﻿using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Angora.Data;
+using System.Data.Entity;
 
 namespace Angora.Web
 {
@@ -16,12 +10,11 @@ namespace Angora.Web
     {
         protected void Application_Start()
         {
-
+            // TODO tweak once we're hooked up to Azure
             Database.SetInitializer<Data.AngoraContext>(new DropCreateDatabaseAlways<AngoraContext>());
 
-            WebApiConfig.Register(GlobalConfiguration.Configuration);
-            GlobalConfiguration.Configuration.EnsureInitialized();
-
+            AreaRegistration.RegisterAllAreas();
+            GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
         }
     }
