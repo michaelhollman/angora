@@ -3,13 +3,17 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @System.Web.Optimization.Styles.Render("~/Content/css")
     @RenderSection("scripts")
     <title>Angora</title>
+    
 </head>
 <body>
-    <h1>Hello World</h1>
+    <div class="container"
+        <h1>Angora Alpha Release</h1>
 
-    @RenderBody()
+        @RenderBody()
+    </div>
 
 </body>
 </html>
