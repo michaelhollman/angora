@@ -18,7 +18,7 @@ namespace Angora.Web.Controllers
     public class AccountController : Controller
     {
         public AccountController()
-            : this(new UserManager<AngoraUser>(new UserStore<AngoraUser>(new AngoraContext())))
+            : this(new UserManager<AngoraUser>(new UserStore<AngoraUser>(new AngoraDbContext())))
         {
         }
 

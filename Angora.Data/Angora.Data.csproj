@@ -53,6 +53,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -64,8 +65,8 @@
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\Foo.cs" />
     <Compile Include="Models\AngoraUser.cs" />
-    <Compile Include="Repository\AngoraConfiguration.cs" />
-    <Compile Include="Repository\AngoraContext.cs" />
+    <Compile Include="Repository\AngoraDbConfiguration.cs" />
+    <Compile Include="Repository\AngoraDbContext.cs" />
     <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\GenericRepository.cs" />

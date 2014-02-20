@@ -9,6 +9,12 @@ namespace Angora.Data.Models
 {
     public class AngoraUser : IdentityUser
     {
-        // TODO actually have lots of information in here
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+
+        // TODO actually have lots of real non-placeholder user information in here
+
+        // TODO research if this needs to be changed structurally for having multiple services associated with one account
     }
 }
