@@ -14,6 +14,7 @@ namespace Angora.Data
         private ObjectContext _objectContext;
         private IObjectSet<T> _objectSet;
 
+        // TODO switch to using a dbcontext instead of object context adapter
         public GenericRepository(IObjectContextAdapter context)
         {
             _objectContext = context.ObjectContext;

@@ -13,8 +13,6 @@ namespace Angora.Services
             fooRepo.Insert(foo);
             fooRepo.SaveChanges();
 
-
-
             return string.Format("You did something to {0}", value.ToString());
         }
     }

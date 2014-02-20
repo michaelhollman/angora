@@ -3,5 +3,29 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>HOME!</h2>
-<h3>@ViewBag.Foo</h3>
+<h1>Welcome to Angora <small>(Alpha release)</small></h1>
+
+<p>Someday, in the near future, this will be an awesome social media site that will let you do all sorts of wicked-awesome things.</p>
+<p>Today is not that day.</p>
+<p>For now, all you can do is login.</p>
+
+
+@if (Request.IsAuthenticated)
+{
+    <p>And holy wow... look at you, you've already done so!</p>
+    <p>Wasn't it so fun!</p>
+    using (Html.BeginForm("LogOff", "Account", new { returnUrl = Url.Action("Index", "Home") }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        <button type="submit" class="btn btn-info">Log out so you can log back in, beacuse it is fun!</button>
+    }
+}
+else
+{
+    <p>You should try it.</p>
+    <p>It's fun!</p>
+    <a class="btn btn-primary" href="@Url.Action("Login", "Account")">Yes, I want to log in because it is fun!</a>
+}
+
+
+
