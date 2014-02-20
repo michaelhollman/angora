@@ -3,19 +3,19 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Angora | ALPHA</title>
+
 
     @if (IsSectionDefined("Scripts"))
     {
         @RenderSection("Scripts")
     }
+
     @Styles.Render("~/Content/css")
-    <title>Angora</title>
 
 </head>
 <body>
     <div class="container">
-        <h1>Angora Alpha Release</h1>
-
         @RenderBody()
     </div>
 

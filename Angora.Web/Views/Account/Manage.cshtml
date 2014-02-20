@@ -1,10 +1,4 @@
-﻿@using Angora.Web.Models;
-@using Microsoft.AspNet.Identity;
-@{
-    ViewBag.Title = "Manage Account";
-}
-
-<h2>@ViewBag.Title.</h2>
+﻿<h2>Manage Account</h2>
 
 <p class="text-success">@ViewBag.StatusMessage</p>
 <div class="row">
@@ -17,11 +11,6 @@
         {
             @Html.Partial("_SetPasswordPartial")
         }
-
-        <section id="externalLogins">
-            @Html.Action("RemoveAccountList")
-            @Html.Partial("_ExternalLoginsListPartial", new { Action = "LinkLogin", ReturnUrl = ViewBag.ReturnUrl })
-        </section>
     </div>
 </div>
 @section Scripts {

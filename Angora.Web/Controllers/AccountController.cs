@@ -8,9 +8,9 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
-using Angora.Web.Models;
-using Angora.Data.Models;
 using Angora.Data;
+using Angora.Data.Models;
+using Angora.Web.Models;
 
 namespace Angora.Web.Controllers
 {
@@ -289,10 +289,10 @@ namespace Angora.Web.Controllers
         // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult LogOff()
+        public ActionResult LogOff(string returnUrl = null)
         {
             AuthenticationManager.SignOut();
-            return RedirectToAction("Index", "Home");
+            return string.IsNullOrWhiteSpace(returnUrl) ? RedirectToAction("Index", "Home") : RedirectToLocal(returnUrl);
         }
 
         //
@@ -380,7 +380,8 @@ namespace Angora.Web.Controllers
 
         private class ChallengeResult : HttpUnauthorizedResult
         {
-            public ChallengeResult(string provider, string redirectUri) : this(provider, redirectUri, null)
+            public ChallengeResult(string provider, string redirectUri)
+                : this(provider, redirectUri, null)
             {
             }
 
