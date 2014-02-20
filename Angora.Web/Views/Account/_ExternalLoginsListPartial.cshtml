@@ -1,6 +1,6 @@
 ﻿@using Microsoft.Owin.Security
 
-<h4>Use another service to log in.</h4>
+<h4>Please login with your Facebook or Twitter account.</h4>
 <hr />
 @{
     var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes();
@@ -14,10 +14,10 @@
     else
     {
         // TODO this is mega-jank right now
-        //string action = Model.Action;
-        string action = "ExternalLogin";
-        //string returnUrl = Model.ReturnUrl;
-        string returnUrl = null;
+        string action = Model.Action;
+        //string action = "ExternalLogin";
+        string returnUrl = Model.ReturnUrl;
+        //string returnUrl = null;
         using (Html.BeginForm(action, "Account", new { ReturnUrl = returnUrl }))
         {
             @Html.AntiForgeryToken()

@@ -8,12 +8,16 @@
     {
         @RenderSection("Scripts")
     }
+    @Styles.Render("~/Content/css")
     <title>Angora</title>
+
 </head>
 <body>
-    <h1>Hello World</h1>
+    <div class="container">
+        <h1>Angora Alpha Release</h1>
 
-    @RenderBody()
+        @RenderBody()
+    </div>
 
 </body>
 </html>
