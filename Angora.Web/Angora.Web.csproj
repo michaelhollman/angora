@@ -155,13 +155,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\Site.css" />
     <Content Include="Global.asax" />
+    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -172,7 +169,15 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
-    <None Include="Scripts\_references.js" />
+    <Content Include="Styles\Angora.css">
+      <DependentUpon>angora.less</DependentUpon>
+    </Content>
+    <Content Include="Styles\Angora.min.css">
+      <DependentUpon>Angora.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\Bootstrap\Superhero\variables.css">
+      <DependentUpon>variables.less</DependentUpon>
+    </Content>
     <Content Include="Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -207,6 +212,49 @@
     <Content Include="Views\Account\_RemoveAccountPartial.cshtml" />
     <Content Include="Views\Account\_SetPasswordPartial.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
+    <Content Include="Styles\Bootstrap\alerts.less" />
+    <Content Include="Styles\Bootstrap\badges.less" />
+    <Content Include="Styles\Bootstrap\bootstrap.less" />
+    <Content Include="Styles\Bootstrap\breadcrumbs.less" />
+    <Content Include="Styles\Bootstrap\button-groups.less" />
+    <Content Include="Styles\Bootstrap\buttons.less" />
+    <Content Include="Styles\Bootstrap\carousel.less" />
+    <Content Include="Styles\Bootstrap\close.less" />
+    <Content Include="Styles\Bootstrap\code.less" />
+    <Content Include="Styles\Bootstrap\component-animations.less" />
+    <Content Include="Styles\Bootstrap\dropdowns.less" />
+    <Content Include="Styles\Bootstrap\forms.less" />
+    <Content Include="Styles\Bootstrap\glyphicons.less" />
+    <Content Include="Styles\Bootstrap\grid.less" />
+    <Content Include="Styles\Bootstrap\input-groups.less" />
+    <Content Include="Styles\Bootstrap\jumbotron.less" />
+    <Content Include="Styles\Bootstrap\labels.less" />
+    <Content Include="Styles\Bootstrap\list-group.less" />
+    <Content Include="Styles\Bootstrap\media.less" />
+    <Content Include="Styles\Bootstrap\mixins.less" />
+    <Content Include="Styles\Bootstrap\modals.less" />
+    <Content Include="Styles\Bootstrap\navbar.less" />
+    <Content Include="Styles\Bootstrap\navs.less" />
+    <Content Include="Styles\Bootstrap\normalize.less" />
+    <Content Include="Styles\Bootstrap\pager.less" />
+    <Content Include="Styles\Bootstrap\pagination.less" />
+    <Content Include="Styles\Bootstrap\panels.less" />
+    <Content Include="Styles\Bootstrap\popovers.less" />
+    <Content Include="Styles\Bootstrap\print.less" />
+    <Content Include="Styles\Bootstrap\progress-bars.less" />
+    <Content Include="Styles\Bootstrap\responsive-utilities.less" />
+    <Content Include="Styles\Bootstrap\scaffolding.less" />
+    <Content Include="Styles\Bootstrap\tables.less" />
+    <Content Include="Styles\Bootstrap\theme.less" />
+    <Content Include="Styles\Bootstrap\thumbnails.less" />
+    <Content Include="Styles\Bootstrap\tooltip.less" />
+    <Content Include="Styles\Bootstrap\type.less" />
+    <Content Include="Styles\Bootstrap\utilities.less" />
+    <Content Include="Styles\Bootstrap\variables.less" />
+    <Content Include="Styles\Bootstrap\wells.less" />
+    <Content Include="Styles\Bootstrap\Superhero\variables.less" />
+    <Content Include="Styles\Bootstrap\Superhero\bootswatch.less" />
+    <Content Include="Styles\angora.less" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
