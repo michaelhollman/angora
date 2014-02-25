@@ -4,14 +4,17 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Angora | ALPHA</title>
-
+    
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/bootstrap")
 
     @if (IsSectionDefined("Scripts"))
     {
         @RenderSection("Scripts")
     }
 
-    @Styles.Render("~/Content/css")
+    @Styles.Render("~/bundles/angora")
 
 </head>
 <body>
