@@ -1,0 +1,13 @@
+﻿@model Angora.Web.Models.InfoGetterModel
+<h2>Facebook Info Pull</h2>
+@if (Request.IsAuthenticated)
+{ 
+    <p>Your user ID is: @Model.UserID</p>
+    <p>Your first name is: </p>
+}
+else
+{
+    <p>You must be logged in to do that! Do that @Html.ActionLink("here.", "Index", "Home")</p>
+}
+
+
