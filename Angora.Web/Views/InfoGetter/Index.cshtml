@@ -2,12 +2,20 @@
 <h2>Facebook Info Pull</h2>
 @if (Request.IsAuthenticated)
 { 
-    <p>Your user ID is: @Model.UserID</p>
-    <p>Your first name is: </p>
+    <p>Your name is <strong>@Model.FirstName @Model.LastName</strong></p>
+    <p>You are <strong>@Model.Gender</strong></p>
+    <p>You live in <strong>@Model.Location</strong></p>
+    <p>Your profile is at <a href="@Model.Link">@Model.Link</a></p>
+    foreach (var friend in Model.FriendsList)
+    {
+        <img src="http://graph.facebook.com/@friend.id/picture"
+        <p>@friend.name</p>
+    }
+    
 }
 else
 {
-    <p>You must be logged in to do that! Do that @Html.ActionLink("here.", "Index", "Home")</p>
+    <p>You must be logged in (through Facebook) to do that! So go @Html.ActionLink("here.", "Index", "Home")</p>
 }
 
 
