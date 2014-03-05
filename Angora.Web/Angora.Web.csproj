@@ -156,7 +156,30 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="Images\Logos\Thumbs.db" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Images\Logos\fb-blue-100.png" />
+    <Content Include="Images\Logos\fb-blue-1024.png" />
+    <Content Include="Images\Logos\fb-blue-114.png" />
+    <Content Include="Images\Logos\fb-blue-144.png" />
+    <Content Include="Images\Logos\fb-blue-29.png" />
+    <Content Include="Images\Logos\fb-blue-50.png" />
+    <Content Include="Images\Logos\fb-blue-512.png" />
+    <Content Include="Images\Logos\fb-blue-57.png" />
+    <Content Include="Images\Logos\fb-blue-58.png" />
+    <Content Include="Images\Logos\fb-blue-72.png" />
+    <Content Include="Images\Logos\fb-white-100.png" />
+    <Content Include="Images\Logos\fb-white-1024.png" />
+    <Content Include="Images\Logos\fb-white-114.png" />
+    <Content Include="Images\Logos\fb-white-144.png" />
+    <Content Include="Images\Logos\fb-white-29.png" />
+    <Content Include="Images\Logos\fb-white-50.png" />
+    <Content Include="Images\Logos\fb-white-512.png" />
+    <Content Include="Images\Logos\fb-white-57.png" />
+    <Content Include="Images\Logos\fb-white-58.png" />
+    <Content Include="Images\Logos\fb-white-72.png" />
+    <Content Include="Images\Logos\twitter-blue.png" />
+    <Content Include="Images\Logos\twitter-white.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -175,9 +198,31 @@
     <Content Include="Styles\Angora.min.css">
       <DependentUpon>Angora.css</DependentUpon>
     </Content>
+    <Content Include="Styles\Angora\nav-bar.css">
+      <DependentUpon>nav-bar.less</DependentUpon>
+    </Content>
+    <Content Include="Styles\Angora\nav-bar.min.css">
+      <DependentUpon>nav-bar.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\Bootstrap\bootstrap.css">
+      <DependentUpon>bootstrap.less</DependentUpon>
+    </Content>
+    <Content Include="Styles\Bootstrap\bootstrap.min.css">
+      <DependentUpon>bootstrap.less</DependentUpon>
+    </Content>
+    <Content Include="Styles\Bootstrap\normalize.css">
+      <DependentUpon>normalize.less</DependentUpon>
+    </Content>
+    <Content Include="Styles\Bootstrap\normalize.min.css">
+      <DependentUpon>normalize.less</DependentUpon>
+    </Content>
     <Content Include="Styles\Bootstrap\Superhero\variables.css">
       <DependentUpon>variables.less</DependentUpon>
     </Content>
+    <Content Include="Styles\Bootstrap\variables.css">
+      <DependentUpon>variables.less</DependentUpon>
+    </Content>
+    <Content Include="Styles\Fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
@@ -255,6 +300,11 @@
     <Content Include="Styles\Bootstrap\Superhero\variables.less" />
     <Content Include="Styles\Bootstrap\Superhero\bootswatch.less" />
     <Content Include="Styles\angora.less" />
+    <Content Include="Views\Shared\_NavBar.cshtml" />
+    <Content Include="Styles\Fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Styles\Fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Styles\Fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Styles\Angora\nav-bar.less" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
