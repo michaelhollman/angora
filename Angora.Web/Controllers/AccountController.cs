@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using Angora.Data;
 using Angora.Data.Models;
 using Angora.Web.Models;
+using Facebook;
 
 namespace Angora.Web.Controllers
 {
@@ -190,7 +191,7 @@ namespace Angora.Web.Controllers
         public ActionResult ExternalLogin(string provider, string returnUrl)
         {
             // Request a redirect to the external login provider
-            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
+            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl}));
         }
 
         //
@@ -216,7 +217,23 @@ namespace Angora.Web.Controllers
                 // If the user does not have an account, then prompt the user to create an account
                 ViewBag.ReturnUrl = returnUrl;
                 ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { UserName = loginInfo.DefaultUserName });
+
+                //facebook info pulling
+                var accessToken = "1440310966205344|CSK33sTmDVY4XRuyAuWv286IFp4";
+                var client = new FacebookClient(accessToken);
+                dynamic facebookUser = null;
+
+                facebookUser = client.Get(loginInfo.Login.ProviderKey);
+
+                //end facebook info pulling
+
+                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel {   UserName = loginInfo.DefaultUserName,
+                                                                                                    FacebookId = loginInfo.Login.ProviderKey,
+                                                                                                    FirstName = facebookUser.first_name,
+                                                                                                    LastName = facebookUser.last_name,
+                                                                                                    EmailAddress = facebookUser.email,
+                                                                                                    Location = facebookUser.location.name,
+                                                                                                    Birthday = facebookUser.birthday_date });
             }
         }
 
@@ -261,13 +278,15 @@ namespace Angora.Web.Controllers
 
             if (ModelState.IsValid)
             {
+
                 // Get the information about the user from the external login provider
                 var info = await AuthenticationManager.GetExternalLoginInfoAsync();
                 if (info == null)
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new AngoraUser() { UserName = model.UserName };
+                var user = new AngoraUser() { UserName = model.UserName,
+                                              FirstName = model.FirstName};
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

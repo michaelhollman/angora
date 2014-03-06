@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.Facebook;
 using Owin;
 
 namespace Angora.Web
@@ -28,9 +29,19 @@ namespace Angora.Web
                consumerKey: "o8QTwfzt6CdfDGndyqvLrg",
                consumerSecret: "jqU2tq5QVUkK6JdFA22wtXZNrTumatvG9VpPAfK5M");
 
-            app.UseFacebookAuthentication(
-               appId: "1440310966205344",
-               appSecret: "0ba27f5ec1bcf335fcdf36dc19e71f86");
+            var facebookOptions = new FacebookAuthenticationOptions();
+            facebookOptions.AppId = "1440310966205344";
+            facebookOptions.AppSecret = "0ba27f5ec1bcf335fcdf36dc19e71f86";
+            //we can add scope parameters here
+            facebookOptions.Scope.Add("email");
+            facebookOptions.Scope.Add("user_birthday");
+            facebookOptions.Scope.Add("publish_stream");
+
+            app.UseFacebookAuthentication(facebookOptions);
+
+            //app.UseFacebookAuthentication(
+            //   appId: "1440310966205344",
+            //   appSecret: "0ba27f5ec1bcf335fcdf36dc19e71f86");
 
             //app.UseGoogleAuthentication();
         }

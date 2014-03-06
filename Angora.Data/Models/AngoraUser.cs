@@ -11,7 +11,11 @@ namespace Angora.Data.Models
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Email { get; set; }
+        public string EmailAddress { get; set; }
+        public string Location { get; set; }
+        public DateTime Birthday { get; set; }
+        public string FacebookId { get; set; }
+
 
         // TODO actually have lots of real non-placeholder user information in here
 

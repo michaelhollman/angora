@@ -8,7 +8,7 @@
     <hr />
     @Html.ValidationSummary(true)
     <p class="text-info">
-        Welcome, <strong>@Model.UserName</strong>! You've successfully authenticated with <strong>@ViewBag.LoginProvider</strong>.
+        Welcome, <strong>@Model.FirstName @Model.LastName</strong>! You've successfully authenticated with <strong>@ViewBag.LoginProvider</strong>.
             Please click the Register button to finish
             logging in.
     </p>
@@ -18,6 +18,31 @@
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
             @Html.ValidationMessageFor(m => m.UserName)
+        </div>
+        @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.FirstName)
+        </div>
+        @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.LastName)
+        </div>
+        @Html.LabelFor(m => m.EmailAddress, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.EmailAddress)
+        </div>
+        @Html.LabelFor(m => m.Birthday, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Birthday, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Birthday)
+        </div>
+        @Html.LabelFor(m => m.Location, new { @class = "col-md-2 control-label" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Location, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Location)
         </div>
     </div>
     

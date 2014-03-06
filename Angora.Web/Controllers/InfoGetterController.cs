@@ -32,32 +32,40 @@ namespace Angora.Web.Controllers
             var accessToken = "1440310966205344|CSK33sTmDVY4XRuyAuWv286IFp4";
 
             InfoGetterModel model = new InfoGetterModel();
-            IList<UserLoginInfo> logins = UserManager.GetLogins(User.Identity.GetUserId());
 
-            var client = new FacebookClient(accessToken);
-            dynamic user = null;
-
-            foreach (UserLoginInfo login in logins)
+            if (User.Identity.IsAuthenticated)
             {
-                if (login.LoginProvider == "Facebook")
+                IList<UserLoginInfo> logins = UserManager.GetLogins(User.Identity.GetUserId());
+                var client = new FacebookClient(accessToken);
+                dynamic user = null;
+
+                foreach (UserLoginInfo login in logins)
                 {
-                    model.UserID = login.ProviderKey;
-                    user = client.Get(login.ProviderKey);  
+                    if (login.LoginProvider == "Facebook")
+                    {
+                        model.UserID = login.ProviderKey;
+                        user = client.Get(login.ProviderKey);
+                    }
+                }
+
+                model.FirstName = user.first_name;
+                model.LastName = user.last_name;
+                model.Gender = user.gender;
+                model.Location = user.location.name;
+                model.Link = user.link;
+                model.PictureUrl = "https://graph.facebook.com/" + user.id + "/picture";
+
+                dynamic friendsListData = client.Get("/" + model.UserID + "/friends");
+                model.FriendsList = new List<Friend>();
+                foreach (var friend in friendsListData.data)
+                {
+                    model.FriendsList.Add(new Friend { Name = friend.name, Id = friend.id, PictureUrl = "https://graph.facebook.com/"+friend.id+"/picture" });
+                    
                 }
             }
-       
-            model.FirstName = user.first_name;
-            model.LastName = user.last_name;
-            model.Gender = user.gender;
-            model.Location = user.location.name;
-            model.Link = user.link;
             
-            dynamic friendsListData = client.Get("/" + model.UserID + "/friends");
-            model.FriendsList = new List<Friend>();
-            foreach (var friend in friendsListData.data)
-            {
-                model.FriendsList.Add(new Friend { name = friend.name, id = friend.id });
-            }
+
+
             return View(model);
         }
     }

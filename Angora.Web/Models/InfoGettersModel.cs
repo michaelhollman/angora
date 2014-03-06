@@ -12,14 +12,17 @@ namespace Angora.Web.Models
         public string LastName { get; set;}
         public string Gender { get; set; }
         public string Location { get; set; }
+        public string Email { get; set; }
         public string Link { get; set; }
         public List<Friend> FriendsList { get; set; }
+        public string PictureUrl { get; set; }
 
     }
 
     public struct Friend
     {
-        public string name { get; set; }
-        public string id { get; set; }
+        public string Name { get; set; }
+        public string Id { get; set; }
+        public string PictureUrl { get; set; }
     }
 }

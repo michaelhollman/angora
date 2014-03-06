@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace Angora.Web.Models
 {
@@ -7,6 +8,18 @@ namespace Angora.Web.Models
         [Required]
         [Display(Name = "User name")]
         public string UserName { get; set; }
+        [Display(Name = "First name")]
+        public string FirstName { get; set; }
+        [Display(Name = "Last name")]
+        public string LastName { get; set; }
+        [Display(Name = "Email Address")]
+        public string EmailAddress { get; set; }
+        [Display(Name = "Birthday")]
+        public string Birthday { get; set; }
+        [Display(Name = "Location")]
+        public string Location { get; set; }
+        public string FacebookId { get; set; }
+
     }
 
     public class ManageUserViewModel
