@@ -5932,6 +5932,9 @@ label,
 .affix {
   position: fixed;
 }
+body {
+  padding-top: 70px;
+}
 #nav-login-section .navbar-brand {
   padding-right: 10px;
 }
