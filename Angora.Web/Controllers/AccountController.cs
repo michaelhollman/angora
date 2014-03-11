@@ -216,27 +216,48 @@ namespace Angora.Web.Controllers
             {
                 // If the user does not have an account, then prompt the user to create an account
                 ViewBag.ReturnUrl = returnUrl;
-                ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
 
-                //facebook info pulling
-                //var accessToken = "1440310966205344|CSK33sTmDVY4XRuyAuWv286IFp4";
-                ClaimsIdentity ext = await AuthenticationManager.GetExternalIdentityAsync(DefaultAuthenticationTypes.ExternalCookie);
-                var accessToken = ext.Claims.First(x => x.Type.Contains("FacebookAccessToken")).Value;
-                var client = new FacebookClient(accessToken);
+                if (loginInfo.Login.LoginProvider == "Facebook")
+                {
+                    //facebook info pulling
+                    //var accessToken = "1440310966205344|CSK33sTmDVY4XRuyAuWv286IFp4";
+                    ClaimsIdentity externalCookie = await AuthenticationManager.GetExternalIdentityAsync(DefaultAuthenticationTypes.ExternalCookie);
+                    var accessToken = externalCookie.Claims.First(x => x.Type.Contains("FacebookAccessToken")).Value;
+                    accessToken = GetExtendedAccessToken(accessToken);
+                    dynamic facebookUser = null;
+                    try
+                    {
+                        var client = new FacebookClient(accessToken);
+                        facebookUser = client.Get(loginInfo.Login.ProviderKey);
+                    }
+                    catch (FacebookOAuthException)
+                    {
+                        //TODO handle this?
+                        //insanely unlikely
+                    }
+                    //end facebook info pulling
 
-                dynamic facebookUser = null;
-
-                facebookUser = client.Get(loginInfo.Login.ProviderKey);
-                
-                //end facebook info pulling
-
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel {   UserName = loginInfo.DefaultUserName,
-                                                                                                    FacebookId = loginInfo.Login.ProviderKey,
-                                                                                                    FirstName = facebookUser.first_name,
-                                                                                                    LastName = facebookUser.last_name,
-                                                                                                    EmailAddress = facebookUser.email,
-                                                                                                    Location = facebookUser.location.name,
-                                                                                                    Birthday = facebookUser.birthday});
+                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel
+                    {
+                        FacebookAccessToken = accessToken,
+                        FirstName = facebookUser.first_name,
+                        LastName = facebookUser.last_name,
+                        EmailAddress = facebookUser.email,
+                        Location = facebookUser.location.name,
+                        Birthday = facebookUser.birthday
+                    });
+                }
+                else if(loginInfo.Login.LoginProvider == "Twitter")
+                {
+                    //TODO twitter info pull
+                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel());
+                }
+                else
+                {
+                    //if this happens, something went very wrong
+                    //TODO Handle this (login provider isn't facebook or twitter)
+                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel());
+                }
             }
         }
 
@@ -279,7 +300,6 @@ namespace Angora.Web.Controllers
             {
                 return RedirectToAction("Manage");
             }
-
             if (ModelState.IsValid)
             {
 
@@ -290,12 +310,15 @@ namespace Angora.Web.Controllers
                     return View("ExternalLoginFailure");
                 }
                 //TODO Validation!!!!
-                var user = new AngoraUser() {   UserName = model.UserName,
-                                                FirstName = model.FirstName,
-                                                LastName = model.LastName,
-                                                EmailAddress = model.EmailAddress,
-                                                Location = model.Location,
-                                                Birthday = Convert.ToDateTime(model.Birthday)};
+                var user = new AngoraUser() {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    EmailAddress = model.EmailAddress,
+                    Location = model.Location,
+                    Birthday = Convert.ToDateTime(model.Birthday),
+                    FacebookAccessToken = model.FacebookAccessToken,
+                    UserName = model.FirstName+model.LastName
+                };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -347,6 +370,28 @@ namespace Angora.Web.Controllers
                 UserManager = null;
             }
             base.Dispose(disposing);
+        }
+
+        private string GetExtendedAccessToken(string ShortLivedToken)
+        {
+            FacebookClient client = new FacebookClient();
+            string extendedToken = "";
+            try
+            {
+                dynamic result = client.Get("/oauth/access_token", new
+                {
+                    grant_type = "fb_exchange_token",
+                    client_id = "1440310966205344",
+                    client_secret = "0ba27f5ec1bcf335fcdf36dc19e71f86",
+                    fb_exchange_token = ShortLivedToken
+                });
+                extendedToken = result.access_token;
+            }
+            catch
+            {
+                extendedToken = ShortLivedToken;
+            }
+            return extendedToken;
         }
 
         #region Helpers

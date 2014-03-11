@@ -4,11 +4,6 @@ namespace Angora.Web.Models
 {
     public class ExternalLoginConfirmationViewModel
     {
-        [Required]
-        [Display(Name = "User name")]
-        public string UserName { get; set; }
-        [Required]
-        [Display(Name = "First name")]
         public string FirstName { get; set; }
         [Required]
         [Display(Name = "Last name")]
@@ -24,7 +19,7 @@ namespace Angora.Web.Models
         [Required]
         [Display(Name = "Location")]
         public string Location { get; set; }
-        public string FacebookId { get; set; }
+        public string FacebookAccessToken { get; set; }
 
 
     }

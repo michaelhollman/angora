@@ -8,17 +8,12 @@
     <hr />
     @Html.ValidationSummary(true)
     <p class="text-info">
-        Welcome, <strong>@Model.FirstName @Model.LastName</strong>! You've successfully authenticated with <strong>@ViewBag.LoginProvider</strong>.
+        Welcome, <strong>@Model.FirstName @Model.LastName</strong>!
             Please click the Register button to finish
             logging in.
     </p>
     
     <div class="form-group">
-        @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.UserName)
-        </div>
         @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
@@ -43,6 +38,10 @@
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.Location, new { @class = "form-control" })
             @Html.ValidationMessageFor(m => m.Location)
+        </div>
+        <div class="col-md-10">
+            @Html.HiddenFor(m => m.FacebookAccessToken, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.FacebookAccessToken)
         </div>
     </div>
     
