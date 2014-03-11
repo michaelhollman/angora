@@ -157,6 +157,14 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Images\Alex.jpg" />
+    <Content Include="Images\EventImage.jpeg" />
+    <Content Include="Images\EventImage3.png" />
+    <Content Include="Images\Michael.jpg" />
+    <Content Include="Images\Rachael2.jpg" />
+    <Content Include="Images\RachaelComb.jpg" />
+    <Content Include="Images\RachEl.jpg" />
+    <Content Include="Images\Scott.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -255,6 +263,7 @@
     <Content Include="Styles\Bootstrap\Superhero\variables.less" />
     <Content Include="Styles\Bootstrap\Superhero\bootswatch.less" />
     <Content Include="Styles\angora.less" />
+    <Content Include="Styles\Angora\LandingCSS.less" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
