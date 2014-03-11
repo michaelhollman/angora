@@ -5951,3 +5951,13 @@ label,
   border: none;
   padding: 0 !important;
 }
+.nav {
+  font-size: 15px;
+}
+.navbar-inverse .navbar-nav .open .dropdown-menu > li > a,
+.navbar-inverse .navbar-nav .open .dropdown-menu {
+  background-color: #df691a;
+}
+.navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover {
+  background-color: #c85e17;
+}
