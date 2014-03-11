@@ -16,64 +16,36 @@
             @if (Request.IsAuthenticated)
             {
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Link</a></li>
-                    <li><a href="#">Link</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
-                            <li><a href="#">Something else here</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">One more separated link</a></li>
-                        </ul>
-                    </li>
+                    <li><a href="#">Events</a></li>
+                    <li><a href="#">Friends</a></li>
+                    <li><a href="#">Other Things?</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">@User.Identity.Name<b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li><a href="#">Action</a></li>
-                            <li><a href="#">Another action</a></li>
+                            <li><a href="#">Manage Account</a></li>
+                            <li><a href="#">Privacy?</a></li>
                             <li><a href="#">Something else here</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">Separated link</a></li>
-                            <li class="divider"></li>
-                            <li><a href="#">One more separated link</a></li>
                         </ul>
                     </li>
                     <li>
-
-                        @*TODO make logoff a HTTP GET*@
-
-                        @using (Html.BeginForm("LogOff", "Account", new { returnUrl = Url.Action("Index", "Home") }, FormMethod.Post))
-                        {
-                            @Html.AntiForgeryToken()
-                            <button id="nav-logout" type="submit" class="navbar-text">Logout</button>
-
-                        }
+                        <a href="@Url.Action("Logout", "Account")">Logout</a>
                     </li>
-
-                    @* <li><a href="@Url.Action("Logoff","Account")">Logout</a></li>*@
                 </ul>
-
             }
             else
             {
-                <div class="nav navbar-nav navbar-right" id="nav-login-section">
-                    <a class="navbar-brand">Log in using</a>
-                    <a class=" navbar-img" href="@Url.Action("Login","Account")"><img src="/images/logos/fb-white-50.png" /></a>
-                    <a class=" navbar-img" href="@Url.Action("Login","Account")"><img src="/images/logos/twitter-white.png" /></a>
-                </div>
-
+                using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = Url.Action("Index", "Home") }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div class="nav navbar-nav navbar-right" id="nav-login-section">
+                        <a class="navbar-brand">Log in using</a>
+                        <button type="submit" class="navbar-img" id="Facebook" name="provider" value="Facebook" title="Log in using your Facebook account"><img src="/images/logos/fb-white-50.png" /></button>
+                        <button type="submit" class="navbar-img" id="Twitter" name="provider" value="Twitter" title="Log in using your Twitter account"><img src="/images/logos/twitter-white.png" /></button>
+                    </div>
+                }
             }
-
-
-
-
         </div>
     </div>
 </nav>
-

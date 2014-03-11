@@ -286,6 +286,15 @@ namespace Angora.Web.Controllers
         }
 
         //
+        // GET: /Account/Logout
+        [HttpGet]
+        public ActionResult Logout()
+        {
+            AuthenticationManager.SignOut();
+            return RedirectToAction("Index", "Home");
+        }
+
+        //
         // POST: /Account/LogOff
         [HttpPost]
         [ValidateAntiForgeryToken]
