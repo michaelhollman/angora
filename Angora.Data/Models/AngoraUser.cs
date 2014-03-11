@@ -15,6 +15,7 @@ namespace Angora.Data.Models
         public string Location { get; set; }
         public DateTime Birthday { get; set; }
         public string FacebookId { get; set; }
+        public string FacebookAccessToken { get; set; }
 
 
         // TODO actually have lots of real non-placeholder user information in here

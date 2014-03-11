@@ -81,7 +81,7 @@ namespace Angora.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new AngoraUser() { UserName = model.UserName };
+                var user = new AngoraUser() {   UserName = model.UserName};
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -219,12 +219,15 @@ namespace Angora.Web.Controllers
                 ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
 
                 //facebook info pulling
-                var accessToken = "1440310966205344|CSK33sTmDVY4XRuyAuWv286IFp4";
+                //var accessToken = "1440310966205344|CSK33sTmDVY4XRuyAuWv286IFp4";
+                ClaimsIdentity ext = await AuthenticationManager.GetExternalIdentityAsync(DefaultAuthenticationTypes.ExternalCookie);
+                var accessToken = ext.Claims.First(x => x.Type.Contains("FacebookAccessToken")).Value;
                 var client = new FacebookClient(accessToken);
+
                 dynamic facebookUser = null;
 
                 facebookUser = client.Get(loginInfo.Login.ProviderKey);
-
+                
                 //end facebook info pulling
 
                 return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel {   UserName = loginInfo.DefaultUserName,
@@ -233,7 +236,7 @@ namespace Angora.Web.Controllers
                                                                                                     LastName = facebookUser.last_name,
                                                                                                     EmailAddress = facebookUser.email,
                                                                                                     Location = facebookUser.location.name,
-                                                                                                    Birthday = facebookUser.birthday_date });
+                                                                                                    Birthday = facebookUser.birthday});
             }
         }
 
@@ -259,6 +262,7 @@ namespace Angora.Web.Controllers
             var result = await UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
             if (result.Succeeded)
             {
+                var currentUser = await UserManager.FindByIdAsync(User.Identity.GetUserId());
                 return RedirectToAction("Manage");
             }
             return RedirectToAction("Manage", new { Message = ManageMessageId.Error });
@@ -285,8 +289,13 @@ namespace Angora.Web.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new AngoraUser() { UserName = model.UserName,
-                                              FirstName = model.FirstName};
+                //TODO Validation!!!!
+                var user = new AngoraUser() {   UserName = model.UserName,
+                                                FirstName = model.FirstName,
+                                                LastName = model.LastName,
+                                                EmailAddress = model.EmailAddress,
+                                                Location = model.Location,
+                                                Birthday = Convert.ToDateTime(model.Birthday)};
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -424,7 +433,10 @@ namespace Angora.Web.Controllers
                 }
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
+
         }
         #endregion
+
     }
+
 }
