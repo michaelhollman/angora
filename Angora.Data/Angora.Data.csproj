@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\BaseModel.cs" />
+    <Compile Include="Models\Event.cs" />
     <Compile Include="Models\Foo.cs" />
     <Compile Include="Models\AngoraUser.cs" />
     <Compile Include="Repository\AngoraDbConfiguration.cs" />
