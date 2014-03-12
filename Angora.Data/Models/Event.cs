@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 
 namespace Angora.Data.Models
 {
-    public class Event
+    public class Event : BaseModel
     {
         [Required]
         public int UserId { get; set; }
 
         [Required]
         public string Name { get; set; }
+
         public string Description { get; set; }
 
         //latitude then longitude

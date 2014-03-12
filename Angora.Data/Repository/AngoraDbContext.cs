@@ -15,6 +15,6 @@ namespace Angora.Data
         }
 
         public DbSet<Foo> Foos { get; set; }
-
+        public DbSet<Event> Events { get; set; }
     }
 }
