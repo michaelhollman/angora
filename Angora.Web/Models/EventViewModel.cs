@@ -5,7 +5,12 @@ using System.Web;
 
 namespace Angora.Web.Models
 {
-    public class EventViewModel
+    public class NewEventViewModel
+    {
+        
+    }
+
+    public class EditEventViewModel
     {
 
     }
