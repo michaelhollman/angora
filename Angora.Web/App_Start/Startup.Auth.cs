@@ -5,6 +5,7 @@ using Microsoft.Owin.Security.Facebook;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using Owin;
+using Microsoft.Owin.Security.Twitter;
 
 namespace Angora.Web
 {
@@ -27,10 +28,22 @@ namespace Angora.Web
             //    clientId: "",
             //    clientSecret: "");
 
-            app.UseTwitterAuthentication(
-               consumerKey: "o8QTwfzt6CdfDGndyqvLrg",
-               consumerSecret: "jqU2tq5QVUkK6JdFA22wtXZNrTumatvG9VpPAfK5M");
+            /*Twitter*/
+            var twitterOptions = new TwitterAuthenticationOptions();
+            twitterOptions.ConsumerKey = "o8QTwfzt6CdfDGndyqvLrg";
+            twitterOptions.ConsumerSecret = "jqU2tq5QVUkK6JdFA22wtXZNrTumatvG9VpPAfK5M";
+            twitterOptions.Provider = new TwitterAuthenticationProvider()
+            {
+                OnAuthenticated = async context =>
+                    {
+                        context.Identity.AddClaim(new Claim("TwitterAccessToken", context.AccessToken));
+                        context.Identity.AddClaim(new Claim("TwitterAccessSecret", context.AccessTokenSecret));
+                    }
+            };
 
+            app.UseTwitterAuthentication(twitterOptions);
+            
+            /*Facebook*/
             var facebookOptions = new FacebookAuthenticationOptions();
             facebookOptions.AppId = "1440310966205344";
             facebookOptions.AppSecret = "0ba27f5ec1bcf335fcdf36dc19e71f86";
