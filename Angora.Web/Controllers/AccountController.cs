@@ -5,6 +5,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Net;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
@@ -12,6 +13,7 @@ using Angora.Data;
 using Angora.Data.Models;
 using Angora.Web.Models;
 using Facebook;
+using TweetSharp;
 
 namespace Angora.Web.Controllers
 {
@@ -249,8 +251,40 @@ namespace Angora.Web.Controllers
                 }
                 else if(loginInfo.Login.LoginProvider == "Twitter")
                 {
-                    //TODO twitter info pull
-                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel());
+                    ClaimsIdentity externalCookie = await AuthenticationManager.GetExternalIdentityAsync(DefaultAuthenticationTypes.ExternalCookie);
+                    var accessToken = externalCookie.Claims.First(x => x.Type.Contains("TwitterAccessToken")).Value;
+                    var accessSecret = externalCookie.Claims.First(x => x.Type.Contains("TwitterAccessSecret")).Value;
+
+                    var service = new TwitterService(
+                        "o8QTwfzt6CdfDGndyqvLrg",
+                        "jqU2tq5QVUkK6JdFA22wtXZNrTumatvG9VpPAfK5M",
+                        accessToken,
+                        accessSecret
+                        );
+                    var twitterUser = service.GetUserProfile(new GetUserProfileOptions());
+                    string firstName, lastName;
+                    if (twitterUser.Name.Contains(' '))
+                    {
+                        var names = twitterUser.Name.Split(' ');
+                        firstName = names[0];
+                        lastName = names[1];
+                    }
+                    else
+                    {
+                        firstName = twitterUser.Name;
+                        lastName = "";
+                    }
+                    
+
+                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel
+                    {
+                        TwitterAccessToken = accessToken,
+                        TwitterAccessSecret = accessSecret,
+                        FirstName = firstName,
+                        LastName = lastName,
+                        Location = twitterUser.Location
+                        
+                    });
                 }
                 else
                 {

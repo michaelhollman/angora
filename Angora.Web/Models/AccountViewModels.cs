@@ -20,6 +20,8 @@ namespace Angora.Web.Models
         [Display(Name = "Location")]
         public string Location { get; set; }
         public string FacebookAccessToken { get; set; }
+        public string TwitterAccessToken { get; set; }
+        public string TwitterAccessSecret { get; set; }
 
 
     }
