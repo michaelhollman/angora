@@ -4,9 +4,26 @@ namespace Angora.Web.Models
 {
     public class ExternalLoginConfirmationViewModel
     {
+        public string FirstName { get; set; }
         [Required]
-        [Display(Name = "User name")]
-        public string UserName { get; set; }
+        [Display(Name = "Last name")]
+        public string LastName { get; set; }
+        [Required]
+        [Display(Name = "Email Address")]
+        [DataType(DataType.EmailAddress)]
+        public string EmailAddress { get; set; }
+        [Required]
+        [DataType(DataType.Date)]
+        [Display(Name = "Birthday")]
+        public string Birthday { get; set; }
+        [Required]
+        [Display(Name = "Location")]
+        public string Location { get; set; }
+        public string FacebookAccessToken { get; set; }
+        public string TwitterAccessToken { get; set; }
+        public string TwitterAccessSecret { get; set; }
+
+
     }
 
     public class ManageUserViewModel

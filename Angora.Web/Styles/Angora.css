@@ -5964,6 +5964,7 @@ body {
 .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover {
   background-color: #c85e17;
 }
+<<<<<<< HEAD
 #RachaelImg {
   padding: 0px;
   background: url(/Images/RachaelComb.jpg);
@@ -6026,4 +6027,6 @@ body {
 #ScottImg:hover {
   background-position-x: -122px;
 }
+=======
+>>>>>>> origin/master
 /*# sourceMappingURL=angora.css.map */
