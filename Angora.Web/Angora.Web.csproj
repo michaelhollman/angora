@@ -165,6 +165,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="Images\AlexComb.jpg" />
     <Content Include="Images\Logos\Thumbs.db" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Images\Logos\fb-blue-100.png" />
@@ -193,10 +194,12 @@
     <Content Include="Images\EventImage.jpeg" />
     <Content Include="Images\EventImage3.png" />
     <Content Include="Images\Michael.jpg" />
+    <Content Include="Images\MichaelCombined.jpg" />
     <Content Include="Images\Rachael2.jpg" />
     <Content Include="Images\RachaelComb.jpg" />
     <Content Include="Images\RachEl.jpg" />
     <Content Include="Images\Scott.jpg" />
+    <Content Include="Images\ScottComb.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -214,6 +217,9 @@
     </Content>
     <Content Include="Styles\Angora.min.css">
       <DependentUpon>Angora.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\Angora\landing.css">
+      <DependentUpon>landing.less</DependentUpon>
     </Content>
     <Content Include="Styles\Angora\nav-bar.css">
       <DependentUpon>_nav-bar.less</DependentUpon>
@@ -323,6 +329,18 @@
     <Content Include="Styles\Fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Styles\Angora\_nav-bar.less" />
     <Content Include="Styles\Angora\_layout.less" />
+    <Content Include="Styles\Angora\landing.less" />
+    <Content Include="Styles\Bootstrap\normalize.css.map">
+      <DependentUpon>normalize.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\Bootstrap\bootstrap.css.map">
+      <DependentUpon>bootstrap.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\angora.css.map">
+      <DependentUpon>Angora.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\Angora\landing.css.map">
+      <DependentUpon>landing.css</DependentUpon>
     <Content Include="Styles\Angora\LandingCSS.less" />
     <Content Include="Styles\Bootstrap\normalize.css.map">
       <DependentUpon>normalize.css</DependentUpon>
