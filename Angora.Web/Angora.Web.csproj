@@ -341,6 +341,7 @@
     </Content>
     <Content Include="Styles\Angora\landing.css.map">
       <DependentUpon>landing.css</DependentUpon>
+    </Content>
     <Content Include="Styles\Angora\LandingCSS.less" />
     <Content Include="Styles\Bootstrap\normalize.css.map">
       <DependentUpon>normalize.css</DependentUpon>
