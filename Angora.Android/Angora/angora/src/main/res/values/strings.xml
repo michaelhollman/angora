@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Angora</string>
+    <string name="title_feed_section">Feed</string>
+    <string name="title_profile_section">Profile</string>
+    <string name="title_friends_section">Friends</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="action_logout">Log Out</string>
+
+</resources>
