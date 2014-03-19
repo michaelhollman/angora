@@ -1,1 +1,1 @@
-include ':Angora'
+include ':Angora', ':app'

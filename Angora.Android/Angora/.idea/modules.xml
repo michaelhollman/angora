@@ -3,7 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Angora.iml" filepath="$PROJECT_DIR$/Angora.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Angora.iml" filepath="$PROJECT_DIR$/Angora.iml" />
       <module fileurl="file://$PROJECT_DIR$/Angora/Angora-Angora.iml" filepath="$PROJECT_DIR$/Angora/Angora-Angora.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Angora/Angora-Angora.iml" filepath="$PROJECT_DIR$/Angora/Angora-Angora.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
 </project>
