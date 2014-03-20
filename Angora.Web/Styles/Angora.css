@@ -5972,6 +5972,9 @@ body {
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
 }
+.login-social-img {
+  height: 20px;
+}
 #nav-login-section .navbar-brand {
   padding-right: 10px;
 }

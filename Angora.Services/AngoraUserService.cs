@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
 using Angora.Data;
 using Angora.Data.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
+
 
 namespace Angora.Services
 {
@@ -27,15 +26,13 @@ namespace Angora.Services
             ((UserValidator<AngoraUser>)_userManager.UserValidator).AllowOnlyAlphanumericUserNames = false;
         }
 
-        public async Task<bool> CreateUser(AngoraUser user)
+        public async Task<IdentityResult> CreateUser(AngoraUser user)
         {
-            var r = await _userManager.CreateAsync(user);
-            return r.Succeeded;
+            return await _userManager.CreateAsync(user);
         }
-        public bool UpdateUser(AngoraUser user)
+        public async Task<IdentityResult> UpdateUser(AngoraUser user)
         {
-            var r = _userManager.Update(user);
-            return r.Succeeded;
+            return await _userManager.UpdateAsync(user);
         }
 
         public async Task<AngoraUser> FindUser(string username, string password)
@@ -43,16 +40,25 @@ namespace Angora.Services
             return await _userManager.FindAsync(username, password);
         }
 
-        public async Task<AngoraUser> FindUser(UserLoginInfo info)
+        public AngoraUser FindUser(UserLoginInfo info)
         {
-            return await _userManager.FindAsync(info);
+            return _userManager.Find(info);
         }
 
-        public AngoraUser FindUserById(string id)
+        public async Task<AngoraUser> FindUserById(string id)
         {
-            return _userManager.FindById(id);
+            return await _userManager.FindByIdAsync(id);
         }
 
+        public async Task<ClaimsIdentity> CreateIdentity(AngoraUser user)
+        {
+            return await _userManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+        }
+
+        public async Task<IdentityResult> AddLogin(string id, UserLoginInfo info)
+        {
+            return await _userManager.AddLoginAsync(id, info);
+        }
 
 
     }

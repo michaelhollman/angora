@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Security.Claims;
 using System.ServiceModel;
+using System.Threading.Tasks;
 using Angora.Data.Models;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace Angora.Services
 {
@@ -13,14 +11,24 @@ namespace Angora.Services
     public interface IAngoraUserService
     {
         [OperationContract]
-        Task<bool> CreateUser(AngoraUser user);
+        Task<IdentityResult> CreateUser(AngoraUser user);
+
         [OperationContract]
-        bool UpdateUser(AngoraUser user);
+        Task<IdentityResult> UpdateUser(AngoraUser user);
+
         [OperationContract]
         Task<AngoraUser> FindUser(string username, string password);
+
         [OperationContract]
-        Task<AngoraUser> FindUser(UserLoginInfo info);
+        AngoraUser FindUser(UserLoginInfo info);
+
         [OperationContract]
-        AngoraUser FindUserById(string id);
+        Task<AngoraUser> FindUserById(string id);
+
+        [OperationContract]
+        Task<ClaimsIdentity> CreateIdentity(AngoraUser user);
+        
+        [OperationContract]
+        Task<IdentityResult> AddLogin(string id, UserLoginInfo info);
     }
 }

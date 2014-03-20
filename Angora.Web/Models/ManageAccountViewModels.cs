@@ -13,9 +13,12 @@ namespace Angora.Web.Models
             Errors = new List<string>();
             Successes = new List<string>();
             Infos = new List<string>();
+            IsFirstTimeLogin = false;
         }
 
         public AngoraUser User { get; set; }
+
+        public bool IsFirstTimeLogin { get; set; }
 
         public List<string> Errors { get; set; }
         public List<string> Successes { get; set; }
