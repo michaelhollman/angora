@@ -53,9 +53,4 @@ namespace Angora.Web.Models
         public List<string> Tags { get; set; }
     }
 
-    public class EventViewModel
-    {
-        public Event Event { get; set; }
-
-    }
 }

@@ -27,13 +27,14 @@ namespace Angora.Web.Controllers
             return View();
         }
 
+        [Authorize]
         public ActionResult Create()
         {
-
                 NewEventViewModel newModel = new NewEventViewModel();
                 return View(newModel);
         }
 
+        [Authorize]
         public ActionResult CreateEvent(NewEventViewModel model)
         {
             //long userId = (long)Membership.GetUser().ProviderUserKey;
@@ -59,28 +60,19 @@ namespace Angora.Web.Controllers
             return View("Index");
         }
 
+        [Authorize]
         public ActionResult EditEvent(EditEventViewModel model)
         {
             return View();
         }
 
+        [Authorize]
         public ActionResult ViewEvent(long id)
         {
-            EventViewModel eventView = new EventViewModel();
+            Event eventView = _eventService.FindById(id);
 
-            return View(eventView);
+            return View();
         }
 
-        private EventViewModel FindEventById(long id)
-        {
-           Event thisEvent = _eventService.FindById(id);
-
-           EventViewModel eventView = new EventViewModel()
-           {
-               Event = thisEvent
-           };
-
-            return eventView;
-        }
 	}
 }
