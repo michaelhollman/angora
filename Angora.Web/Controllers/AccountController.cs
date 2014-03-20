@@ -246,7 +246,7 @@ namespace Angora.Web.Controllers
                         LastName = facebookUser.last_name,
                         EmailAddress = facebookUser.email,
                         Location = facebookUser.location.name,
-                        Birthday = facebookUser.birthday
+                        Birthday = Convert.ToDateTime(facebookUser.birthday)
                     });
                 }
                 else if(loginInfo.Login.LoginProvider == "Twitter")
@@ -343,13 +343,13 @@ namespace Angora.Web.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                //TODO Validation!!!!
+                
                 var user = new AngoraUser() {
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     EmailAddress = model.EmailAddress,
                     Location = model.Location,
-                    Birthday = Convert.ToDateTime(model.Birthday),
+                    Birthday = model.Birthday,
                     FacebookAccessToken = model.FacebookAccessToken,
                     UserName = model.FirstName+model.LastName
                 };

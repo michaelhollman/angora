@@ -26,12 +26,12 @@
         </div>
         @Html.LabelFor(m => m.EmailAddress, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control", type = "email" })
             @Html.ValidationMessageFor(m => m.EmailAddress)
         </div>
-        @Html.LabelFor(m => m.Birthday, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.Birthday, new { @class = "col-md-2 control-label"})
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Birthday, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.Birthday, new { @class = "form-control", type = "date" })
             @Html.ValidationMessageFor(m => m.Birthday)
         </div>
         @Html.LabelFor(m => m.Location, new { @class = "col-md-2 control-label" })
@@ -59,4 +59,6 @@
 
 @section Scripts {
     @System.Web.Optimization.Scripts.Render("~/bundles/jqueryval")
+    @System.Web.Optimization.Scripts.Render("~/Scripts/jquery.validate.min.js")
+    @System.Web.Optimization.Scripts.Render("~/Scripts/jquery.validate.unobtrusive.min.js")
 }

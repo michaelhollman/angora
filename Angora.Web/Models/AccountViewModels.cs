@@ -1,9 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace Angora.Web.Models
 {
     public class ExternalLoginConfirmationViewModel
     {
+        const string startDate = "1/1/1900";
+        const string endDate = "3/18/2014";
         public string FirstName { get; set; }
         [Required]
         [Display(Name = "Last name")]
@@ -13,9 +16,11 @@ namespace Angora.Web.Models
         [DataType(DataType.EmailAddress)]
         public string EmailAddress { get; set; }
         [Required]
-        [DataType(DataType.Date)]
         [Display(Name = "Birthday")]
-        public string Birthday { get; set; }
+        [Range(typeof(DateTime), startDate, endDate,
+            ErrorMessage = "Value for {0} must be between " + startDate + " and " + endDate)]
+        [DataType(DataType.Date)]
+        public DateTime Birthday { get; set; }
         [Required]
         [Display(Name = "Location")]
         public string Location { get; set; }
