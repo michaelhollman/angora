@@ -5,20 +5,21 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>New</h2>
+<style>.textBox {color:black;}</style>
+
 
 @using (Html.BeginForm("CreateEvent", "Event"))
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h4>NewEventViewModel</h4>
+        <h2>Create New Event</h2>
         <hr />
         @Html.ValidationSummary(true)
 
         <div class="form-group">
             @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10 textBox">
                 @Html.TextBoxFor(model => model.Name)
                 @Html.ValidationMessageFor(model => model.Name)
             </div>
@@ -26,7 +27,7 @@
 
         <div class="form-group">
             @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10 textBox">
                 @Html.TextBoxFor(model => model.Description)
                 @Html.ValidationMessageFor(model => model.Description)
             </div>
@@ -34,7 +35,7 @@
 
         <div class="form-group">
             @Html.LabelFor(model => model.Location, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10 textBox">
                 @Html.TextBoxFor(model => model.Location)
                 @Html.ValidationMessageFor(model => model.Location)
             </div>
@@ -42,7 +43,7 @@
 
         <div class="form-group">
             @Html.LabelFor(model => model.Time, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10 textBox">
                 @Html.TextBoxFor(model => model.Time)
                 @Html.ValidationMessageFor(model => model.Time)
             </div>
