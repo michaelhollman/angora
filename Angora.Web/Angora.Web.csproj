@@ -221,6 +221,9 @@
     <Content Include="Styles\Angora\landing.css">
       <DependentUpon>landing.less</DependentUpon>
     </Content>
+    <Content Include="Styles\Angora\landing.min.css">
+      <DependentUpon>landing.less</DependentUpon>
+    </Content>
     <Content Include="Styles\Angora\nav-bar.css">
       <DependentUpon>_nav-bar.less</DependentUpon>
     </Content>
@@ -246,7 +249,9 @@
       <DependentUpon>variables.less</DependentUpon>
     </Content>
     <Content Include="Styles\Fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
@@ -258,6 +263,7 @@
     <Compile Include="Areas\Api\Controllers\FooController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ManageAccountController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -342,7 +348,6 @@
     <Content Include="Styles\Angora\landing.css.map">
       <DependentUpon>landing.css</DependentUpon>
     </Content>
-    <Content Include="Styles\Angora\LandingCSS.less" />
     <Content Include="Styles\Bootstrap\normalize.css.map">
       <DependentUpon>normalize.css</DependentUpon>
     </Content>
@@ -352,6 +357,7 @@
     <Content Include="Styles\Bootstrap\bootstrap.css.map">
       <DependentUpon>bootstrap.css</DependentUpon>
     </Content>
+    <Content Include="Views\ManageAccount\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
