@@ -52,6 +52,10 @@
     <Reference Include="Microsoft.Owin">
       <HintPath>..\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.6.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -72,11 +76,16 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\UnitTest1.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Angora.Data\Angora.Data.csproj">
       <Project>{b76c60aa-89be-42c5-8b8d-b439cf189435}</Project>
       <Name>Angora.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Angora.Services\Angora.Services.csproj">
+      <Project>{04829a99-b727-495b-8406-7c31676f0b54}</Project>
+      <Name>Angora.Services</Name>
     </ProjectReference>
     <ProjectReference Include="..\Angora.Web\Angora.Web.csproj">
       <Project>{b91d5707-6953-4e4e-ac2c-b47228497947}</Project>
@@ -85,7 +94,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
-    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

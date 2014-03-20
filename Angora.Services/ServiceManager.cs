@@ -19,6 +19,7 @@ namespace Angora.Services
             Constructors = new Dictionary<Type, Constructor>
             {
                 {typeof (IFooService), () => new FooService()},
+                {typeof (IFooCDNService), () => new FooCDNService()},
 
             };
         }
