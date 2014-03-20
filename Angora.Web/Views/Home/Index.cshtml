@@ -2,30 +2,23 @@
     ViewBag.Title = "Home";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<h1>Welcome to Angora <small>(Alpha release)</small></h1>
-
-<p>Someday, in the near future, this will be an awesome social media site that will let you do all sorts of wicked-awesome things.</p>
-<p>Today is not that day.</p>
-<p>For now, all you can do is login.</p>
-
-
-@if (Request.IsAuthenticated)
-{
-    <p>And holy wow... look at you, you've already done so!</p>
-    <p>Wasn't it so fun!</p>
-    using (Html.BeginForm("LogOff", "Account", new { returnUrl = Url.Action("Index", "Home") }, FormMethod.Post))
-    {
-        @Html.AntiForgeryToken()
-        <button type="submit" class="btn btn-info">Log out so you can log back in, beacuse it is fun!</button>
-    }
-}
-else
-{
-    <p>You should try it.</p>
-    <p>It's fun!</p>
-    <a class="btn btn-primary" href="@Url.Action("Login", "Account")">Yes, I want to log in because it is fun!</a>
-}
-
+<div style="width: 100%; height: 400px; margin: 0px; background: url(/Images/EventImage3.png); background-size: 100% 100%; background-repeat: no-repeat;"><h1 style="color: red; font-size: 5em; text-align: center; line-height: 400px; vertical-align: middle;"><b>Welcome to Angora</b></h1></div>
+<div>
+    <h1>About Angora</h1>
+    <p>Angora is a new social networking site aimed at making planning events easier. Angora allows you to create, schedule, and invite
+    friends for all of your events. Once an event is over, Angora automatically aggregates digital media from the event that was posted
+    on other social media sites to make it easy to look back on your great time.</p>
+    <p>
+        We are so sure that you will enjoy Angora, that if you are not satisfied we will give you your money back. 
+        So sign up today.
+    </p>
+    <h1>About the Team</h1>
+    <table style="border-collapse: separate;">
+        <tr><td style="padding: 10px 0px;"><div id="RachaelImg"></div></td><td style="padding: 10px;">Rachael is a hard-working lady that is really good at getting second place.</td></tr>
+        <tr><td style="padding: 10px 0px;"><div id="MichaelImg"></div></td><td style="padding: 10px;">Michael is a spooboo.</td></tr>
+        <tr><td style="padding: 10px 0px;"><div id="AlexImg"></div></td><td style="padding: 10px;">Alex likes long walks on the beach and baking in his easy bake oven.</td></tr>
+        <tr><td style="padding: 10px 0px;"><div id="ScottImg"></div></td><td style="padding: 10px;">Scott is the best.</td></tr>
+    </table>
+</div>
 
 

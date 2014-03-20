@@ -5,12 +5,15 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Net;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
 using Angora.Data;
 using Angora.Data.Models;
 using Angora.Web.Models;
+using Facebook;
+using TweetSharp;
 
 namespace Angora.Web.Controllers
 {
@@ -80,7 +83,7 @@ namespace Angora.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new AngoraUser() { UserName = model.UserName };
+                var user = new AngoraUser() {   UserName = model.UserName};
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -190,7 +193,7 @@ namespace Angora.Web.Controllers
         public ActionResult ExternalLogin(string provider, string returnUrl)
         {
             // Request a redirect to the external login provider
-            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
+            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl}));
         }
 
         //
@@ -215,8 +218,80 @@ namespace Angora.Web.Controllers
             {
                 // If the user does not have an account, then prompt the user to create an account
                 ViewBag.ReturnUrl = returnUrl;
-                ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { UserName = loginInfo.DefaultUserName });
+
+                if (loginInfo.Login.LoginProvider == "Facebook")
+                {
+                    //facebook info pulling
+                    //var accessToken = "1440310966205344|CSK33sTmDVY4XRuyAuWv286IFp4";
+                    ClaimsIdentity externalCookie = await AuthenticationManager.GetExternalIdentityAsync(DefaultAuthenticationTypes.ExternalCookie);
+                    var accessToken = externalCookie.Claims.First(x => x.Type.Contains("FacebookAccessToken")).Value;
+                    accessToken = GetExtendedAccessToken(accessToken);
+                    dynamic facebookUser = null;
+                    try
+                    {
+                        var client = new FacebookClient(accessToken);
+                        facebookUser = client.Get(loginInfo.Login.ProviderKey);
+                    }
+                    catch (FacebookOAuthException)
+                    {
+                        //TODO handle this?
+                        //insanely unlikely
+                    }
+                    //end facebook info pulling
+
+                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel
+                    {
+                        FacebookAccessToken = accessToken,
+                        FirstName = facebookUser.first_name,
+                        LastName = facebookUser.last_name,
+                        EmailAddress = facebookUser.email,
+                        Location = facebookUser.location.name,
+                        Birthday = facebookUser.birthday
+                    });
+                }
+                else if(loginInfo.Login.LoginProvider == "Twitter")
+                {
+                    ClaimsIdentity externalCookie = await AuthenticationManager.GetExternalIdentityAsync(DefaultAuthenticationTypes.ExternalCookie);
+                    var accessToken = externalCookie.Claims.First(x => x.Type.Contains("TwitterAccessToken")).Value;
+                    var accessSecret = externalCookie.Claims.First(x => x.Type.Contains("TwitterAccessSecret")).Value;
+
+                    var service = new TwitterService(
+                        "o8QTwfzt6CdfDGndyqvLrg",
+                        "jqU2tq5QVUkK6JdFA22wtXZNrTumatvG9VpPAfK5M",
+                        accessToken,
+                        accessSecret
+                        );
+                    var twitterUser = service.GetUserProfile(new GetUserProfileOptions());
+                    string firstName, lastName;
+                    if (twitterUser.Name.Contains(' '))
+                    {
+                        var names = twitterUser.Name.Split(' ');
+                        firstName = names[0];
+                        lastName = names[1];
+                    }
+                    else
+                    {
+                        firstName = twitterUser.Name;
+                        lastName = "";
+                    }
+                    
+
+                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel
+                    {
+                        TwitterAccessToken = accessToken,
+                        TwitterAccessSecret = accessSecret,
+                        FirstName = firstName,
+                        LastName = lastName,
+                        Location = twitterUser.Location
+                        
+                    });
+                }
+                else
+                {
+                    //if this happens, something went very wrong
+                    //TODO Handle this (login provider isn't facebook or twitter)
+                    return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel());
+                }
             }
         }
 
@@ -242,6 +317,7 @@ namespace Angora.Web.Controllers
             var result = await UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
             if (result.Succeeded)
             {
+                var currentUser = await UserManager.FindByIdAsync(User.Identity.GetUserId());
                 return RedirectToAction("Manage");
             }
             return RedirectToAction("Manage", new { Message = ManageMessageId.Error });
@@ -258,16 +334,25 @@ namespace Angora.Web.Controllers
             {
                 return RedirectToAction("Manage");
             }
-
             if (ModelState.IsValid)
             {
+
                 // Get the information about the user from the external login provider
                 var info = await AuthenticationManager.GetExternalLoginInfoAsync();
                 if (info == null)
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new AngoraUser() { UserName = model.UserName };
+                //TODO Validation!!!!
+                var user = new AngoraUser() {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    EmailAddress = model.EmailAddress,
+                    Location = model.Location,
+                    Birthday = Convert.ToDateTime(model.Birthday),
+                    FacebookAccessToken = model.FacebookAccessToken,
+                    UserName = model.FirstName+model.LastName
+                };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -283,6 +368,15 @@ namespace Angora.Web.Controllers
 
             ViewBag.ReturnUrl = returnUrl;
             return View(model);
+        }
+
+        //
+        // GET: /Account/Logout
+        [HttpGet]
+        public ActionResult Logout()
+        {
+            AuthenticationManager.SignOut();
+            return RedirectToAction("Index", "Home");
         }
 
         //
@@ -319,6 +413,28 @@ namespace Angora.Web.Controllers
                 UserManager = null;
             }
             base.Dispose(disposing);
+        }
+
+        private string GetExtendedAccessToken(string ShortLivedToken)
+        {
+            FacebookClient client = new FacebookClient();
+            string extendedToken = "";
+            try
+            {
+                dynamic result = client.Get("/oauth/access_token", new
+                {
+                    grant_type = "fb_exchange_token",
+                    client_id = "1440310966205344",
+                    client_secret = "0ba27f5ec1bcf335fcdf36dc19e71f86",
+                    fb_exchange_token = ShortLivedToken
+                });
+                extendedToken = result.access_token;
+            }
+            catch
+            {
+                extendedToken = ShortLivedToken;
+            }
+            return extendedToken;
         }
 
         #region Helpers
@@ -405,7 +521,10 @@ namespace Angora.Web.Controllers
                 }
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
+
         }
         #endregion
+
     }
+
 }
