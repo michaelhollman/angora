@@ -326,7 +326,7 @@
     <Content Include="Styles\Bootstrap\Superhero\bootswatch.less" />
     <Content Include="Styles\angora.less" />
     <Content Include="Views\Event\Index.cshtml" />
-    <Content Include="Views\Event\New.cshtml" />
+    <Content Include="Views\Event\Create.cshtml" />
     <Content Include="Views\Shared\_NavBar.cshtml" />
     <Content Include="Styles\Fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Styles\Fonts\glyphicons-halflings-regular.ttf" />

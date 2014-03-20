@@ -27,35 +27,16 @@ namespace Angora.Web.Controllers
             return View();
         }
 
-        public ActionResult Manage()
+        public ActionResult Create()
         {
-            
-            if (true)
-            {
+
                 NewEventViewModel newModel = new NewEventViewModel();
                 return View(newModel);
-            }
-            //else
-            //{
-            //    Event e = _eventService.FindById(id);
-            //    EditEventViewModel model = new EditEventViewModel()
-            //    {
-            //        Name = e.Name,
-            //        Description = e.Description,
-            //        Location = e.Location,
-            //        Tags = e.Tags,
-            //        Event = e,
-            //        Time = e.Time
-            //    };
-
-            //    //this will do different things once we do edit shtuff
-            //    return View(model);
-            //}
         }
 
         public ActionResult CreateEvent(NewEventViewModel model)
         {
-            long userId = (long)Membership.GetUser().ProviderUserKey;
+            //long userId = (long)Membership.GetUser().ProviderUserKey;
             //Google reverseGeo(model.Location);
             //DateTime eventTime = DateTime.Parse(model.Time);
 
@@ -63,7 +44,7 @@ namespace Angora.Web.Controllers
             //I didn't use view models this summer so this is new stuff
             Event newEvent = new Event()
             {
-                UserId = userId,
+                UserId = 1,
                 Name = model.Name,
                 Description = model.Description,
                 // this will have to change when google stuff added
@@ -75,7 +56,7 @@ namespace Angora.Web.Controllers
 
             _eventService.Create(newEvent);
 
-            return View();
+            return View("Index");
         }
 
         public ActionResult EditEvent(EditEventViewModel model)
