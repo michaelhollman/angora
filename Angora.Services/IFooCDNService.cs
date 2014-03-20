@@ -11,24 +11,24 @@ namespace Angora.Services
     public interface IFooCDNService
     {
         [OperationContract]
-        void postToBlob(string blobID, string filename);
+        void PostToBlob(string blobID, string filename);
 
         [OperationContract]
-        void deleteBlob(string blobID);
+        void DeleteBlob(string blobID);
 
         [OperationContract]
-        string getBlobInfo(string blobID);
+        string GetBlobInfo(string blobID);
 
         [OperationContract]
-        void getBlob(string blobID, string fileName);
+        void GetBlob(string blobID, string fileName);
 
         [OperationContract]
-        string getBlobURL(string blobID);
+        string GetBlobURL(string blobID);
 
         [OperationContract]
-        void putBlob(string blobID, string destination);
+        void PutBlob(string blobID, string destination);
 
         [OperationContract]
-        string createNewBlob(string mimeType);
+        string CreateNewBlob(string mimeType);
     }
 }

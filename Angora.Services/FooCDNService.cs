@@ -11,34 +11,26 @@ namespace Angora.Services
 {
     class FooCDNService : ServiceBase, IFooCDNService
     {
-        ////////To Do createNewBlob(string mimeType)////////////////
-
-        public void postToBlob(string blobID, string filename)
+        public void PostToBlob(string blobID, string filename)
         {
-            StringBuilder url = new StringBuilder("http://foocdn.azurewebsites.net/api/content/");
-            url.Append(blobID);
+            string url = String.Format("http://foocdn.azurewebsites.net/api/content/{0}", blobID);
             WebClient client = new WebClient();
-            client.UploadFile(url.ToString(), filename);
+            client.UploadFile(url, filename);
         }
 
-        public void deleteBlob(string blobID)
+        public void DeleteBlob(string blobID)
         {
-            StringBuilder url = new StringBuilder("http://foocdn.azurewebsites.net/api/content/");
-            url.Append(blobID);
-            WebRequest request = WebRequest.Create(url.ToString());
+            string url = String.Format("http://foocdn.azurewebsites.net/api/content/{0}", blobID);
+            WebRequest request = WebRequest.Create(url);
             request.Method = "DELETE";
             request.ContentLength = 0;
             WebResponse response = request.GetResponse();
         }
 
-        public string getBlobInfo(string blobID)
+        public string GetBlobInfo(string blobID)
         {
-            StringBuilder url = new StringBuilder("http://foocdn.azurewebsites.net/api/content/");
-            url.Append(blobID);
-            url.Append("/info");
-            //WebClient client = new WebClient();
-            //return client.DownloadString(url.ToString());
-            WebRequest request = WebRequest.Create(url.ToString());
+            string url = String.Format("http://foocdn.azurewebsites.net/api/content/{0}/info", blobID);
+            WebRequest request = WebRequest.Create(url);
             request.Method = "GET";
             request.ContentLength = 0;
             WebResponse response = request.GetResponse();
@@ -51,22 +43,19 @@ namespace Angora.Services
         }
 
         //Not sure if we need this
-        public void getBlob(string blobID, string fileName)
+        public void GetBlob(string blobID, string fileName)
         {
-            StringBuilder url = new StringBuilder("http://foocdn.azurewebsites.net/api/content/");
-            url.Append(blobID);
+            string url = String.Format("http://foocdn.azurewebsites.net/api/content/{0}", blobID);
             WebClient client = new WebClient();
-            client.DownloadFile(url.ToString(), fileName);
+            client.DownloadFile(url, fileName);
         }
 
-        public string getBlobURL(string blobID)
+        public string GetBlobURL(string blobID)
         {
-            StringBuilder url = new StringBuilder("http://foocdn.azurewebsites.net/api/content/");
-            url.Append(blobID);
-            return url.ToString();
+            return String.Format("http://foocdn.azurewebsites.net/api/content/{0}", blobID);
         }
 
-        public void putBlob(string blobID, string destination)
+        public void PutBlob(string blobID, string destination)
         {
             destination = destination.ToUpper();
             if (!(destination.Equals("MEMCACHE") || destination.Equals("DISK") || destination.Equals("TAPE")))
@@ -75,18 +64,15 @@ namespace Angora.Services
             }
             else
             {
-                StringBuilder url = new StringBuilder("http://foocdn.azurewebsites.net/api/content/");
-                url.Append(blobID);
-                url.Append("?type=");
-                url.Append(destination);
-                WebRequest request = WebRequest.Create(url.ToString());
+                string url = String.Format("http://foocdn.azurewebsites.net/api/content/{0}?type={1}", blobID, destination);
+                WebRequest request = WebRequest.Create(url);
                 request.Method = "PUT";
                 request.ContentLength = 0;
                 WebResponse response = request.GetResponse();
             }
         }
 
-        public string createNewBlob(string mimeType)
+        public string CreateNewBlob(string mimeType)
         {
             string json = JsonConvert.SerializeObject(new { AccountKey = "CFE39AC9FE8AB", MimeType = mimeType });
             var request = (HttpWebRequest)WebRequest.Create("http://foocdn.azurewebsites.net/api/content/add");

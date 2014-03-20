@@ -11,8 +11,8 @@ namespace Angora.UnitTests.Services
         public void TestPostAndInfo()
         {
             var service = ServiceManager.GetService<IFooCDNService>();
-            service.postToBlob("c745b6e4-66fc-4eeb-ac64-5499ab4ec118", "../../../Angora.Web/Images/Rachael2.jpg");
-            string s = service.getBlobInfo("c745b6e4-66fc-4eeb-ac64-5499ab4ec118");
+            service.PostToBlob("c745b6e4-66fc-4eeb-ac64-5499ab4ec118", "../../../Angora.Web/Images/Rachael2.jpg");
+            string s = service.GetBlobInfo("c745b6e4-66fc-4eeb-ac64-5499ab4ec118");
 
             Assert.IsTrue(s.Contains("BlobSize\":33507"));
         }
@@ -23,15 +23,15 @@ namespace Angora.UnitTests.Services
         {
             var service = ServiceManager.GetService<IFooCDNService>();
 
-            Assert.AreEqual(service.getBlobURL("c745b6e4-66fc-4eeb-ac64-5499ab4ec118"), "http://foocdn.azurewebsites.net/api/content/c745b6e4-66fc-4eeb-ac64-5499ab4ec118");
+            Assert.AreEqual(service.GetBlobURL("c745b6e4-66fc-4eeb-ac64-5499ab4ec118"), "http://foocdn.azurewebsites.net/api/content/c745b6e4-66fc-4eeb-ac64-5499ab4ec118");
         }
 
         [TestMethod]
         public void TestPutAndInfo()
         {
             var service = ServiceManager.GetService<IFooCDNService>();
-            service.putBlob("c745b6e4-66fc-4eeb-ac64-5499ab4ec118", "Memcache");
-            string s = service.getBlobInfo("c745b6e4-66fc-4eeb-ac64-5499ab4ec118");
+            service.PutBlob("c745b6e4-66fc-4eeb-ac64-5499ab4ec118", "Memcache");
+            string s = service.GetBlobInfo("c745b6e4-66fc-4eeb-ac64-5499ab4ec118");
             Assert.IsTrue(s.Contains("Location\":0"));
         }
 
@@ -39,10 +39,10 @@ namespace Angora.UnitTests.Services
         public void TestCreatePostInfoAndDelete()
         {
             var service = ServiceManager.GetService<IFooCDNService>();
-            string id = service.createNewBlob("image/jpg");
-            service.postToBlob(id, "../../../Angora.Web/Images/RachaelComb.jpg");
-            service.getBlobInfo(id);
-            service.deleteBlob(id);
+            string id = service.CreateNewBlob("image/jpg");
+            service.PostToBlob(id, "../../../Angora.Web/Images/RachaelComb.jpg");
+            service.GetBlobInfo(id);
+            service.DeleteBlob(id);
         }
     }
 }
