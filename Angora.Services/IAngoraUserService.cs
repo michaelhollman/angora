@@ -9,21 +9,18 @@ using Microsoft.AspNet.Identity;
 
 namespace Angora.Services
 {
-
-
-
     [ServiceContract]
     public interface IAngoraUserService
     {
         [OperationContract]
         Task<bool> CreateUser(AngoraUser user);
         [OperationContract]
-        Task<bool> UpdateUser(AngoraUser user);
+        bool UpdateUser(AngoraUser user);
         [OperationContract]
         Task<AngoraUser> FindUser(string username, string password);
         [OperationContract]
         Task<AngoraUser> FindUser(UserLoginInfo info);
         [OperationContract]
-        Task<AngoraUser> FindUserById(string id);
+        AngoraUser FindUserById(string id);
     }
 }

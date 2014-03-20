@@ -14,6 +14,7 @@ namespace Angora.Data.Models
         public string EmailAddress { get; set; }
         public string Location { get; set; }
         public DateTime Birthday { get; set; }
+        public string ProfilePictureUrl { get; set; }
         public string FacebookAccessToken { get; set; }
         public string TwitterAccessToken { get; set; }
         public string TwitterAccessSecret { get; set; }

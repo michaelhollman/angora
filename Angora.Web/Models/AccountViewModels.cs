@@ -17,8 +17,8 @@ namespace Angora.Web.Models
         public string EmailAddress { get; set; }
         [Required]
         [Display(Name = "Birthday")]
-        [Range(typeof(DateTime), startDate, endDate,
-            ErrorMessage = "Value for {0} must be between " + startDate + " and " + endDate)]
+        //[Range(typeof(DateTime), startDate, endDate,
+        //    ErrorMessage = "Value for {0} must be between " + startDate + " and " + endDate)]
         [DataType(DataType.Date)]
         public DateTime Birthday { get; set; }
         [Required]

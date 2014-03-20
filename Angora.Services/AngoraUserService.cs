@@ -23,6 +23,8 @@ namespace Angora.Services
         public AngoraUserService(UserManager<AngoraUser> userManager)
         {
             _userManager = userManager;
+            // TODO configure this in unity bootstrapper?
+            ((UserValidator<AngoraUser>)_userManager.UserValidator).AllowOnlyAlphanumericUserNames = false;
         }
 
         public async Task<bool> CreateUser(AngoraUser user)
@@ -30,9 +32,9 @@ namespace Angora.Services
             var r = await _userManager.CreateAsync(user);
             return r.Succeeded;
         }
-        public async Task<bool> UpdateUser(AngoraUser user)
+        public bool UpdateUser(AngoraUser user)
         {
-            var r = await _userManager.UpdateAsync(user);
+            var r = _userManager.Update(user);
             return r.Succeeded;
         }
 
@@ -46,9 +48,9 @@ namespace Angora.Services
             return await _userManager.FindAsync(info);
         }
 
-        public async Task<AngoraUser> FindUserById(string id)
+        public AngoraUser FindUserById(string id)
         {
-            return await _userManager.FindByIdAsync(id);
+            return _userManager.FindById(id);
         }
 
 
