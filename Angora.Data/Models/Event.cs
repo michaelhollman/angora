@@ -9,10 +9,8 @@ namespace Angora.Data.Models
 {
     public class Event : BaseModel
     {
-        [Required]
-        public int UserId { get; set; }
+        public long UserId { get; set; }
 
-        [Required]
         public string Name { get; set; }
 
         public string Description { get; set; }
@@ -24,7 +22,6 @@ namespace Angora.Data.Models
 
         public List<string> Tags { get; set; }
 
-        [Required]
         public DateTime CreationTime { get; set; }
 
     }

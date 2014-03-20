@@ -257,6 +257,8 @@
     <Content Include="Styles\Bootstrap\Superhero\variables.less" />
     <Content Include="Styles\Bootstrap\Superhero\bootswatch.less" />
     <Content Include="Styles\angora.less" />
+    <Content Include="Views\Event\Index.cshtml" />
+    <Content Include="Views\Event\New.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -268,7 +270,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Api\Models\" />
     <Folder Include="Areas\Api\Views\Shared\" />
-    <Folder Include="Views\Event\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Angora.Data\Angora.Data.csproj">
