@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Microsoft.AspNet.Identity;
 
 namespace Angora.Web.Controllers
 {
@@ -37,7 +38,6 @@ namespace Angora.Web.Controllers
         [Authorize]
         public ActionResult CreateEvent(NewEventViewModel model)
         {
-            //long userId = (long)Membership.GetUser().ProviderUserKey;
             //Google reverseGeo(model.Location);
             //DateTime eventTime = DateTime.Parse(model.Time);
 
@@ -45,12 +45,13 @@ namespace Angora.Web.Controllers
             //I didn't use view models this summer so this is new stuff
             Event newEvent = new Event()
             {
-                UserId = 1,
+                UserId = User.Identity.GetUserId(),
                 Name = model.Name,
                 Description = model.Description,
                 // this will have to change when google stuff added
                 Location = model.Location,
-                Time = model.Time,
+                StartDateTime = model.StartDateTime,
+                EndDateTime = model.EndDateTime,
                 Tags = model.Tags,
                 CreationTime = DateTime.UtcNow
             };

@@ -9,7 +9,7 @@ namespace Angora.Data.Models
 {
     public class Event : BaseModel
     {
-        public long UserId { get; set; }
+        public string UserId { get; set; }
 
         public string Name { get; set; }
 
@@ -18,7 +18,9 @@ namespace Angora.Data.Models
         //latitude then longitude
         public string Location { get; set; }
 
-        public DateTime Time { get; set; }
+        public DateTime StartDateTime { get; set; }
+
+        public DateTime EndDateTime { get; set; }
 
         public List<string> Tags { get; set; }
 
