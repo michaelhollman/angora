@@ -1,0 +1,17 @@
+﻿@model dynamic
+
+<h2>Log In</h2>
+
+
+<section>
+    <h4>Please login with your Facebook or Twitter account.</h4>
+
+    <a href="@Url.Action("ExternalLogin", "Account", new { provider = "Facebook", returnUrl = Model.ReturnUrl ?? Url.Action("Index", "Home") })" class="btn btn-primary" id="Facebook">
+        <img src="/images/logos/fb-white-50.png" class="login-social-img" />
+        Facebook
+    </a>
+    <a href="@Url.Action("ExternalLogin", "Account", new { provider = "Twitter", returnUrl = Model.ReturnUrl ?? Url.Action("Index", "Home") })" class="btn btn-primary" id="Twitter">
+        <img src="/images/logos/twitter-white.png" class="login-social-img" />
+        Twitter
+    </a>
+</section>
