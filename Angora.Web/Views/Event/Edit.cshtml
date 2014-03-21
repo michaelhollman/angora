@@ -1,55 +1,71 @@
 ﻿@model Angora.Web.Models.EditEventViewModel
 
-<style>
-    .textBox {
-        color: black;
-    }
-</style>
-
 @using (Html.BeginForm("EditEvent", "Event"))
 {
 
     <div class="form-horizontal">
-        <h2>Create New Event</h2>
-        <hr />
-        @Html.ValidationSummary(true)
-        @Html.HiddenFor(m => Model.EventId);
+        <h2>Edit Event</h2>
+
+        @Html.HiddenFor(m => Model.EventId)
 
         <div class="form-group">
             @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
-            <div class="col-md-10 textBox">
-                @Html.EditorFor(model => model.Name)
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Name, new { @class = "form-control", required = "required" })
                 @Html.ValidationMessageFor(model => model.Name)
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
-            <div class="col-md-10 textBox">
-                @Html.EditorFor(model => model.Description)
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Description, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Description)
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.Location, new { @class = "control-label col-md-2" })
-            <div class="col-md-10 textBox">
-                @Html.EditorFor(model => model.Location)
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Location, new { @class = "form-control", required = "required" })
                 @Html.ValidationMessageFor(model => model.Location)
             </div>
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Time, new { @class = "control-label col-md-2" })
-            <div class="col-md-10 textBox">
-                @Html.EditorFor(model => model.Time)
-                @Html.ValidationMessageFor(model => model.Time)
+            @Html.LabelFor(model => model.StartDateTime, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.StartDateTime, "{0:yyyy-MM-ddTHH:mm}",
+                    new
+                    {
+                        @class = "form-control",
+                        type = "datetime-local",
+                        min = DateTime.Now.ToString("yyyy-MM-ddTHH:mm"),
+                        max = DateTime.Now.AddYears(5).ToString("yyyy-MM-ddTHH:mm"),
+                        required = "required"
+                    })
+                @Html.ValidationMessageFor(model => model.StartDateTime)
             </div>
         </div>
 
         <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <button type="submit" class="btn btn-success">Submit</button>
+            @Html.LabelFor(model => model.EndDateTime, new { @class = "control-label col-md-2" })
+            <div class="col-md-10 textBox">
+                @Html.TextBoxFor(model => model.EndDateTime, "{0:yyyy-MM-ddTHH:mm}", new
+                    {
+                        @class = "form-control",
+                        type = "datetime-local",
+                        min = DateTime.Now.ToString("yyyy-MM-ddTHH:mm"),
+                        max = DateTime.Now.AddYears(5).ToString("yyyy-MM-ddTHH:mm"),
+                        required = "required"
+                    })
+                @Html.ValidationMessageFor(model => model.EndDateTime)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-2">
+                <button type="submit" class="btn btn-success width-100">Save</button>
             </div>
         </div>
     </div>
