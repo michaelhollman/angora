@@ -55,7 +55,6 @@
                             @Html.TextBoxFor(m => m.User.Birthday, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date", required = "required", min = "1900-01-01", max = DateTime.Today.AddYears(-10).ToString("yyyy-MM-dd") })
                         </div><label class="col-sm-1 control-label">Email</label>
 
-
                         <div class="col-sm-5">
                             @Html.TextBoxFor(m => m.User.EmailAddress, new { @class = "form-control", type = "email", required = "required" })
                         </div>

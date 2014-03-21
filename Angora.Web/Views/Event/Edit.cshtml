@@ -1,9 +1,12 @@
-﻿@model Angora.Web.Models.NewEventViewModel
+﻿@model Angora.Web.Models.EditEventViewModel
 
-@using (Html.BeginForm("CreateEvent", "Event"))
+@using (Html.BeginForm("EditEvent", "Event"))
 {
+
     <div class="form-horizontal">
-        <h2>Create New Event</h2>
+        <h2>Edit Event</h2>
+
+        @Html.HiddenFor(m => Model.EventId)
 
         <div class="form-group">
             @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
@@ -62,7 +65,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-2">
-                <button type="submit" class="btn btn-success width-100">Create</button>
+                <button type="submit" class="btn btn-success width-100">Save</button>
             </div>
         </div>
     </div>
@@ -71,3 +74,6 @@
 <div>
     @Html.ActionLink("Back to List", "Index", "EventFeed")
 </div>
+
+
+

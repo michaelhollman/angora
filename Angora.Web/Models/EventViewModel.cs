@@ -34,7 +34,7 @@ namespace Angora.Web.Models
 
     public class EditEventViewModel
     {
-        public Event Event { get; set; }
+        public long EventId { get; set; }
 
         [Required]
         [Display(Name = "Event Name")]
@@ -49,10 +49,10 @@ namespace Angora.Web.Models
         //latitude then longitude
         public string Location { get; set; }
 
-        [Display(Name = "Start Date and Time")]
+        [Display(Name = "Start Date and StartDateTime")]
         public DateTime StartDateTime { get; set; }
 
-        [Display(Name = "End Date and Time")]
+        [Display(Name = "End Date and StartDateTime")]
         public DateTime EndDateTime { get; set; }
 
         [Display(Name = "Tags")]

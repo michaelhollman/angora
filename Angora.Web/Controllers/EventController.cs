@@ -25,7 +25,7 @@ namespace Angora.Web.Controllers
         // GET: /Event/
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "EventFeed");
         }
 
         [Authorize]
@@ -39,7 +39,7 @@ namespace Angora.Web.Controllers
         public ActionResult CreateEvent(NewEventViewModel model)
         {
             //Google reverseGeo(model.Location);
-            //DateTime eventTime = DateTime.Parse(model.Time);
+            //DateTime eventTime = DateTime.Parse(model.StartDateTime);
 
             //alot of these will probs have to change
             //I didn't use view models this summer so this is new stuff
@@ -58,13 +58,38 @@ namespace Angora.Web.Controllers
 
             _eventService.Create(newEvent);
 
-            return View("Index");
+            return RedirectToAction("Index", "EventFeed");
         }
 
         [Authorize]
+        public ActionResult Edit(long id)
+        {
+            var theEvent = _eventService.FindById(id);
+            EditEventViewModel model = new EditEventViewModel()
+            {
+                EventId = theEvent.Id,
+                Name = theEvent.Name,
+                Description = theEvent.Description,
+                Location = theEvent.Location,
+                StartDateTime = theEvent.StartDateTime,
+                Tags = theEvent.Tags
+            };
+            return View(model);
+        }
+
+        //Doesn't work yet. Waiting on a method it uses to be refactored
+        [Authorize]
         public ActionResult EditEvent(EditEventViewModel model)
         {
-            return View();
+            var e = _eventService.FindById(model.EventId);
+            e.Name = model.Name;
+            e.Description = model.Description;
+            e.Location = model.Location;
+            e.StartDateTime = model.StartDateTime;
+            e.Tags = model.Tags;
+            _eventService.Edit(e);
+
+            return RedirectToAction("Index", "EventFeed");
         }
 
         [Authorize]
