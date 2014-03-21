@@ -38,11 +38,10 @@
             {
                 using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = Url.Action("Index", "Home") }))
                 {
-                    @Html.AntiForgeryToken()
                     <div class="nav navbar-nav navbar-right" id="nav-login-section">
                         <a class="navbar-brand">Log in using</a>
-                        <button type="submit" class="navbar-img" id="Facebook" name="provider" value="Facebook" title="Log in using your Facebook account"><img src="/images/logos/fb-white-50.png" /></button>
-                        <button type="submit" class="navbar-img" id="Twitter" name="provider" value="Twitter" title="Log in using your Twitter account"><img src="/images/logos/twitter-white.png" /></button>
+                        <a href="@Url.Action("ExternalLogin", "Account", new { provider = "Facebook" })" class="navbar-img"><img src="/images/logos/fb-white-50.png" /></a>
+                        <a href="@Url.Action("ExternalLogin", "Account", new { provider = "Facebook" })" class="navbar-img"><img src="/images/logos/twitter-white.png" /></a>
                     </div>
                 }
             }
