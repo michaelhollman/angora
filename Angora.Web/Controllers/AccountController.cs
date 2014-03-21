@@ -1,415 +1,301 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Net;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.Owin.Security;
-using Angora.Data;
 using Angora.Data.Models;
+using Angora.Services;
 using Angora.Web.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.Owin.Security;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using Facebook;
 using TweetSharp;
 
 namespace Angora.Web.Controllers
 {
-    [Authorize]
+    [RoutePrefix("account")]
     public class AccountController : Controller
     {
+
+        private IAngoraUserService _userService;
+
         public AccountController()
-            : this(new UserManager<AngoraUser>(new UserStore<AngoraUser>(new AngoraDbContext())))
+            : this(ServiceManager.GetService<IAngoraUserService>())
         {
         }
 
-        public AccountController(UserManager<AngoraUser> userManager)
+        public AccountController(IAngoraUserService userService)
         {
-            UserManager = userManager;
+            _userService = userService;
         }
 
-        public UserManager<AngoraUser> UserManager { get; private set; }
-
-        //
-        // GET: /Account/Login
         [AllowAnonymous]
+        [Route("~/login")]
         public ActionResult Login(string returnUrl)
         {
-            ViewBag.ReturnUrl = returnUrl;
-            return View();
+            return View("Login", new ReturnUrlViewModel { ReturnUrl = returnUrl });
         }
 
-        //
-        // POST: /Account/Login
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = await UserManager.FindAsync(model.UserName, model.Password);
-                if (user != null)
-                {
-                    await SignInAsync(user, model.RememberMe);
-                    return RedirectToLocal(returnUrl);
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Invalid username or password.");
-                }
-            }
-
-            // If we got this far, something failed, redisplay form
-            return View(model);
-        }
-
-        //
-        // GET: /Account/Register
-        [AllowAnonymous]
-        public ActionResult Register()
-        {
-            return View();
-        }
-
-        //
-        // POST: /Account/Register
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var user = new AngoraUser() {   UserName = model.UserName};
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {
-                    await SignInAsync(user, isPersistent: false);
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    AddErrors(result);
-                }
-            }
-
-            // If we got this far, something failed, redisplay form
-            return View(model);
-        }
-
-        //
-        // POST: /Account/Disassociate
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Disassociate(string loginProvider, string providerKey)
-        {
-            ManageMessageId? message = null;
-            IdentityResult result = await UserManager.RemoveLoginAsync(User.Identity.GetUserId(), new UserLoginInfo(loginProvider, providerKey));
-            if (result.Succeeded)
-            {
-                message = ManageMessageId.RemoveLoginSuccess;
-            }
-            else
-            {
-                message = ManageMessageId.Error;
-            }
-            return RedirectToAction("Manage", new { Message = message });
-        }
-
-        //
-        // GET: /Account/Manage
-        public ActionResult Manage(ManageMessageId? message)
-        {
-            ViewBag.StatusMessage =
-                message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
-                : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."
-                : message == ManageMessageId.RemoveLoginSuccess ? "The external login was removed."
-                : message == ManageMessageId.Error ? "An error has occurred."
-                : "";
-            ViewBag.HasLocalPassword = HasPassword();
-            ViewBag.ReturnUrl = Url.Action("Manage");
-            return View();
-        }
-
-        //
-        // POST: /Account/Manage
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Manage(ManageUserViewModel model)
-        {
-            bool hasPassword = HasPassword();
-            ViewBag.HasLocalPassword = hasPassword;
-            ViewBag.ReturnUrl = Url.Action("Manage");
-            if (hasPassword)
-            {
-                if (ModelState.IsValid)
-                {
-                    IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
-                    if (result.Succeeded)
-                    {
-                        return RedirectToAction("Manage", new { Message = ManageMessageId.ChangePasswordSuccess });
-                    }
-                    else
-                    {
-                        AddErrors(result);
-                    }
-                }
-            }
-            else
-            {
-                // User does not have a password so remove any validation errors caused by a missing OldPassword field
-                ModelState state = ModelState["OldPassword"];
-                if (state != null)
-                {
-                    state.Errors.Clear();
-                }
-
-                if (ModelState.IsValid)
-                {
-                    IdentityResult result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
-                    if (result.Succeeded)
-                    {
-                        return RedirectToAction("Manage", new { Message = ManageMessageId.SetPasswordSuccess });
-                    }
-                    else
-                    {
-                        AddErrors(result);
-                    }
-                }
-            }
-
-            // If we got this far, something failed, redisplay form
-            return View(model);
-        }
-
-        //
-        // POST: /Account/ExternalLogin
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public ActionResult ExternalLogin(string provider, string returnUrl)
-        {
-            // Request a redirect to the external login provider
-            return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl}));
-        }
-
-        //
-        // GET: /Account/ExternalLoginCallback
-        
-
-        //
-        // POST: /Account/LinkLogin
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult LinkLogin(string provider)
-        {
-            // Request a redirect to the external login provider to link a login for the current user
-            return new ChallengeResult(provider, Url.Action("LinkLoginCallback", "Account"), User.Identity.GetUserId());
-        }
-
-        //
-        // GET: /Account/LinkLoginCallback
-        public async Task<ActionResult> LinkLoginCallback()
-        {
-            var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync(XsrfKey, User.Identity.GetUserId());
-            if (loginInfo == null)
-            {
-                return RedirectToAction("Manage", new { Message = ManageMessageId.Error });
-            }
-            var result = await UserManager.AddLoginAsync(User.Identity.GetUserId(), loginInfo.Login);
-            if (result.Succeeded)
-            {
-                var currentUser = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-                return RedirectToAction("Manage");
-            }
-            return RedirectToAction("Manage", new { Message = ManageMessageId.Error });
-        }
-
-        //
-        // POST: /Account/ExternalLoginConfirmation
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Manage");
-            }
-            if (ModelState.IsValid)
-            {
-
-                // Get the information about the user from the external login provider
-                var info = await AuthenticationManager.GetExternalLoginInfoAsync();
-                if (info == null)
-                {
-                    return View("ExternalLoginFailure");
-                }
-                
-                var user = new AngoraUser() {
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    EmailAddress = model.EmailAddress,
-                    Location = model.Location,
-                    Birthday = model.Birthday,
-                    FacebookAccessToken = model.FacebookAccessToken,
-                    UserName = model.FirstName+model.LastName
-                };
-                var result = await UserManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    result = await UserManager.AddLoginAsync(user.Id, info.Login);
-                    if (result.Succeeded)
-                    {
-                        await SignInAsync(user, isPersistent: false);
-                        return RedirectToLocal(returnUrl);
-                    }
-                }
-                AddErrors(result);
-            }
-
-            ViewBag.ReturnUrl = returnUrl;
-            return View(model);
-        }
-
-        //
-        // GET: /Account/Logout
         [HttpGet]
+        [Route("~/logout")]
         public ActionResult Logout()
         {
-            AuthenticationManager.SignOut();
+            HttpContext.GetOwinContext().Authentication.SignOut();
             return RedirectToAction("Index", "Home");
         }
 
-        //
-        // POST: /Account/LogOff
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult LogOff(string returnUrl = null)
-        {
-            AuthenticationManager.SignOut();
-            return string.IsNullOrWhiteSpace(returnUrl) ? RedirectToAction("Index", "Home") : RedirectToLocal(returnUrl);
-        }
+        #region External Logins
 
-        //
-        // GET: /Account/ExternalLoginFailure
         [AllowAnonymous]
-        public ActionResult ExternalLoginFailure()
+        [Route("externallogin")]
+        public ActionResult ExternalLogin(string provider, string returnUrl)
         {
-            return View();
+            return ExternalLoginRequest(Url.Action("ExternalLoginCallback", new { ReturnUrl = returnUrl }), provider);
         }
 
-        [ChildActionOnly]
-        public ActionResult RemoveAccountList()
-        {
-            var linkedAccounts = UserManager.GetLogins(User.Identity.GetUserId());
-            ViewBag.ShowRemoveButton = HasPassword() || linkedAccounts.Count > 1;
-            return (ActionResult)PartialView("_RemoveAccountPartial", linkedAccounts);
-        }
 
-        protected override void Dispose(bool disposing)
+        [Route("externallogin/callback")]
+        [AllowAnonymous]
+        public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
-            if (disposing && UserManager != null)
+            var loginInfo = HttpContext.GetOwinContext().Authentication.GetExternalLoginInfo();
+            if (loginInfo == null)
             {
-                UserManager.Dispose();
-                UserManager = null;
+                return RedirectToAction("Login", new { returnUrl });
             }
-            base.Dispose(disposing);
-        }
 
-        
+            var addingFacebook = "Facebook".Equals(loginInfo.Login.LoginProvider, StringComparison.OrdinalIgnoreCase);
+            var addingTwitter = "Twitter".Equals(loginInfo.Login.LoginProvider, StringComparison.OrdinalIgnoreCase);
 
-        #region Helpers
-        // Used for XSRF protection when adding external logins
-        private const string XsrfKey = "XsrfId";
-
-        private IAuthenticationManager AuthenticationManager
-        {
-            get
-            {
-                return HttpContext.GetOwinContext().Authentication;
-            }
-        }
-
-        private async Task SignInAsync(AngoraUser user, bool isPersistent)
-        {
-            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-            var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
-            AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
-        }
-
-        private void AddErrors(IdentityResult result)
-        {
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError("", error);
-            }
-        }
-
-        private bool HasPassword()
-        {
-            var user = UserManager.FindById(User.Identity.GetUserId());
+            // Sign in the user with this external login provider if the user already has a login
+            var user = _userService.FindUser(loginInfo.Login);
             if (user != null)
             {
-                return user.PasswordHash != null;
+                await SignInAsync(user);
+                return Redirect(returnUrl ?? Url.Action("Index", "Home"));
             }
-            return false;
-        }
 
-        public enum ManageMessageId
-        {
-            ChangePasswordSuccess,
-            SetPasswordSuccess,
-            RemoveLoginSuccess,
-            Error
-        }
-
-        private ActionResult RedirectToLocal(string returnUrl)
-        {
-            if (Url.IsLocalUrl(returnUrl))
+            if (addingFacebook)
             {
-                return Redirect(returnUrl);
+                ClaimsIdentity externalCookie = await HttpContext.GetOwinContext().Authentication.GetExternalIdentityAsync(DefaultAuthenticationTypes.ExternalCookie);
+                var accessToken = GetExtendedFacebookAccessToken(externalCookie.Claims.First(x => x.Type.Contains("FacebookAccessToken")).Value);
+                dynamic facebookUser = new FacebookClient(accessToken).Get(loginInfo.Login.ProviderKey);
+
+                user = new AngoraUser
+                {
+                    FacebookAccessToken = accessToken,
+                    FirstName = facebookUser.first_name,
+                    LastName = facebookUser.last_name,
+                    EmailAddress = facebookUser.email,
+                    Location = facebookUser.location.name,
+                    Birthday = Convert.ToDateTime(facebookUser.birthday)
+                };
+            }
+            else if (addingTwitter)
+            {
+                ClaimsIdentity externalCookie = await HttpContext.GetOwinContext().Authentication.GetExternalIdentityAsync(DefaultAuthenticationTypes.ExternalCookie);
+                var accessToken = externalCookie.Claims.First(x => x.Type.Contains("TwitterAccessToken")).Value;
+                var accessSecret = externalCookie.Claims.First(x => x.Type.Contains("TwitterAccessSecret")).Value;
+
+                var twitterService = new TwitterService("o8QTwfzt6CdfDGndyqvLrg", "jqU2tq5QVUkK6JdFA22wtXZNrTumatvG9VpPAfK5M", accessToken, accessSecret);
+                var twitterUser = twitterService.GetUserProfile(new GetUserProfileOptions());
+
+                string firstName, lastName;
+                if (twitterUser.Name.Contains(' '))
+                {
+                    var names = twitterUser.Name.Split(' ');
+                    firstName = names[0];
+                    lastName = names[1];
+                }
+                else
+                {
+                    firstName = twitterUser.Name;
+                    lastName = "";
+                }
+
+                user = new AngoraUser
+                {
+                    FirstName = firstName,
+                    LastName = lastName,
+                    Location = twitterUser.Location,
+                    TwitterAccessToken = accessToken,
+                    TwitterAccessSecret = accessSecret,
+                };
             }
             else
             {
-                return RedirectToAction("Index", "Home");
-            }
-        }
-
-        private class ChallengeResult : HttpUnauthorizedResult
-        {
-            public ChallengeResult(string provider, string redirectUri)
-                : this(provider, redirectUri, null)
-            {
+                //if this happens, something went very wrong
+                //login provider isn't facebook or twitter
+                return View("Login", new ReturnUrlViewModel { ReturnUrl = returnUrl });
             }
 
-            public ChallengeResult(string provider, string redirectUri, string userId)
-            {
-                LoginProvider = provider;
-                RedirectUri = redirectUri;
-                UserId = userId;
-            }
+            //TODO, we need a better solution for usernames, or a convenient way to make them irrelevant.
+            // we only really use it in the navbar, so perhaps some sort of global model?
+            // viewbag would be perfect, but gross.
+            user.UserName = user.Id;
 
-            public string LoginProvider { get; set; }
-            public string RedirectUri { get; set; }
-            public string UserId { get; set; }
-
-            public override void ExecuteResult(ControllerContext context)
+            var create = await _userService.CreateUser(user);
+            if (create.Succeeded)
             {
-                var properties = new AuthenticationProperties() { RedirectUri = RedirectUri };
-                if (UserId != null)
+                var add = await _userService.AddLogin(user.Id, loginInfo.Login);
+                if (add.Succeeded)
                 {
-                    properties.Dictionary[XsrfKey] = UserId;
+                    await SignInAsync(user);
+
+                    var model = new ManageAccountViewModel();
+                    model.User = user;
+                    model.Successes.Add("Welcome to Angora! Please fill out your information.");
+                    model.IsFirstTimeLogin = true;
+                    return View("Index", model);
                 }
-                context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
+            }
+            // TODO .... uhhhhh
+            return new EmptyResult();
+        }
+
+
+        [Authorize]
+        [Route("exterallogin/add")]
+        public ActionResult AddExternalLogin(string provider)
+        {
+            // Request a redirect to the external login provider to link a login for the current user
+            return ExternalLoginRequest(Url.Action("AddExternalLoginCallback"), provider);
+        }
+
+        [Authorize]
+        [Route("externallogin/add/callback")]
+        public async Task<ActionResult> AddExternalLoginCallback()
+        {
+            // TODO this completely shits itself when we try to add a login that already has an account...
+
+            var model = new ManageAccountViewModel();
+
+            var loginInfo = HttpContext.GetOwinContext().Authentication.GetExternalLoginInfo();
+            if (loginInfo == null)
+            {
+                model.Errors.Add("Uhoh... something didn't quite go right with that. Sorry.");
+                return View("Index", model);
             }
 
+            var result = await _userService.AddLogin(User.Identity.GetUserId(), loginInfo.Login);
+            if (result.Succeeded)
+            {
+                model.User = await _userService.FindUserById(User.Identity.GetUserId());
+                model.Successes.Add(string.Format("Successfully added your {0} account!", loginInfo.Login.LoginProvider));
+                return View("Index", model);
+            }
+
+            model.Errors.Add("Uhoh... something didn't quite go right with that. Sorry.");
+            return View("Index", model);
         }
+
+        [Authorize]
+        [Route("externallogin/remove")]
+        public async Task<ActionResult> RemoveExternalLogin(string loginProvider)
+        {
+            var model = new ManageAccountViewModel();
+            var user = await _userService.FindUserById(User.Identity.GetUserId());
+            var remove = user.Logins.First(l => l.LoginProvider.Equals(loginProvider, StringComparison.OrdinalIgnoreCase));
+
+            IdentityResult result = await _userService.RemoveLogin(User.Identity.GetUserId(), new UserLoginInfo(remove.LoginProvider, remove.ProviderKey));
+            if (result.Succeeded)
+            {
+                model.Successes.Add(string.Format("Succesfully unlinked {0} account.", remove.LoginProvider));
+            }
+            else
+            {
+                model.Errors.Add("Uhoh, something didn't quite go right with that. Sorry.");
+            }
+
+            model.User = await _userService.FindUserById(User.Identity.GetUserId());
+            return View("Index", model);
+        }
+
+
+        private ActionResult ExternalLoginRequest(string redirectUri, string provider)
+        {
+            // Request a redirect to the external login provider
+            var ctx = Request.GetOwinContext();
+            ctx.Authentication.Challenge(
+                new AuthenticationProperties
+                {
+                    RedirectUri = redirectUri
+                },
+                provider);
+            return new HttpUnauthorizedResult();
+        }
+
+        private async Task SignInAsync(AngoraUser user)
+        {
+            HttpContext.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+            var identity = await _userService.CreateIdentity(user);
+            HttpContext.GetOwinContext().Authentication.SignIn(new AuthenticationProperties() { IsPersistent = true }, identity);
+        }
+
+        private string GetExtendedFacebookAccessToken(string shortLivedToken)
+        {
+            FacebookClient client = new FacebookClient();
+            string extendedToken = "";
+            try
+            {
+                dynamic result = client.Get("/oauth/access_token", new
+                {
+                    grant_type = "fb_exchange_token",
+                    client_id = "1440310966205344",
+                    client_secret = "0ba27f5ec1bcf335fcdf36dc19e71f86",
+                    fb_exchange_token = shortLivedToken
+                });
+                extendedToken = result.access_token;
+            }
+            catch
+            {
+                extendedToken = shortLivedToken;
+            }
+            return extendedToken;
+        }
+
         #endregion
+        #region Normal Management
 
+        [HttpGet]
+        [Authorize]
+        [Route("")]
+        public async Task<ActionResult> Index(ManageAccountViewModel param = null)
+        {
+            var model = param ?? new ManageAccountViewModel();
+            model.User = await _userService.FindUserById(User.Identity.GetUserId());
+            return View("Index", model);
+        }
+
+
+        [HttpPost]
+        [Authorize]
+        [Route("update")]
+        public async Task<ActionResult> UpdateUserInfo(ManageAccountViewModel param)
+        {
+            var model = new ManageAccountViewModel();
+
+            var user = await _userService.FindUserById(User.Identity.GetUserId());
+            user.FirstName = param.User.FirstName ?? user.FirstName;
+            user.LastName = param.User.LastName ?? user.LastName;
+            user.EmailAddress = param.User.EmailAddress ?? user.EmailAddress;
+            user.Location = param.User.Location ?? user.Location;
+            user.Birthday = param.User.Birthday != null ? param.User.Birthday : user.Birthday;
+
+            var update = await _userService.UpdateUser(user);
+            if (update.Succeeded)
+            {
+                model.Successes.Add("Successfully updated account");
+            }
+            else
+            {
+                model.Errors.Add("There was an error trying to update your account");
+            }
+
+            return await Index(model);
+        }
+
+        #endregion
     }
-
 }

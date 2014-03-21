@@ -30,5 +30,8 @@ namespace Angora.Services
         
         [OperationContract]
         Task<IdentityResult> AddLogin(string id, UserLoginInfo info);
+
+        [OperationContract]
+        Task<IdentityResult> RemoveLogin(string id, UserLoginInfo info);
     }
 }

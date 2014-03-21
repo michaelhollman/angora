@@ -262,14 +262,12 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Api\Controllers\FooController.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ManageAccountController.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="Models\ManageAccountViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -278,15 +276,7 @@
     <Content Include="packages.config" />
     <Content Include="Areas\Api\Views\web.config" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
-    <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
-    <Content Include="Views\ManageAccount\Login.cshtml" />
-    <Content Include="Views\Account\Manage.cshtml" />
-    <Content Include="Views\Account\Register.cshtml" />
-    <Content Include="Views\Account\_ChangePasswordPartial.cshtml" />
-    <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
-    <Content Include="Views\Account\_RemoveAccountPartial.cshtml" />
-    <Content Include="Views\Account\_SetPasswordPartial.cshtml" />
+    <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Styles\Bootstrap\alerts.less" />
     <Content Include="Styles\Bootstrap\badges.less" />
@@ -359,7 +349,7 @@
     <Content Include="Styles\Bootstrap\bootstrap.css.map">
       <DependentUpon>bootstrap.css</DependentUpon>
     </Content>
-    <Content Include="Views\ManageAccount\Index.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Styles\Angora\_helpers.less" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

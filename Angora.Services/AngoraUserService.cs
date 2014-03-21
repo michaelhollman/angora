@@ -60,6 +60,11 @@ namespace Angora.Services
             return await _userManager.AddLoginAsync(id, info);
         }
 
+        public async Task<IdentityResult> RemoveLogin(string id, UserLoginInfo info)
+        {
+            return await _userManager.RemoveLoginAsync(id, info);
+        }
+
 
     }
 }
