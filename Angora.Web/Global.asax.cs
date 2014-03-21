@@ -5,11 +5,12 @@ using System.Web.Optimization;
 
 namespace Angora.Web
 {
-    public class MvcApplication : System.Web.HttpApplication
+    public class AngoraWeb : System.Web.HttpApplication
     {
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
+            UnityConfig.RegisterComponents();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);

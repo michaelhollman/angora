@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using System.Security.Claims;
+using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Facebook;
-using System.Threading.Tasks;
-using System.Security.Claims;
-using Owin;
 using Microsoft.Owin.Security.Twitter;
+using Owin;
 
 namespace Angora.Web
 {

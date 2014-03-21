@@ -1,10 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
-using Angora.Data;
 using Angora.Data.Models;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
 
 
 namespace Angora.Services
@@ -13,14 +10,9 @@ namespace Angora.Services
     {
         private UserManager<AngoraUser> _userManager;
 
-        public AngoraUserService()
-            : this(new UserManager<AngoraUser>(new UserStore<AngoraUser>(new AngoraDbContext()))) { }
-
         public AngoraUserService(UserManager<AngoraUser> userManager)
         {
             _userManager = userManager;
-            // TODO configure this in unity bootstrapper?
-            _userManager.UserValidator = new UserValidator<AngoraUser>(_userManager) { AllowOnlyAlphanumericUserNames = false };
         }
 
         public async Task<IdentityResult> CreateUser(AngoraUser user)

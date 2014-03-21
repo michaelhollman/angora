@@ -21,7 +21,6 @@ namespace Angora.Data
             _objectSet = context.ObjectContext.CreateObjectSet<T>();
         }
 
-
         public IQueryable<T> AsQueryable()
         {
             return _objectSet;

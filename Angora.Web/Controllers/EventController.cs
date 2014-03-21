@@ -1,13 +1,8 @@
-﻿using Angora.Data.Models;
+﻿using System;
+using System.Web.Mvc;
+using Angora.Data.Models;
 using Angora.Services;
 using Angora.Web.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using System.Web.Security;
 using Microsoft.AspNet.Identity;
 
 namespace Angora.Web.Controllers
@@ -20,7 +15,6 @@ namespace Angora.Web.Controllers
             _eventService = eventService;
         }
 
-        public EventController() : this(ServiceManager.GetService<IEventService>()) {}
         //
         // GET: /Event/
         public ActionResult Index()
