@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace Angora.Services
 {
-
     // TODO replace all of this with UNITY
 
     public static class ServiceManager
@@ -17,10 +16,9 @@ namespace Angora.Services
             Services = new Dictionary<Type, object>();
             Constructors = new Dictionary<Type, Constructor>
             {
-            
-            {typeof (IFooService), () => new FooService()},
-            {typeof (IAngoraUserService), () => new AngoraUserService()}
-
+                {typeof (IFooService), () => new FooService()},
+                {typeof (IAngoraUserService), () => new AngoraUserService()},
+                {typeof (IFooCDNService), () => new FooCDNService()}
             };
         }
 

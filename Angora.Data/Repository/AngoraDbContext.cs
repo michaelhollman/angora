@@ -10,7 +10,7 @@ namespace Angora.Data
     {
         //TODO eventually get conditional connection strings for debug/release
         public AngoraDbContext()
-            : base(ConfigurationManager.ConnectionStrings["AngoraDbConnection"].ConnectionString)
+            : base(ConfigurationManager.ConnectionStrings["AngoraDbConnection"].ConnectionString, false)
         {
         }
 
