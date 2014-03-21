@@ -9,12 +9,8 @@ namespace Angora.Web.Controllers
 {
     public class HomeController : Controller
     {
-
-        //
-        // GET: /Home/
         public ActionResult Index()
         {
-            ViewBag.Foo = ServiceManager.GetService<IFooService>().DoSomething(HttpContext.Request.UserAgent);
             return View();
         }
 	}
