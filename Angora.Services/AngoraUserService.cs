@@ -9,9 +9,6 @@ using Microsoft.AspNet.Identity.Owin;
 
 namespace Angora.Services
 {
-
-    // TODO: move as much of the current AccountController logic into here as possible/practical
-
     public class AngoraUserService : ServiceBase, IAngoraUserService
     {
         private UserManager<AngoraUser> _userManager;
