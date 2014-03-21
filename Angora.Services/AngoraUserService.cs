@@ -20,7 +20,7 @@ namespace Angora.Services
         {
             _userManager = userManager;
             // TODO configure this in unity bootstrapper?
-            ((UserValidator<AngoraUser>)_userManager.UserValidator).AllowOnlyAlphanumericUserNames = false;
+            _userManager.UserValidator = new UserValidator<AngoraUser>(_userManager) { AllowOnlyAlphanumericUserNames = false };
         }
 
         public async Task<IdentityResult> CreateUser(AngoraUser user)
@@ -61,7 +61,5 @@ namespace Angora.Services
         {
             return await _userManager.RemoveLoginAsync(id, info);
         }
-
-
     }
 }
