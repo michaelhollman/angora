@@ -8,12 +8,18 @@
 <a class="btn btn-primary" href="@Url.Action("Create", "Event")">Create New Event</a>
 <div id="EventFeed">
     <h1>Your Events</h1>
+    @if (Model.Events.Count() == 0)
+    {
+        <p>There's nothing to see here... you should make some events!</p>
+    }
+
     @foreach (var e in Model.Events)
     {
         <div class="well-sm">
             <h3>@Html.DisplayFor(ev => e.Name)</h3>
-            <h5>@Html.DisplayFor(ev => e.Time) at @Html.DisplayFor(ev => e.Location)</h5>
+            <h5>@Html.DisplayFor(ev => e.StartDateTime) at @Html.DisplayFor(ev => e.Location)</h5>
             <p>@Html.DisplayFor(ev => e.Description)</p>
         </div>
     }
+
 </div>

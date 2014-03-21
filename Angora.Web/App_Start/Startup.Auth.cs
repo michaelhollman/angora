@@ -18,17 +18,12 @@ namespace Angora.Web
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-                LoginPath = new PathString("/Account/Login")
+                LoginPath = new PathString("/login")
             });
             // Use a cookie to temporarily store information about a user logging in with a third party login provider
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
-            // Uncomment the following lines to enable logging in with third party login providers
-            //app.UseMicrosoftAccountAuthentication(
-            //    clientId: "",
-            //    clientSecret: "");
-
-            /*Twitter*/
+            //Twitter
             var twitterOptions = new TwitterAuthenticationOptions();
             twitterOptions.ConsumerKey = "o8QTwfzt6CdfDGndyqvLrg";
             twitterOptions.ConsumerSecret = "jqU2tq5QVUkK6JdFA22wtXZNrTumatvG9VpPAfK5M";
@@ -43,7 +38,7 @@ namespace Angora.Web
 
             app.UseTwitterAuthentication(twitterOptions);
             
-            /*Facebook*/
+            //Facebook
             var facebookOptions = new FacebookAuthenticationOptions();
             facebookOptions.AppId = "1440310966205344";
             facebookOptions.AppSecret = "0ba27f5ec1bcf335fcdf36dc19e71f86";
@@ -60,12 +55,6 @@ namespace Angora.Web
             facebookOptions.Scope.Add("publish_stream");
 
             app.UseFacebookAuthentication(facebookOptions);
-
-            //app.UseFacebookAuthentication(
-            //   appId: "1440310966205344",
-            //   appSecret: "0ba27f5ec1bcf335fcdf36dc19e71f86");
-
-            //app.UseGoogleAuthentication();
         }
     }
 }

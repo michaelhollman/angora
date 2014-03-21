@@ -24,6 +24,5 @@ namespace Angora.Services
 
         [OperationContract]
         IEnumerable<Event> FindEventsByUserId(string userId);
-
     }
 }

@@ -22,8 +22,11 @@ namespace Angora.Web.Models
         //latitude then longitude
         public string Location { get; set; }
 
-        [Display(Name = "Date and Time")]
-        public DateTime Time { get; set; }
+        [Display(Name = "Start Date and StartDateTime")]
+        public DateTime StartDateTime { get; set; }
+
+        [Display(Name = "End Date and StartDateTime")]
+        public DateTime EndDateTime { get; set; }
 
         [Display(Name= "Tags")]
         public List<string> Tags { get; set; }
@@ -46,8 +49,11 @@ namespace Angora.Web.Models
         //latitude then longitude
         public string Location { get; set; }
 
-        [Display(Name = "Date and Time")]
-        public DateTime Time { get; set; }
+        [Display(Name = "Start Date and StartDateTime")]
+        public DateTime StartDateTime { get; set; }
+
+        [Display(Name = "End Date and StartDateTime")]
+        public DateTime EndDateTime { get; set; }
 
         [Display(Name = "Tags")]
         public List<string> Tags { get; set; }

@@ -18,7 +18,9 @@ namespace Angora.Data.Models
         //latitude then longitude
         public string Location { get; set; }
 
-        public DateTime Time { get; set; }
+        public DateTime StartDateTime { get; set; }
+
+        public DateTime EndDateTime { get; set; }
 
         public List<string> Tags { get; set; }
 

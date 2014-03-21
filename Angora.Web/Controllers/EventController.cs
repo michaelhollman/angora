@@ -38,9 +38,8 @@ namespace Angora.Web.Controllers
         [Authorize]
         public ActionResult CreateEvent(NewEventViewModel model)
         {
-            //long userId = (long)Membership.GetUser().ProviderUserKey;
             //Google reverseGeo(model.Location);
-            //DateTime eventTime = DateTime.Parse(model.Time);
+            //DateTime eventTime = DateTime.Parse(model.StartDateTime);
 
             //alot of these will probs have to change
             //I didn't use view models this summer so this is new stuff
@@ -51,7 +50,8 @@ namespace Angora.Web.Controllers
                 Description = model.Description,
                 // this will have to change when google stuff added
                 Location = model.Location,
-                Time = model.Time,
+                StartDateTime = model.StartDateTime,
+                EndDateTime = model.EndDateTime,
                 Tags = model.Tags,
                 CreationTime = DateTime.UtcNow
             };
@@ -71,7 +71,7 @@ namespace Angora.Web.Controllers
                 Name = theEvent.Name,
                 Description = theEvent.Description,
                 Location = theEvent.Location,
-                Time = theEvent.Time,
+                StartDateTime = theEvent.StartDateTime,
                 Tags = theEvent.Tags
             };
             return View(model);
@@ -85,7 +85,7 @@ namespace Angora.Web.Controllers
             e.Name = model.Name;
             e.Description = model.Description;
             e.Location = model.Location;
-            e.Time = model.Time;
+            e.StartDateTime = model.StartDateTime;
             e.Tags = model.Tags;
             _eventService.Edit(e);
 
