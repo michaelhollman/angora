@@ -31,7 +31,6 @@ namespace Angora.Web
 
             // DB stuff
             container.RegisterType<DbContext, AngoraDbContext>();
-            container.RegisterType<IObjectContextAdapter, AngoraDbContext>();
             container.RegisterType<DbConfiguration, AngoraDbConfiguration>();
             container.RegisterType<GenericRepository<BaseModel>>();
 
