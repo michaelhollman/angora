@@ -3,7 +3,6 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 using Angora.Data.Models;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
 
 namespace Angora.Services
 {

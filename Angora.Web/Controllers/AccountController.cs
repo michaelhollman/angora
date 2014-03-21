@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Angora.Data.Models;
 using Angora.Services;
 using Angora.Web.Models;
+using Facebook;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using Facebook;
 using TweetSharp;
 
 namespace Angora.Web.Controllers
@@ -17,13 +17,8 @@ namespace Angora.Web.Controllers
     [RoutePrefix("account")]
     public class AccountController : Controller
     {
-
-        private IAngoraUserService _userService;
-
-        public AccountController()
-            : this(ServiceManager.GetService<IAngoraUserService>())
-        {
-        }
+        
+        public IAngoraUserService _userService;
 
         public AccountController(IAngoraUserService userService)
         {

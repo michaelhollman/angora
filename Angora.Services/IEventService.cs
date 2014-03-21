@@ -1,7 +1,6 @@
-﻿using Angora.Data.Models;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ServiceModel;
+using Angora.Data.Models;
 
 
 namespace Angora.Services

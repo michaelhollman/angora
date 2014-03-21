@@ -97,7 +97,6 @@
     <Compile Include="IAngoraUserService.cs" />
     <Compile Include="ServiceBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ServiceManager.cs" />
     <Compile Include="AngoraUserService.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -109,9 +108,6 @@
       <Project>{B76C60AA-89BE-42C5-8B8D-B439CF189435}</Project>
       <Name>Angora.Data</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
