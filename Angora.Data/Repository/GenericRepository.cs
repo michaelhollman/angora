@@ -11,70 +11,64 @@ namespace Angora.Data
     // TODO implement IDisposable
     public class GenericRepository<T> : IRepository<T> where T : BaseModel
     {
-        private ObjectContext _objectContext;
-        private IObjectSet<T> _objectSet;
+        private DbSet<T> _dbSet;
+        private DbContext _dbContext;
 
-        // TODO switch to using a dbcontext instead of object context adapter
-        public GenericRepository(IObjectContextAdapter context)
+        public GenericRepository(DbContext context)
         {
-            _objectContext = context.ObjectContext;
-            _objectSet = context.ObjectContext.CreateObjectSet<T>();
+            _dbContext = context;
+            _dbSet = context.Set<T>();
         }
 
         public IQueryable<T> AsQueryable()
         {
-            return _objectSet;
+            return _dbSet;
         }
 
         public IEnumerable<T> GetAll()
         {
-            return _objectSet.ToList();
+            return _dbSet.ToList();
         }
 
         public IEnumerable<T> Find(Expression<Func<T, bool>> where)
         {
-            return _objectSet.Where(where);
+            return _dbSet.Where(where);
         }
 
         public virtual T GetById(long id)
         {
-            return _objectSet.Single(t => t.Id == id);
+            return _dbSet.Single(t => t.Id == id);
         }
 
         public T Single(Expression<Func<T, bool>> where)
         {
-            return _objectSet.Single(where);
+            return _dbSet.Single(where);
         }
 
         public T First(Expression<Func<T, bool>> where)
         {
-            return _objectSet.First(where);
+            return _dbSet.First(where);
         }
 
         public void Delete(T entity)
         {
-            _objectSet.DeleteObject(entity);
+
+            _dbSet.Remove(entity);
         }
 
         public void Insert(T entity)
         {
-            _objectSet.AddObject(entity);
+            _dbSet.Add(entity);
         }
 
         public void Update(T entity)
         {
-            _objectSet.Attach(entity);
-        }
-
-        public void Refresh()
-        {
-            // TODO test me!
-            _objectContext.Refresh(RefreshMode.StoreWins, _objectSet);
+            _dbContext.Entry(entity).State = EntityState.Modified;
         }
 
         public void SaveChanges()
         {
-            _objectContext.SaveChanges();
+            _dbContext.SaveChanges();
         }
     }
 }
