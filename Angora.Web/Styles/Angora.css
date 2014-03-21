@@ -480,16 +480,16 @@ cite {
   font-style: normal;
 }
 .text-left {
-  text-align: left;
+  text-align: left !important;
 }
 .text-right {
-  text-align: right;
+  text-align: right !important;
 }
 .text-center {
-  text-align: center;
+  text-align: center !important;
 }
 .text-justify {
-  text-align: justify;
+  text-align: justify !important;
 }
 .text-muted {
   color: #4e5d6c;
@@ -2033,7 +2033,7 @@ fieldset[disabled] .btn {
 }
 .btn-default {
   color: #ffffff;
-  background-color: #4e5d6c;
+  background-color: #5bc0de;
   border-color: transparent;
 }
 .btn-default:hover,
@@ -2042,7 +2042,7 @@ fieldset[disabled] .btn {
 .btn-default.active,
 .open .dropdown-toggle.btn-default {
   color: #ffffff;
-  background-color: #3d4954;
+  background-color: #39b3d7;
   border-color: rgba(0, 0, 0, 0);
 }
 .btn-default:active,
@@ -2065,11 +2065,11 @@ fieldset[disabled] .btn-default:active,
 .btn-default.disabled.active,
 .btn-default[disabled].active,
 fieldset[disabled] .btn-default.active {
-  background-color: #4e5d6c;
+  background-color: #5bc0de;
   border-color: transparent;
 }
 .btn-default .badge {
-  color: #4e5d6c;
+  color: #5bc0de;
   background-color: #ffffff;
 }
 .btn-primary {
@@ -3369,7 +3369,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
   line-height: 1;
   color: #2b3e50;
   text-align: center;
-  background-color: #4e5d6c;
+  background-color: #5bc0de;
   border: 1px solid transparent;
   border-radius: 0;
 }
@@ -5695,7 +5695,7 @@ button.close {
   font-weight: 300;
 }
 .btn-default:hover {
-  background-color: #485563;
+  background-color: #4ebbdb;
 }
 .btn-sm,
 .btn-xs {
@@ -5934,6 +5934,46 @@ label,
 }
 body {
   padding-top: 70px;
+}
+.profile-pic-xl {
+  height: 200px;
+  width: 200px;
+  max-height: 200px;
+  max-width: 200px;
+}
+.profile-pic-lg {
+  height: 150px;
+  width: 150px;
+  max-height: 150px;
+  max-width: 150px;
+}
+.profile-pic-md {
+  height: 70px;
+  width: 70px;
+  max-height: 70px;
+  max-width: 70px;
+}
+.profile-pic-sm {
+  height: 40px;
+  width: 40px;
+  max-height: 40px;
+  max-width: 40px;
+}
+.width-auto {
+  width: auto;
+}
+.width-100 {
+  width: 100%;
+}
+.text-overflow-ellipses {
+  white-space: nowrap;
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+.login-social-img {
+  height: 20px;
 }
 #nav-login-section .navbar-brand {
   padding-right: 10px;
