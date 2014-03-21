@@ -1,5 +1,6 @@
 package com.angora.angora;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
@@ -102,9 +103,10 @@ public class NavigationDrawerFragment extends Fragment {
                 android.R.layout.simple_list_item_1,
                 android.R.id.text1,
                 new String[]{
-                        getString(R.string.title_feed_section),
-                        getString(R.string.title_profile_section),
-                        getString(R.string.title_friends_section),
+                        //add sections as needed later
+                        getString(R.string.title_feed_section)//,
+                        //getString(R.string.title_profile_section),
+                       // getString(R.string.title_friends_section),
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
@@ -244,6 +246,12 @@ public class NavigationDrawerFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
+        if (item.getItemId() == R.id.action_snap_and_go){
+            Intent intent = new Intent(getActivity(), SnapAndGoActivity.class);
+            startActivity(intent);
             return true;
         }
 /*
