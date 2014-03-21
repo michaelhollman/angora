@@ -3,9 +3,7 @@ using System.Collections.Generic;
 
 namespace Angora.Services
 {
-
-    // TODO make this a factory instead of manager or figure out a clean way to make sure that
-    // service instances are unique to a connection's context.... or something like that.
+    // TODO replace all of this with UNITY
 
     public static class ServiceManager
     {
@@ -19,8 +17,8 @@ namespace Angora.Services
             Constructors = new Dictionary<Type, Constructor>
             {
                 {typeof (IFooService), () => new FooService()},
-                {typeof (IFooCDNService), () => new FooCDNService()},
-
+                {typeof (IAngoraUserService), () => new AngoraUserService()},
+                {typeof (IFooCDNService), () => new FooCDNService()}
             };
         }
 

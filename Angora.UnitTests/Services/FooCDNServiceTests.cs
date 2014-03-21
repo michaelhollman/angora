@@ -5,7 +5,7 @@ using Angora.Services;
 namespace Angora.UnitTests.Services
 {
     [TestClass]
-    public class UnitTest1
+    public class FooCDNServiceTests
     {
         [TestMethod]
         public void TestPostAndInfo()

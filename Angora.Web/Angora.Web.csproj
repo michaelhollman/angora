@@ -50,6 +50,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.0.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Facebook">
+      <HintPath>..\packages\Facebook.6.4.2\lib\net45\Facebook.dll</HintPath>
+    </Reference>
+    <Reference Include="Hammock.ClientProfile">
+      <HintPath>..\packages\TweetSharp.2.3.1\lib\4.0\Hammock.ClientProfile.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.1.0.0\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
@@ -92,7 +98,7 @@
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\TweetSharp.2.3.1\lib\4.0\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
@@ -130,6 +136,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="TweetSharp">
+      <HintPath>..\packages\TweetSharp.2.3.1\lib\4.0\TweetSharp.dll</HintPath>
+    </Reference>
     <Reference Include="WebGrease">
       <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
     </Reference>
@@ -156,6 +165,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
+    <Content Include="Images\AlexComb.jpg" />
+    <Content Include="Images\default-user-profile.png" />
     <Content Include="Images\Logos\Thumbs.db" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Images\Logos\fb-blue-100.png" />
@@ -184,10 +195,12 @@
     <Content Include="Images\EventImage.jpeg" />
     <Content Include="Images\EventImage3.png" />
     <Content Include="Images\Michael.jpg" />
+    <Content Include="Images\MichaelCombined.jpg" />
     <Content Include="Images\Rachael2.jpg" />
     <Content Include="Images\RachaelComb.jpg" />
     <Content Include="Images\RachEl.jpg" />
     <Content Include="Images\Scott.jpg" />
+    <Content Include="Images\ScottComb.jpg" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -205,6 +218,12 @@
     </Content>
     <Content Include="Styles\Angora.min.css">
       <DependentUpon>Angora.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\Angora\landing.css">
+      <DependentUpon>landing.less</DependentUpon>
+    </Content>
+    <Content Include="Styles\Angora\landing.min.css">
+      <DependentUpon>landing.less</DependentUpon>
     </Content>
     <Content Include="Styles\Angora\nav-bar.css">
       <DependentUpon>_nav-bar.less</DependentUpon>
@@ -231,7 +250,9 @@
       <DependentUpon>variables.less</DependentUpon>
     </Content>
     <Content Include="Styles\Fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
@@ -241,8 +262,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Api\Controllers\FooController.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -255,15 +276,7 @@
     <Content Include="packages.config" />
     <Content Include="Areas\Api\Views\web.config" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Content Include="Views\Account\ExternalLoginConfirmation.cshtml" />
-    <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
-    <Content Include="Views\Account\Manage.cshtml" />
-    <Content Include="Views\Account\Register.cshtml" />
-    <Content Include="Views\Account\_ChangePasswordPartial.cshtml" />
-    <Content Include="Views\Account\_ExternalLoginsListPartial.cshtml" />
-    <Content Include="Views\Account\_RemoveAccountPartial.cshtml" />
-    <Content Include="Views\Account\_SetPasswordPartial.cshtml" />
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Styles\Bootstrap\alerts.less" />
     <Content Include="Styles\Bootstrap\badges.less" />
@@ -314,7 +327,30 @@
     <Content Include="Styles\Fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Styles\Angora\_nav-bar.less" />
     <Content Include="Styles\Angora\_layout.less" />
-    <Content Include="Styles\Angora\LandingCSS.less" />
+    <Content Include="Styles\Angora\landing.less" />
+    <Content Include="Styles\Bootstrap\normalize.css.map">
+      <DependentUpon>normalize.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\Bootstrap\bootstrap.css.map">
+      <DependentUpon>bootstrap.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\angora.css.map">
+      <DependentUpon>Angora.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\Angora\landing.css.map">
+      <DependentUpon>landing.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\Bootstrap\normalize.css.map">
+      <DependentUpon>normalize.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\angora.css.map">
+      <DependentUpon>Angora.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\Bootstrap\bootstrap.css.map">
+      <DependentUpon>bootstrap.css</DependentUpon>
+    </Content>
+    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Styles\Angora\_helpers.less" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
