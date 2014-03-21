@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Microsoft.AspNet.Identity;
 
 namespace Angora.Web.Controllers
 {
@@ -24,7 +25,7 @@ namespace Angora.Web.Controllers
         // GET: /Event/
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "EventFeed");
         }
 
         [Authorize]
@@ -45,7 +46,7 @@ namespace Angora.Web.Controllers
             //I didn't use view models this summer so this is new stuff
             Event newEvent = new Event()
             {
-                UserId = 1,
+                UserId = User.Identity.GetUserId(),
                 Name = model.Name,
                 Description = model.Description,
                 // this will have to change when google stuff added
@@ -57,13 +58,38 @@ namespace Angora.Web.Controllers
 
             _eventService.Create(newEvent);
 
-            return View("Index");
+            return RedirectToAction("Index", "EventFeed");
         }
 
         [Authorize]
+        public ActionResult Edit(long id)
+        {
+            var theEvent = _eventService.FindById(id);
+            EditEventViewModel model = new EditEventViewModel()
+            {
+                EventId = theEvent.Id,
+                Name = theEvent.Name,
+                Description = theEvent.Description,
+                Location = theEvent.Location,
+                Time = theEvent.Time,
+                Tags = theEvent.Tags
+            };
+            return View(model);
+        }
+
+        //Doesn't work yet. Waiting on a method it uses to be refactored
+        [Authorize]
         public ActionResult EditEvent(EditEventViewModel model)
         {
-            return View();
+            var e = _eventService.FindById(model.EventId);
+            e.Name = model.Name;
+            e.Description = model.Description;
+            e.Location = model.Location;
+            e.Time = model.Time;
+            e.Tags = model.Tags;
+            _eventService.Edit(e);
+
+            return RedirectToAction("Index", "EventFeed");
         }
 
         [Authorize]

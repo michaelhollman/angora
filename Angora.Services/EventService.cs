@@ -42,10 +42,10 @@ namespace Angora.Services
             return thisEvent;
         }
 
-        public List<Event> FindEventsByUserId(long userId)
+        public IEnumerable<Event> FindEventsByUserId(string userId)
         {
             var eventRepo = RepositoryFactory.NewRepository<Event>();
-            List<Event> events = (List<Event>)eventRepo.Find((Event e) => e.Id == userId);
+            IEnumerable<Event> events = eventRepo.Find((Event e) => e.UserId.Equals(userId));
             return events;          
         }
     }

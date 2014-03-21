@@ -31,7 +31,7 @@ namespace Angora.Web.Models
 
     public class EditEventViewModel
     {
-        public Event Event { get; set; }
+        public long EventId { get; set; }
 
         [Required]
         [Display(Name = "Event Name")]

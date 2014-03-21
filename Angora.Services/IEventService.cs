@@ -23,7 +23,7 @@ namespace Angora.Services
         Event FindById(long id);
 
         [OperationContract]
-        List<Event> FindEventsByUserId(long userId);
+        IEnumerable<Event> FindEventsByUserId(string userId);
 
     }
 }
