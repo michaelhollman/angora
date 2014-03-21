@@ -16,11 +16,11 @@ import android.os.Build;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 public class SnapAndGoActivity extends ActionBarActivity {
 
-    private Camera mCamera;
     private CameraPreview mPreview;
     private int CurrentCamera;
 
@@ -37,20 +37,16 @@ public class SnapAndGoActivity extends ActionBarActivity {
 
         setContentView(R.layout.activity_snap_and_go);
 
-        startCameraAndPreview();
-    }
+        mPreview = new CameraPreview(this, CurrentCamera);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
+        preview.addView(mPreview);
 
-    @Override
-    protected void onPause() {
-        mPreview.getHolder().removeCallback(mPreview);
-        mCamera.release();
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        //for now...
-        super.onResume();
+        ImageView nextCameraButton = (ImageView) findViewById(R.id.imageView_nextCamera);
+        nextCameraButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                switchCameras();
+            }
+        });
     }
 
 
@@ -72,20 +68,10 @@ public class SnapAndGoActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static Camera getCameraInstance(int id){
-        Camera c = null;
-        try {
-            c = Camera.open(id); // attempt to get a Camera instance
-        }
-        catch (Exception e){
-            // Camera is not available (in use or does not exist)
-        }
-        return c; // returns null if camera is unavailable
-    }
-
     public void switchCameras() {
         int numCameras = Camera.getNumberOfCameras();
         if (numCameras > 1){
+
             SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
             SharedPreferences.Editor prefEditor = pref.edit();
             if (CurrentCamera + 1 <= numCameras - 1){
@@ -93,27 +79,20 @@ public class SnapAndGoActivity extends ActionBarActivity {
             }else{
                 CurrentCamera = 0;
             }
-            stopPreviewAndReleaseCamera();
+            prefEditor.putInt("preferredCamera", CurrentCamera);
+            prefEditor.commit();
+
+            mPreview.setCameraNum(CurrentCamera);
+            mPreview.refresh();
+
             startCameraAndPreview();
         }
     }
 
-    public void stopPreviewAndReleaseCamera(){
-        if (mCamera != null){
-            mCamera.stopPreview();
-            mCamera.release();
-        }
-    }
 
     public void startCameraAndPreview(){
-        mCamera = getCameraInstance(CurrentCamera);
-        if (mCamera == null){
-            Toast.makeText(this, "Camera Failed", Toast.LENGTH_SHORT).show();
-            finish();
-        }
-        mPreview = new CameraPreview(this, mCamera);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(mPreview);
+
+
 
     }
 }
