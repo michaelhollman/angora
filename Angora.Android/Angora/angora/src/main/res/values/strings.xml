@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Angora</string>
+    <string name="app_name">auderus</string>
     <string name="title_feed_section">Feed</string>
     <string name="title_profile_section">Profile</string>
     <string name="title_friends_section">Friends</string>
@@ -12,5 +12,8 @@
     <string name="action_settings">Settings</string>
     <string name="action_snap_and_go">Snap &amp; Go</string>
     <string name="title_activity_snap_and_go">Snap &amp; Go</string>
+    <string name="title_activity_event_details">EventDetailsActivity</string>
+    <string name="login_activity_instructions">Auderus requires that you have an existing Facebook or Twitter account.
+        Please register online at auder.us before using the app.</string>
 
 </resources>
