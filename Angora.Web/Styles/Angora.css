@@ -6004,6 +6004,12 @@ body {
 .navbar-inverse .navbar-nav .open .dropdown-menu > li > a:hover {
   background-color: #c85e17;
 }
+#navbar-logo {
+  padding: 8px 10px;
+}
+#navbar-logo img {
+  height: 25px;
+}
 #RachaelImg {
   padding: 0px;
   background: url(/Images/RachaelComb.jpg);
