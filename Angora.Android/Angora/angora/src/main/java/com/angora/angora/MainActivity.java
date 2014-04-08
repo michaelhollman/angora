@@ -49,6 +49,7 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
         if (!pref.getBoolean("IsLoggedIn", false)){
             Intent intent = new Intent(this, LoginActivity.class);
@@ -56,11 +57,13 @@ public class MainActivity extends ActionBarActivity
             finish();
         }
 
+        /*
         //this is all for beta
         FragmentManager fm = getSupportFragmentManager();
         fm.beginTransaction().replace(R.id.container, FeedFragment.newInstance(0)).commit();
         mTitle = getString(R.string.title_feed_section);
         getSupportActionBar().setTitle(mTitle);
+*/
 
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -81,12 +84,19 @@ public class MainActivity extends ActionBarActivity
 
 
         switch (position)   {
+
             case 0:
                 //FragmentManager fm = getSupportFragmentManager();
-                //fm.beginTransaction().replace(R.id.container, FeedFragment.newInstance(position)).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, FeedFragment.newInstance(position)).commit();
+                mTitle = getString(R.string.title_feed_section);
+                getSupportActionBar().setTitle(mTitle);
+                break;
             case 1:
                 //FragmentManager fm2 = getSupportFragmentManager();
-                //fm2.beginTransaction().replace(R.id.container, ProfileFragment.newInstance(position)).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.container, ProfileFragment.newInstance(position)).commit();
+                mTitle = getString(R.string.title_profile_section);
+                getSupportActionBar().setTitle(mTitle);
+                break;
             case 2:
                 //open the friends fragment
 
@@ -99,7 +109,7 @@ public class MainActivity extends ActionBarActivity
                 .commit();
 */
     }
-
+/*
     public void onSectionAttached(int number) {
         switch (number) {
             case 0:
@@ -113,6 +123,7 @@ public class MainActivity extends ActionBarActivity
                 break;
         }
     }
+    */
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
@@ -204,10 +215,10 @@ public class MainActivity extends ActionBarActivity
         public void onAttach(Activity activity) {
 
             super.onAttach(activity);
-
+/*
             ((MainActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
-
+*/
         }
 
         /*
@@ -282,9 +293,10 @@ public class MainActivity extends ActionBarActivity
 
             super.onAttach(activity);
 
+            /*
             ((MainActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
-
+            */
         }
 
 
