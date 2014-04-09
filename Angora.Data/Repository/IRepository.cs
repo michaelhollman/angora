@@ -16,9 +16,5 @@ namespace Angora.Data
         void Delete(T entity);
         void Insert(T entity);
         void Update(T entity);
-
-        // unit of work functionality
-        // TODO move me to a propper unit of work object
-        void SaveChanges();
     }
 }
