@@ -93,8 +93,8 @@ DocProject/Help/html
 publish/
 
 # Publish Web Output
-*.Publish.xml
-*.pubxml
+# *.Publish.xml
+# *.pubxml
 
 # NuGet Packages Directory
 packages/
