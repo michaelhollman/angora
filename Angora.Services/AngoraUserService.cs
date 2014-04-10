@@ -13,6 +13,7 @@ namespace Angora.Services
         public AngoraUserService(UserManager<AngoraUser> userManager)
         {
             _userManager = userManager;
+            _userManager.UserValidator = new UserValidator<AngoraUser>(_userManager) { AllowOnlyAlphanumericUserNames = false };
         }
 
         public async Task<IdentityResult> CreateUser(AngoraUser user)
