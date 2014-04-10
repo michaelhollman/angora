@@ -1,6 +1,5 @@
 *.mdf
 *.ldf
-*.min.css
 
 # User-specific files
 *.suo
