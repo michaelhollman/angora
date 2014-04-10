@@ -1,28 +1,44 @@
+using System;
 using System.Data.Entity;
-using System.Web.Mvc;
 using Angora.Data;
 using Angora.Data.Models;
 using Angora.Services;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using System.Data.Entity.Infrastructure;
 using Microsoft.Practices.Unity;
-using Unity.Mvc5;
 
-namespace Angora.Web
+namespace Angora.Web.App_Start
 {
-    public static class UnityConfig
+    /// <summary>
+    /// Specifies the Unity configuration for the main container.
+    /// </summary>
+    public class UnityConfig
     {
-        public static void RegisterComponents()
+        #region Unity Container
+        private static Lazy<IUnityContainer> container = new Lazy<IUnityContainer>(() =>
         {
             var container = new UnityContainer();
+            RegisterTypes(container);
+            return container;
+        });
 
-            // register all your components with the container here
-            // it is NOT necessary to register your controllers
+        /// <summary>
+        /// Gets the configured Unity container.
+        /// </summary>
+        public static IUnityContainer GetConfiguredContainer()
+        {
+            return container.Value;
+        }
+        #endregion
 
-            // e.g. container.RegisterType<ITestService, TestService>();
-
-            // TODO: determine how much of this should be per-request/session/something?
+        /// <summary>Registers the type mappings with the Unity container.</summary>
+        /// <param name="container">The unity container to configure.</param>
+        /// <remarks>There is no need to register concrete types such as controllers or API controllers (unless you want to 
+        /// change the defaults), as Unity allows resolving a concrete type even if it was not previously registered.</remarks>
+        public static void RegisterTypes(IUnityContainer container)
+        {
+            // NOTE: To load from web.config uncomment the line below. Make sure to add a Microsoft.Practices.Unity.Configuration to the using statements.
+            // container.LoadConfiguration();
 
             // Services
             container.RegisterType<IEventService, EventService>();
@@ -30,18 +46,18 @@ namespace Angora.Web
             container.RegisterType<IAngoraUserService, AngoraUserService>();
 
             // DB stuff
-            container.RegisterType<DbContext, AngoraDbContext>();
             container.RegisterType<DbConfiguration, AngoraDbConfiguration>();
             container.RegisterType<GenericRepository<BaseModel>>();
-
-            // TODO: after we get our unit of work in place, we need to add that here
+            container.RegisterType<IUnitOfWork, UnitOfWork>(new PerRequestLifetimeManager());
+            container.RegisterType<DbContext, AngoraDbContext>(new PerRequestLifetimeManager());
 
             // User Stuff
-            var userManager = new UserManager<AngoraUser>(new UserStore<AngoraUser>(container.Resolve<DbContext>()));
-            userManager.UserValidator = new UserValidator<AngoraUser>(userManager) { AllowOnlyAlphanumericUserNames = false };
-            container.RegisterInstance<UserManager<AngoraUser>>(userManager);
+            container.RegisterType<IUserStore<AngoraUser>, UserStore<AngoraUser>>();
+            container.RegisterType<UserManager<AngoraUser>>();
 
-            DependencyResolver.SetResolver(new UnityDependencyResolver(container));
+            //var userManager = new UserManager<AngoraUser>(container.<UserStore<AngoraUser>>());
+            //userManager.UserValidator = new UserValidator<AngoraUser>(userManager) { AllowOnlyAlphanumericUserNames = false };
+            //container.RegisterInstance<UserManager<AngoraUser>>(userManager);
         }
     }
 }

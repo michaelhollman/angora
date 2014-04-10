@@ -286,6 +286,7 @@ namespace Angora.Web.Controllers
             else
             {
                 model.Errors.Add("There was an error trying to update your account");
+                model.Errors.AddRange(update.Errors);
             }
 
             return await Index(model);

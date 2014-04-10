@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Angora requires that you have an existing Facebook or Twitter account."
+            android:text="@string/login_activity_instructions"
             android:id="@+id/textView_instructions"
             android:layout_gravity="center_horizontal"
             android:gravity="center" />
@@ -46,7 +46,9 @@
             android:id="@+id/button_facebook"
             android:layout_gravity="center_vertical|left"
             android:textSize="25dp"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp"
+            android:textColor="#FFFFFF"
+            android:background="#DF691A"/>
 
         <Button
             android:layout_width="140dp"
@@ -55,7 +57,9 @@
             android:id="@+id/button_twitter"
             android:layout_gravity="right|center_vertical"
             android:textSize="25dp"
-            android:layout_margin="10dp"/>
+            android:layout_margin="10dp"
+            android:textColor="#FFFFFF"
+            android:background="#DF691A"/>
         </LinearLayout>
 
 </FrameLayout>

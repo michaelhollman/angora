@@ -16,7 +16,6 @@ namespace Angora.Services
         public long Create(Event newEvent)
         {
             _eventRepo.Insert(newEvent);
-            _eventRepo.SaveChanges();
 
             return newEvent.Id;
         }
@@ -24,7 +23,6 @@ namespace Angora.Services
         public long Edit(Event oldEvent)
         {
             _eventRepo.Update(oldEvent);
-            _eventRepo.SaveChanges();
 
             return oldEvent.Id;
         }
@@ -33,14 +31,11 @@ namespace Angora.Services
         public void Delete(Event oldEvent)
         {
             _eventRepo.Delete(oldEvent);
-            _eventRepo.SaveChanges();
-
         }
 
         public Event FindById(long id)
         {
             Event thisEvent = _eventRepo.GetById(id);
-
             return thisEvent;
         }
 
