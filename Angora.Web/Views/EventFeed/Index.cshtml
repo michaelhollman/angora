@@ -15,12 +15,16 @@
 
     @foreach (var e in Model.Events)
     {
-        <div class="well well-sm" >
-            <h3>@Html.DisplayFor(ev => e.Name)</h3>
-            <h5>@Html.DisplayFor(ev => e.StartDateTime) at @Html.DisplayFor(ev => e.Location)</h5>
-            <p>@Html.DisplayFor(ev => e.Description)</p>
-            <button style="float:right" type="button" class="btn btn-primary">Edit</button>
-            <button style="float:right" type="button" class="btn btn-danger">Delete</button>
+        <div class="well well-sm event-feed" >
+            <div class="info">
+                <h3>@Html.DisplayFor(ev => e.Name)</h3>
+                <h5>@Html.DisplayFor(ev => e.StartDateTime) at @Html.DisplayFor(ev => e.Location)</h5>
+                <p>@Html.DisplayFor(ev => e.Description)</p>
+            </div>
+            <div class="btn-group btn-group-justified">
+                <a href="#" class="btn btn-primary">Edit</a>
+                <a href="@Url.Action("Delet")" class="btn btn-danger">Delete</a>
+            </div>
         </div>
     }
 

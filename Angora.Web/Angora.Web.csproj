@@ -240,6 +240,9 @@
     <Content Include="Styles\Angora.min.css">
       <DependentUpon>Angora.css</DependentUpon>
     </Content>
+    <Content Include="Styles\Angora\event-feed.css">
+      <DependentUpon>event-feed.less</DependentUpon>
+    </Content>
     <Content Include="Styles\Angora\landing.css">
       <DependentUpon>landing.less</DependentUpon>
     </Content>
@@ -380,6 +383,10 @@
     <Content Include="Views\Event\Edit.cshtml" />
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Styles\Angora\_helpers.less" />
+    <Content Include="Styles\Angora\event-feed.less" />
+    <Content Include="Styles\Angora\event-feed.css.map">
+      <DependentUpon>event-feed.css</DependentUpon>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

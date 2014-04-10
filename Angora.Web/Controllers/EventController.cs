@@ -86,6 +86,15 @@ namespace Angora.Web.Controllers
             return RedirectToAction("Index", "EventFeed");
         }
 
+        public ActionResult DeleteEvent(long id)
+        {
+            Event e = _eventService.FindById(id);
+
+            _eventService.Delete(e);
+
+            UnitOfWork.SaveChanges();
+        }
+
         [Authorize]
         public ActionResult ViewEvent(long id)
         {

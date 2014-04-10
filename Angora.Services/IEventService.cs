@@ -19,6 +19,9 @@ namespace Angora.Services
         void Delete(Event oldEvent);
 
         [OperationContract]
+        void Delete(long id);
+
+        [OperationContract]
         Event FindById(long id);
 
         [OperationContract]
