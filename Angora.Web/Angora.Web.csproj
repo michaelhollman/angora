@@ -28,6 +28,17 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PublishDatabaseSettings>
+      <Objects>
+        <ObjectGroup Name="AngoraDbConnection-Deployment" Order="1">
+          <Destination Path="Server=tcp:boz8o9blyi.database.windows.net,1433%3bDatabase=SEGroup4%3bUser ID=segroup4%3bPassword=yowl37’Lycra%3bTrusted_Connection=False%3bEncrypt=True%3bConnection Timeout=30%3b" />
+          <Object Type="DbFullSql" Enabled="False">
+            <PreSource Path="Data Source=%28LocalDB%29\v11.0%3bAttachDbFilename=|DataDirectory|\AngoraDb.mdf%3bIntegrated Security=True" ScriptSchema="True" ScriptData="False" CopyAllFullTextCatalogs="False" DriDefaults="True" />
+            <Source Path="obj\Debug\AutoScripts\AngoraDbConnection-Deployment_SchemaOnly.sql" Transacted="True" />
+          </Object>
+        </ObjectGroup>
+      </Objects>
+    </PublishDatabaseSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -195,9 +206,10 @@
     <Content Include="Images\AuderusLogos\LogoFullOrange.png" />
     <Content Include="Images\AuderusLogos\LogoFullWhite.png" />
     <Content Include="Images\default-user-profile.png" />
-    <Content Include="Images\Logos\Thumbs.db" />
     <Content Include="Images\AuderusLogos\Logo.psd" />
     <Content Include="Images\AuderusLogos\LogoFull.psd" />
+    <None Include="Properties\PublishProfiles\seteam4 - FTP.pubxml" />
+    <None Include="Properties\PublishProfiles\seteam4 - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Images\Logos\fb-blue-100.png" />
     <Content Include="Images\Logos\fb-blue-1024.png" />
