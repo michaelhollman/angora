@@ -33,6 +33,11 @@ namespace Angora.Services
             _eventRepo.Delete(oldEvent);
         }
 
+        public void DeleteById(long id)
+        {
+            _eventRepo.Delete(_eventRepo.GetById(id));
+        }
+
         public Event FindById(long id)
         {
             Event thisEvent = _eventRepo.GetById(id);
