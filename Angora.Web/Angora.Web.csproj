@@ -202,7 +202,7 @@
     <Content Include="Images\AuderusLogos\LogoFull.psd" />
     <None Include="Properties\PublishProfiles\seteam4 - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\seteam4 - Web Deploy.pubxml" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <None Include="Scripts\lib\jquery-1.10.2.intellisense.js" />
     <Content Include="Images\Logos\fb-blue-100.png" />
     <Content Include="Images\Logos\fb-blue-1024.png" />
     <Content Include="Images\Logos\fb-blue-114.png" />
@@ -235,20 +235,21 @@
     <Content Include="Images\RachEl.jpg" />
     <Content Include="Images\Scott.jpg" />
     <Content Include="Images\ScottComb.jpg" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
-    <None Include="Scripts\jquery-2.1.0.intellisense.js" />
-    <Content Include="Scripts\jquery-2.1.0.js" />
-    <Content Include="Scripts\jquery-2.1.0.min.js" />
-    <Content Include="Scripts\jquery-2.1.0.min.map" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\modernizr-2.6.2.js" />
-    <Content Include="Scripts\respond.js" />
-    <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\lib\bootstrap.js" />
+    <Content Include="Scripts\lib\bootstrap.min.js" />
+    <None Include="Scripts\lib\jquery-2.1.0.intellisense.js" />
+    <Content Include="Scripts\lib\jquery-2.1.0.js" />
+    <Content Include="Scripts\lib\jquery-2.1.0.min.js" />
+    <Content Include="Scripts\lib\jquery-2.1.0.min.map" />
+    <None Include="Scripts\lib\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\lib\jquery.validate.js" />
+    <Content Include="Scripts\lib\jquery.validate.min.js" />
+    <Content Include="Scripts\lib\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\lib\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\lib\modernizr-2.6.2.js" />
+    <Content Include="Scripts\lib\respond.js" />
+    <Content Include="Scripts\lib\respond.min.js" />
+    <Content Include="Scripts\navbar.js" />
     <Content Include="Styles\Angora.css">
       <DependentUpon>angora.less</DependentUpon>
     </Content>

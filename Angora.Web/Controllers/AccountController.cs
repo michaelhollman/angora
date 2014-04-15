@@ -17,8 +17,7 @@ namespace Angora.Web.Controllers
     [RoutePrefix("account")]
     public class AccountController : Controller
     {
-        
-        public IAngoraUserService _userService;
+        private IAngoraUserService _userService;
 
         public AccountController(IAngoraUserService userService)
         {
@@ -38,6 +37,15 @@ namespace Angora.Web.Controllers
         {
             HttpContext.GetOwinContext().Authentication.SignOut();
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        [Authorize]
+        [Route("username")]
+        public async Task<string> GetUserName()
+        {
+            var user = await _userService.FindUserById(User.Identity.GetUserId());
+            return string.Format("{0} {1}", user.FirstName, user.LastName);
         }
 
         #region External Logins

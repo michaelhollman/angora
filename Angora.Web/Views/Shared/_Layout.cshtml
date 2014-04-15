@@ -8,13 +8,14 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/angorajs")
 
     @if (IsSectionDefined("Scripts"))
     {
         @RenderSection("Scripts")
     }
 
-    @Styles.Render("~/bundles/angora")
+    @Styles.Render("~/bundles/angoracss")
 
 </head>
 <body>
