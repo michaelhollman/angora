@@ -9,6 +9,7 @@
           <set>
             <option value="C:\Git\angora\Angora.Android\Angora" />
             <option value="C:\Git\angora\Angora.Android\Angora\angora" />
+            <option value="C:\Git\angora\Angora.Android\Angora\facebook" />
           </set>
         </option>
       </GradleProjectSettings>

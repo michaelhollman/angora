@@ -55,7 +55,7 @@ namespace Angora.Web.Areas.Api.Controllers
         [Route("deleteEvent")]
         public void DeleteEvent(long eventId)
         {
-            //_eventService.Delete()
+            _eventService.Delete(_eventService.FindById(eventId));
         }
     }
 }

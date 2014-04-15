@@ -1,11 +1,13 @@
 package com.angora.angora;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -13,18 +15,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.facebook.*;
+import com.facebook.model.*;
+import com.facebook.widget.LoginButton;
 
 public class LoginActivity extends ActionBarActivity {
+
+    private Activity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        mActivity = this;
         registerButtons();
-
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -43,24 +55,44 @@ public class LoginActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
     public void registerButtons(){
-        View.OnClickListener onClickListener = new View.OnClickListener() {
+        View.OnClickListener fbClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
-                SharedPreferences.Editor prefEditor = pref.edit();
-                //TODO actually log the user in :)
-                prefEditor.putBoolean("IsLoggedIn", true);
-                prefEditor.commit();
-                //will likely pass a user
-                openMainActivity();
+                // start Facebook Login
+                Session.openActiveSession(mActivity, true, new Session.StatusCallback() {
+
+                    // callback when session changes state
+                    @Override
+                    public void call(Session session, SessionState state, Exception exception) {
+                        if (session.isOpened()) {
+
+                            // make request to the /me API
+                            Request.newMeRequest(session, new Request.GraphUserCallback() {
+
+                                // callback after Graph API response with user object
+                                @Override
+                                public void onCompleted(GraphUser user, Response response) {
+                                    Log.e("LoginActivity", "Request Completed");
+                                    if (user != null) {
+                                        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
+                                        SharedPreferences.Editor prefEditor = pref.edit();
+                                        prefEditor.putBoolean("IsLoggedIn", true);
+                                        prefEditor.commit();
+                                        //TODO pass the user...or maybe the ID...
+                                        openMainActivity();
+                                    }
+                                }
+                            }).executeAsync();
+                        }
+                    }
+                });
             }
         };
-
         Button facebookButton = (Button) findViewById(R.id.button_facebook);
-        facebookButton.setOnClickListener(onClickListener);
+        facebookButton.setOnClickListener(fbClickListener);
 
-        Button twitterButton = (Button) findViewById(R.id.button_twitter);
-        twitterButton.setOnClickListener(onClickListener);
+        //Button twitterButton = (Button) findViewById(R.id.button_twitter);
+        //twitterButton.setOnClickListener(onClickListener);
     }
 
     public void openMainActivity(){
