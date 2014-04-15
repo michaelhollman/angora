@@ -83,7 +83,7 @@ namespace Angora.Web.Controllers
                     FirstName = facebookUser.first_name,
                     LastName = facebookUser.last_name,
                     EmailAddress = facebookUser.email,
-                    Location = facebookUser.location.name,
+                    Location = facebookUser.location != null ? facebookUser.location.name : null,
                     Birthday = Convert.ToDateTime(facebookUser.birthday)
                 };
             }
