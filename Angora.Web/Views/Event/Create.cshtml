@@ -61,6 +61,33 @@
         </div>
 
         <div class="form-group">
+            <label class="control-label col-md-2" for="Tags">
+                <span class="label label-info" onclick="toggleShow(document.getElementById('tag'))" style="margin-right: 10px">?</span>
+                Tags
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Tags, new { @class = "form-control", required = "required" })
+                @Html.ValidationMessageFor(model => model.Tags)
+            </div>
+        </div>
+        <div class="what-is well well-sm" id="tag" style="display: none">
+            <div>
+                <p>
+                    Tag your events. This will help us suggest events to you, and allow other users to find
+                    your events easier.
+                </p>
+                <p>Tag events by typing the word(s) in the text box. For multiple tags, separate the tags with commas.</p>
+
+                <p>
+                    Example: I want to tag my basketball watching party with the tags "basketball" and the name of the team, "Huskers".
+                    I would type the following line into the text box:
+                </p>
+
+                <p>basketball, Huskers</p>
+            </div>
+        </div>
+
+        <div class="form-group">
             <div class="col-md-offset-2 col-md-2">
                 <button type="submit" class="btn btn-success width-100">Create</button>
             </div>
@@ -71,3 +98,14 @@
 <div>
     @Html.ActionLink("Back to List", "Index", "EventFeed")
 </div>
+
+<script>
+    function toggleShow(element) {
+        if ($(element).is(":hidden")) {
+            $(element).slideDown();
+        }
+        else {
+            $(element).slideUp();
+        }
+    }
+</script>

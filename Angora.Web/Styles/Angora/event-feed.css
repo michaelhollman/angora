@@ -1,0 +1,11 @@
+﻿.event-feed div {
+  display: inline-block;
+}
+div.event-feed div.info {
+  width: 74%;
+}
+div.event-feed div.btn-group {
+  width: 25%;
+  margin-left: auto;
+}
+/*# sourceMappingURL=event-feed.css.map */
