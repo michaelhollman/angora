@@ -33,6 +33,5 @@ namespace Angora.Data.Models
         {
             return user.Logins.Any(l => "Twitter".Equals(l.LoginProvider, StringComparison.OrdinalIgnoreCase));
         }
-
     }
 }
