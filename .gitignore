@@ -92,10 +92,6 @@ DocProject/Help/html
 # Click-Once directory
 publish/
 
-# Publish Web Output
-*.Publish.xml
-*.pubxml
-
 # NuGet Packages Directory
 packages/
 
@@ -114,9 +110,7 @@ ClientBin/
 ~$*
 *~
 *.dbmdl
-*.[Pp]ublish.xml
 *.pfx
-*.publishsettings
 
 # RIA/Silverlight projects
 Generated_Code/
