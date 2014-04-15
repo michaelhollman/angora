@@ -3,7 +3,6 @@
     package="com.angora.angora" >
 
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera" />
@@ -31,7 +30,15 @@
             android:name="com.angora.angora.SnapAndGoActivity"
             android:label="@string/title_activity_snap_and_go"
             android:parentActivityName="com.angora.angora.MainActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="MainActivity" />
+        </activity>
+        <activity
+            android:name="com.angora.angora.EventDetailsActivity"
+            android:label="@string/title_activity_event_details"
+            android:parentActivityName="com.angora.angora.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />

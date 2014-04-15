@@ -1,59 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using System.Web.Http.Results;
+﻿using System.Web.Http;
+using Angora.Services;
 
 namespace Angora.Web.Areas.Api.Controllers
 {
-    [RoutePrefix("foo")]
+    [RoutePrefix("api/foo")]
     public class FooController : ApiController
     {
-        // GET api/<controller>
+
+        private IEventService _eventService;
+
+        public FooController(IEventService eventService)
+        {
+            _eventService = eventService;
+        }
+
         [HttpGet]
-        public IEnumerable<string> Get()
+        [Route("test")]
+        public string Trolllolol(string q = "default")
         {
-            return new string[] { "value1", "value2" };
+            if (_eventService != null)
+            {
+                return q;
+            }
+            return "EVENT SERVICE WAS NULL OH NOES!";
         }
-
-        // GET api/<controller>/5
-        [HttpGet]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST api/<controller>
-        [HttpPost]
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/<controller>/5
-        [HttpPut]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/<controller>/5
-        [HttpDelete]
-        public void Delete(int id)
-        {
-        }
-
-
-        public JsonResult<string> GetFoo()
-        {
-            return Json("foo");
-        }
-
-        [Route("{p}")]
-        public JsonResult<string> FooFoo(string p)
-        {
-            return Json("lol " + p);
-        }
-
     }
 }

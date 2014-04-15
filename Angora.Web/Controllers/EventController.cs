@@ -4,15 +4,19 @@ using Angora.Data.Models;
 using Angora.Services;
 using Angora.Web.Models;
 using Microsoft.AspNet.Identity;
+using Angora.Data;
+using System.Collections.Generic;
 
 namespace Angora.Web.Controllers
 {
     public class EventController : Controller
     {
         private IEventService _eventService;
+        private IUnitOfWork _unitOfWork;
 
-        public EventController (IEventService eventService){
+        public EventController (IEventService eventService, IUnitOfWork unitOfWork){
             _eventService = eventService;
+            _unitOfWork = unitOfWork;
         }
 
         //
@@ -35,8 +39,6 @@ namespace Angora.Web.Controllers
             //Google reverseGeo(model.Location);
             //DateTime eventTime = DateTime.Parse(model.StartDateTime);
 
-            //alot of these will probs have to change
-            //I didn't use view models this summer so this is new stuff
             Event newEvent = new Event()
             {
                 UserId = User.Identity.GetUserId(),
@@ -51,6 +53,7 @@ namespace Angora.Web.Controllers
             };
 
             _eventService.Create(newEvent);
+            _unitOfWork.SaveChanges();
 
             return RedirectToAction("Index", "EventFeed");
         }
@@ -66,15 +69,16 @@ namespace Angora.Web.Controllers
                 Description = theEvent.Description,
                 Location = theEvent.Location,
                 StartDateTime = theEvent.StartDateTime,
+                EndDateTime = theEvent.EndDateTime,
                 Tags = theEvent.Tags
             };
             return View(model);
         }
 
-        //Doesn't work yet. Waiting on a method it uses to be refactored
         [Authorize]
         public ActionResult EditEvent(EditEventViewModel model)
         {
+
             var e = _eventService.FindById(model.EventId);
             e.Name = model.Name;
             e.Description = model.Description;
@@ -82,17 +86,18 @@ namespace Angora.Web.Controllers
             e.StartDateTime = model.StartDateTime;
             e.Tags = model.Tags;
             _eventService.Edit(e);
+            _unitOfWork.SaveChanges();
 
             return RedirectToAction("Index", "EventFeed");
         }
 
         public ActionResult DeleteEvent(long id)
         {
-            Event e = _eventService.FindById(id);
+            _eventService.Delete(id);
 
-            _eventService.Delete(e);
+            _unitOfWork.SaveChanges();
 
-            UnitOfWork.SaveChanges();
+            return RedirectToAction("Index", "EventFeed");
         }
 
         [Authorize]

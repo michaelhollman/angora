@@ -104,9 +104,9 @@ public class NavigationDrawerFragment extends Fragment {
                 android.R.id.text1,
                 new String[]{
                         //add sections as needed later
-                        getString(R.string.title_feed_section)//,
-                        //getString(R.string.title_profile_section),
-                       // getString(R.string.title_friends_section),
+                        getString(R.string.title_feed_section),
+                        getString(R.string.title_profile_section),
+                       //getString(R.string.title_friends_section),
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;

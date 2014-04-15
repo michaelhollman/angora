@@ -65,10 +65,5 @@ namespace Angora.Data
         {
             _dbContext.Entry(entity).State = EntityState.Modified;
         }
-
-        public void SaveChanges()
-        {
-            _dbContext.SaveChanges();
-        }
     }
 }

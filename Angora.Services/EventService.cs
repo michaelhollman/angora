@@ -45,7 +45,6 @@ namespace Angora.Services
         public Event FindById(long id)
         {
             Event thisEvent = _eventRepo.GetById(id);
-
             return thisEvent;
         }
 

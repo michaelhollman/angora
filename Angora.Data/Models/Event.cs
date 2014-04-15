@@ -18,7 +18,7 @@ namespace Angora.Data.Models
 
         public DateTime EndDateTime { get; set; }
 
-        public List<string> Tags { get; set; }
+        public string Tags { get; set; }
 
         public DateTime CreationTime { get; set; }
 
