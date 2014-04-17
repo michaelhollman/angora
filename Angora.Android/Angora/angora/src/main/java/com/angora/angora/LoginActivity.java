@@ -3,10 +3,14 @@ package com.angora.angora;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,6 +25,9 @@ import com.facebook.*;
 import com.facebook.model.*;
 import com.facebook.widget.LoginButton;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class LoginActivity extends ActionBarActivity {
 
     private Activity mActivity;
@@ -31,6 +38,7 @@ public class LoginActivity extends ActionBarActivity {
         setContentView(R.layout.activity_login);
         mActivity = this;
         registerButtons();
+
     }
 
     @Override
@@ -64,6 +72,7 @@ public class LoginActivity extends ActionBarActivity {
                     // callback when session changes state
                     @Override
                     public void call(Session session, SessionState state, Exception exception) {
+                        Log.d("LoginActivity", "session.opened = "+session.isOpened());
                         if (session.isOpened()) {
 
                             // make request to the /me API
