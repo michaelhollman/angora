@@ -10,5 +10,9 @@ namespace Angora.Data
         public AngoraDbContext() : base(ConfigurationManager.ConnectionStrings["AngoraDbConnection"].ConnectionString, false) { }
 
         public DbSet<Event> Events { get; set; }
+        public DbSet<EventScheduler> EventSchedulers { get; set; }
+        public DbSet<EventSchedulerResponse> EventSchedulerResponses { get; set; }
+        public DbSet<EventTime> EventTimes { get; set; }
+        public DbSet<Tag> Tags { get; set; }
     }
 }

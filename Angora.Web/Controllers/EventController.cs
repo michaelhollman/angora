@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using Angora.Data.Models;
 using Angora.Services;
@@ -13,7 +14,8 @@ namespace Angora.Web.Controllers
         private IEventService _eventService;
         private IUnitOfWork _unitOfWork;
 
-        public EventController (IEventService eventService, IUnitOfWork unitOfWork){
+        public EventController(IEventService eventService, IUnitOfWork unitOfWork)
+        {
             _eventService = eventService;
             _unitOfWork = unitOfWork;
         }
@@ -28,8 +30,8 @@ namespace Angora.Web.Controllers
         [Authorize]
         public ActionResult Create()
         {
-                NewEventViewModel newModel = new NewEventViewModel();
-                return View(newModel);
+            NewEventViewModel newModel = new NewEventViewModel();
+            return View(newModel);
         }
 
         [Authorize]
@@ -49,7 +51,7 @@ namespace Angora.Web.Controllers
                 Location = model.Location,
                 StartDateTime = model.StartDateTime,
                 EndDateTime = model.EndDateTime,
-                Tags = model.Tags,
+                Tags = model.Tags.Select(t => t.ToTag()).ToList(),
                 CreationTime = DateTime.UtcNow
             };
 
@@ -70,7 +72,7 @@ namespace Angora.Web.Controllers
                 Description = theEvent.Description,
                 Location = theEvent.Location,
                 StartDateTime = theEvent.StartDateTime,
-                Tags = theEvent.Tags
+                Tags = theEvent.Tags.Select(t => t.ToString()).ToList()
             };
             return View(model);
         }
@@ -83,7 +85,7 @@ namespace Angora.Web.Controllers
             e.Description = model.Description;
             e.Location = model.Location;
             e.StartDateTime = model.StartDateTime;
-            e.Tags = model.Tags;
+            e.Tags = model.Tags.Select(t => t.ToTag()).ToList();
             _eventService.Edit(e);
             _unitOfWork.SaveChanges();
 
@@ -98,5 +100,5 @@ namespace Angora.Web.Controllers
             return View();
         }
 
-	}
+    }
 }

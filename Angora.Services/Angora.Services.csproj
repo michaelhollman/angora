@@ -107,6 +107,7 @@
     <Compile Include="FooCDNService.cs" />
     <Compile Include="IFooCDNService.cs" />
     <Compile Include="IAngoraUserService.cs" />
+    <Compile Include="IEventSchedulerService.cs" />
     <Compile Include="ServiceBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AngoraUserService.cs" />
