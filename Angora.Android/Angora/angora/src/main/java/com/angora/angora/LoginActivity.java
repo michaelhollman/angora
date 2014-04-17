@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -28,7 +29,18 @@ import com.facebook.widget.LoginButton;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.auth.RequestToken;
+import twitter4j.conf.Configuration;
+import twitter4j.conf.ConfigurationBuilder;
+
 public class LoginActivity extends ActionBarActivity {
+
+    static String TWITTER_CONSUMER_KEY = "o8QTwfzt6CdfDGndyqvLrg";
+    static String TWITTER_CONSUMER_SECRET = "jqU2tq5QVUkK6JdFA22wtXZNrTumatvG9VpPAfK5M";
+    static String TWITTER_CALLBACK_URL = "http://seteam4.azurewebsites.net";
 
     private Activity mActivity;
 
@@ -97,17 +109,45 @@ public class LoginActivity extends ActionBarActivity {
                 });
             }
         };
+
         Button facebookButton = (Button) findViewById(R.id.button_facebook);
         facebookButton.setOnClickListener(fbClickListener);
 
-        //Button twitterButton = (Button) findViewById(R.id.button_twitter);
-        //twitterButton.setOnClickListener(onClickListener);
+        Button twitterButton = (Button) findViewById(R.id.button_twitter);
+        twitterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loginToTwitter();
+            }
+        });
     }
 
     public void openMainActivity(){
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void loginToTwitter() {
+
+        ConfigurationBuilder builder = new ConfigurationBuilder();
+        builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
+        builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
+        Configuration configuration = builder.build();
+
+        TwitterFactory factory = new TwitterFactory(configuration);
+        Twitter twitter = factory.getInstance();
+
+
+        try {
+            RequestToken requestToken = twitter
+                    .getOAuthRequestToken(TWITTER_CALLBACK_URL);
+            this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
+                    .parse(requestToken.getAuthenticationURL())));
+        } catch (TwitterException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

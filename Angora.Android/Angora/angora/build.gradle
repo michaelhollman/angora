@@ -23,4 +23,5 @@ dependencies {
     compile 'com.android.support:support-v4:19.0.1'
     compile 'com.android.support:appcompat-v7:+'
     compile project(':facebook')
+    compile files('libs/twitter4j-core-4.0.1.jar')
 }
