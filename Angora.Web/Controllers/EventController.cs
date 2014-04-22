@@ -42,14 +42,16 @@ namespace Angora.Web.Controllers
         {
             //Google reverseGeo(model.Location);
             //DateTime eventTime = DateTime.Parse(model.StartDateTime);
-            string location = Locate(model.Location);
+            string coor = Locate(model.Location);
+            //string tags = model.Tags.Replace(" ", "");;
             Event newEvent = new Event()
             {
                 UserId = User.Identity.GetUserId(),
                 Name = model.Name,
                 Description = model.Description,
                 // this will have to change when google stuff added
-                Location = location,
+                Location = model.Location,
+                Coordinates = coor,
                 StartDateTime = model.StartDateTime,
                 EndDateTime = model.EndDateTime,
                 Tags = model.Tags,
@@ -71,7 +73,7 @@ namespace Angora.Web.Controllers
                 EventId = theEvent.Id,
                 Name = theEvent.Name,
                 Description = theEvent.Description,
-                Location = ReverseGeocode(theEvent.Location),
+                Location = theEvent.Location,
                 StartDateTime = theEvent.StartDateTime,
                 EndDateTime = theEvent.EndDateTime,
                 Tags = theEvent.Tags
@@ -87,7 +89,9 @@ namespace Angora.Web.Controllers
             e.Name = model.Name;
             e.Description = model.Description;
             e.Location = model.Location;
+            e.Coordinates = Locate(model.Location);
             e.StartDateTime = model.StartDateTime;
+            //string tags = model.Tags.Replace(" ", "");
             e.Tags = model.Tags;
             _eventService.Edit(e);
             _unitOfWork.SaveChanges();

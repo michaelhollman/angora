@@ -11,8 +11,10 @@ namespace Angora.Data.Models
 
         public string Description { get; set; }
 
-        //latitude then longitude
+        //formatted address
         public string Location { get; set; }
+        //lat then lng
+        public string Coordinates { get; set; }
 
         public DateTime StartDateTime { get; set; }
 
