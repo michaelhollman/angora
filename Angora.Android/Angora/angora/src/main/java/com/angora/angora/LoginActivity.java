@@ -56,6 +56,7 @@ public class LoginActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
     }
 
     @Override
@@ -84,22 +85,22 @@ public class LoginActivity extends ActionBarActivity {
                     // callback when session changes state
                     @Override
                     public void call(Session session, SessionState state, Exception exception) {
-                        Log.d("LoginActivity", "session.opened = "+session.isOpened());
                         if (session.isOpened()) {
-
                             // make request to the /me API
                             Request.newMeRequest(session, new Request.GraphUserCallback() {
 
                                 // callback after Graph API response with user object
                                 @Override
                                 public void onCompleted(GraphUser user, Response response) {
-                                    Log.e("LoginActivity", "Request Completed");
                                     if (user != null) {
                                         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
                                         SharedPreferences.Editor prefEditor = pref.edit();
                                         prefEditor.putBoolean("IsLoggedIn", true);
+                                        prefEditor.putString("LoginProvider", "Facebook");
+                                        prefEditor.putString("ProviderKey", user.getId());
+
                                         prefEditor.commit();
-                                        //TODO pass the user...or maybe the ID...
+
                                         openMainActivity();
                                     }
                                 }

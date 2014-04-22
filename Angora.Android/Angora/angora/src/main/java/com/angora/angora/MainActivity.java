@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -27,6 +28,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.protocol.HTTP;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,6 +57,9 @@ public class MainActivity extends ActionBarActivity
      */
     private CharSequence mTitle;
 
+    private static JSONObject mUser;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,16 +72,6 @@ public class MainActivity extends ActionBarActivity
             startActivity(intent);
             finish();
         }
-
-        /*
-        //this is all for beta
-        FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().replace(R.id.container, FeedFragment.newInstance(0)).commit();
-        mTitle = getString(R.string.title_feed_section);
-        getSupportActionBar().setTitle(mTitle);
-*/
-
-
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -75,6 +81,11 @@ public class MainActivity extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
+        try {
+            mUser = new LoginUserTask().execute(pref.getString("LoginProvider", null), pref.getString("ProviderKey", null)).get();
+        }catch (Exception e){
+            //todo something
+        }
     }
 
     @Override
@@ -99,15 +110,9 @@ public class MainActivity extends ActionBarActivity
                 break;
             case 2:
                 //open the friends fragment
+                break;
 
         }
-
-/*
-        //FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, MainFragment.newInstance(position))
-                .commit();
-*/
     }
 /*
     public void onSectionAttached(int number) {
@@ -282,8 +287,13 @@ public class MainActivity extends ActionBarActivity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
-            //this will get pulled in final app
 
+            TextView nameTextView = (TextView) rootView.findViewById(R.id.textView_name);
+            try {
+                nameTextView.setText(mUser.getString("FirstName") + mUser.getString("LastName"));
+            }catch (JSONException e){
+                //TODO Handle
+            }
 
             return rootView;
         }

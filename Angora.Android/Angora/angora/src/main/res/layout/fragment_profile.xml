@@ -20,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Alex Bainter"
+        android:text="Loading..."
         android:id="@+id/textView_name"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/imageView_profilePic" />
