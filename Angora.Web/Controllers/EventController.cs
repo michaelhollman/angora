@@ -37,19 +37,22 @@ namespace Angora.Web.Controllers
                 return View(newModel);
         }
 
+
+        /********
+         * These two functions not sure where put
+         * 
+         * 
+         * *********************/
         [Authorize]
         public ActionResult CreateEvent(NewEventViewModel model, string lat, string lng)
         {
-            //Google reverseGeo(model.Location);
-            //DateTime eventTime = DateTime.Parse(model.StartDateTime);
-            string coor = Locate(model.Location);
+            string coor = GetCoordinates(model.Location);
             //string tags = model.Tags.Replace(" ", "");;
             Event newEvent = new Event()
             {
                 UserId = User.Identity.GetUserId(),
                 Name = model.Name,
                 Description = model.Description,
-                // this will have to change when google stuff added
                 Location = model.Location,
                 Coordinates = coor,
                 StartDateTime = model.StartDateTime,
@@ -89,7 +92,7 @@ namespace Angora.Web.Controllers
             e.Name = model.Name;
             e.Description = model.Description;
             e.Location = model.Location;
-            e.Coordinates = Locate(model.Location);
+            e.Coordinates = GetCoordinates(model.Location);
             e.StartDateTime = model.StartDateTime;
             //string tags = model.Tags.Replace(" ", "");
             e.Tags = model.Tags;
@@ -116,7 +119,7 @@ namespace Angora.Web.Controllers
             return View();
         }
 
-        private static string Locate(string address)
+        private static string GetCoordinates(string address)
         {
             var requestUri = string.Format("http://maps.googleapis.com/maps/api/geocode/xml?address={0}&sensor=false", Uri.EscapeDataString(address));
 
