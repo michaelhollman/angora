@@ -1,6 +1,6 @@
 ﻿@model Angora.Web.Models.NewEventViewModel
 
-@using (Html.BeginForm("CreateEvent", "Event"))
+@using (Html.BeginForm("CreateEvent", "Event", FormMethod.Post, new { lat = "this", lng = "that"} ))
 {
     <div class="form-horizontal">
         <h2>Create New Event</h2>
@@ -22,12 +22,24 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Location, new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" for="Location">
+                <span class="label label-info" onclick="toggleShow(document.getElementById('coor'))" style="margin-right: 10px">...</span>
+                Location
+            </label>
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Location, new { @class = "form-control", required = "required" })
+                @Html.TextBoxFor(model => model.Location, new { @class = "form-control", id = "geocomplete", required = "required" })
                 @Html.ValidationMessageFor(model => model.Location)
             </div>
         </div>
+
+        <div class="details what-is well well-sm" id="coor" style="display: none">
+            <p>Latitude:     <span data-geo="lat" id="lat"></span></p> 
+
+            <p>Longitude:    <span data-geo="lng" id="lng"></span></p>
+        </div>
+        <div class="map_canvas"></div>
+        
+        
 
         <div class="form-group">
             @Html.LabelFor(model => model.StartDateTime, new { @class = "control-label col-md-2" })
@@ -89,7 +101,7 @@
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-2">
-                <button type="submit" class="btn btn-success width-100">Create</button>
+                <button type="submit" class="btn btn-success width-100" id="create">Create</button>
             </div>
         </div>
     </div>
@@ -100,6 +112,7 @@
 </div>
 
 <script>
+
     function toggleShow(element) {
         if ($(element).is(":hidden")) {
             $(element).slideDown();
@@ -108,4 +121,26 @@
             $(element).slideUp();
         }
     }
+
+    $(function () {
+
+        var options = {
+            map: ".map_canvas",
+            details: ".details",
+            detailsAttribute: "data-geo"
+        };
+
+        $("#geocomplete").geocomplete(options)
+          .bind("geocode:result", function (event, result) {
+              console.log("Result: " + result.formatted_address);
+          })
+          .bind("geocode:error", function (event, status) {
+              console.log("ERROR: " + status);
+          })
+          .bind("geocode:multiple", function (event, results) {
+              console.log("Multiple: " + results.length + " results found");
+          });
+
+    });
+
 </script>

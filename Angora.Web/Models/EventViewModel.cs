@@ -22,6 +22,12 @@ namespace Angora.Web.Models
         //latitude then longitude
         public string Location { get; set; }
 
+        [Display(Name = "Latitude")]
+        public string Latitude { get; set; }
+
+        [Display(Name = "Longitude")]
+        public string Longitude { get; set; }
+
         [Display(Name = "Start Date and Time")]
         public DateTime StartDateTime { get; set; }
 
