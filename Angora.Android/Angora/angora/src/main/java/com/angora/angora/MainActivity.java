@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -83,8 +84,10 @@ public class MainActivity extends ActionBarActivity
 
         try {
             mUser = new LoginUserTask().execute(pref.getString("LoginProvider", null), pref.getString("ProviderKey", null)).get();
+
         }catch (Exception e){
             //todo something
+            Log.e("NOOO", "IT DIDNT WORK");
         }
     }
 

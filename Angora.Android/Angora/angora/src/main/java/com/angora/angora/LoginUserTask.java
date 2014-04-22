@@ -36,8 +36,6 @@ public class LoginUserTask extends AsyncTask<String, Void, JSONObject>
             url = new URL(urlString.toString());
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
-            urlConnection.setDoOutput(true);
-            urlConnection.setDoInput(true);
             urlConnection.connect();
             InputStream inStream = null;
             inStream = urlConnection.getInputStream();
@@ -53,6 +51,7 @@ public class LoginUserTask extends AsyncTask<String, Void, JSONObject>
         catch (Exception e)
         {
             //TODO handle
+            e.printStackTrace();
         }
 
         return (object);
