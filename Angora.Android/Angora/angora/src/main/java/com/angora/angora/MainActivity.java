@@ -44,6 +44,7 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -60,6 +61,9 @@ public class MainActivity extends ActionBarActivity
 
     private static JSONObject mUser;
 
+    private CacheHelper mCacheHelper;
+
+    private final long REFRESH_RATE = 60000; //60 seconds, in milliseconds
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +76,9 @@ public class MainActivity extends ActionBarActivity
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
+            return;
         }
+
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -82,13 +88,38 @@ public class MainActivity extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        try {
-            mUser = new LoginUserTask().execute(pref.getString("LoginProvider", null), pref.getString("ProviderKey", null)).get();
+        mCacheHelper = new CacheHelper(this);
 
-        }catch (Exception e){
-            //todo something
-            Log.e("NOOO", "IT DIDNT WORK");
+        if (System.currentTimeMillis() - pref.getLong("LastRefresh", 0) >= REFRESH_RATE){
+            refreshData();
+        } else {
+            try{
+                mUser = mCacheHelper.getStoredUser();
+            }catch (IOException e){
+                //todo handle
+                Log.e("Hey", "Ya blew it");
+            }catch (ClassNotFoundException e2){
+                //todo handle
+            }
         }
+
+    }
+
+    private void refreshData(){
+        CacheHelper ch = new CacheHelper(this);
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
+        SharedPreferences.Editor editor = pref.edit();
+        try{
+            mUser = new LoginUserTask().execute(pref.getString("LoginProvider", null), pref.getString("ProviderKey", null)).get();
+            ch.storeUser(mUser);
+        }catch (IOException e){
+            //todo handle
+        }catch (InterruptedException e2){
+            //todo handle
+        }catch (ExecutionException e3){
+            //todo handle
+        }
+        editor.putLong("LastRefresh", System.nanoTime());
     }
 
     @Override
@@ -117,21 +148,7 @@ public class MainActivity extends ActionBarActivity
 
         }
     }
-/*
-    public void onSectionAttached(int number) {
-        switch (number) {
-            case 0:
-                mTitle = getString(R.string.title_feed_section);
-                break;
-            case 1:
-                mTitle = getString(R.string.title_profile_section);
-                break;
-            case 2:
-                mTitle = getString(R.string.title_friends_section);
-                break;
-        }
-    }
-    */
+
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();

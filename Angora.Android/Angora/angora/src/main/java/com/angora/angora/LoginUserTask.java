@@ -1,7 +1,9 @@
 package com.angora.angora;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -17,6 +19,7 @@ import java.net.URL;
  */
 public class LoginUserTask extends AsyncTask<String, Void, JSONObject>
 {
+
     private final String SITE_URL = "http://seteam4.azurewebsites.net/api/user/login?";
     @Override
     protected JSONObject doInBackground(String... strings) {
@@ -51,9 +54,15 @@ public class LoginUserTask extends AsyncTask<String, Void, JSONObject>
         catch (Exception e)
         {
             //TODO handle
-            e.printStackTrace();
+
         }
 
         return (object);
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+
     }
 }
