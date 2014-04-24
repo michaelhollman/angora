@@ -226,7 +226,20 @@ public class MainActivity extends ActionBarActivity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
-            AngoraEvent[] userEvent = generateFakeEvents();
+
+            AngoraEvent[] userEvent = null;
+
+            try {
+                userEvent = new GetEventsTask().execute(mUser.getString("Id")).get();
+            }catch (JSONException je){
+                //todo handle
+                je.printStackTrace();
+            }catch (InterruptedException ie){
+                ie.printStackTrace();
+            }catch(ExecutionException ee){
+                ee.printStackTrace();
+            }
+
 
             mAdapter = new CustomAdapter(getActivity(), userEvent);
 
@@ -248,7 +261,7 @@ public class MainActivity extends ActionBarActivity
 
         /*
         this is purely for testing
-         */
+
         public AngoraEvent[] generateFakeEvents(){
             AngoraEvent[] userEvent = new AngoraEvent[15];
             SimpleDateFormat parser = new SimpleDateFormat("MM/dd/yyy hh:mm a");
@@ -275,7 +288,9 @@ public class MainActivity extends ActionBarActivity
 
             return userEvent;
         }
+        */
     }
+
     public static class ProfileFragment extends Fragment {
 
         /**
@@ -311,6 +326,7 @@ public class MainActivity extends ActionBarActivity
             TextView nameTextView = (TextView) rootView.findViewById(R.id.textView_name);
             try {
                 nameTextView.setText(mUser.getString("FirstName") + mUser.getString("LastName"));
+
             }catch (JSONException e){
                 //TODO Handle
             }
