@@ -3,31 +3,23 @@ package com.angora.angora;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Base64;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.facebook.*;
 import com.facebook.model.*;
-import com.facebook.widget.LoginButton;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
+import java.util.concurrent.ExecutionException;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -35,14 +27,20 @@ import twitter4j.TwitterFactory;
 import twitter4j.auth.RequestToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
+import twitter4j.auth.AccessToken;
 
 public class LoginActivity extends ActionBarActivity {
 
-    static String TWITTER_CONSUMER_KEY = "o8QTwfzt6CdfDGndyqvLrg";
-    static String TWITTER_CONSUMER_SECRET = "jqU2tq5QVUkK6JdFA22wtXZNrTumatvG9VpPAfK5M";
-    static String TWITTER_CALLBACK_URL = "http://seteam4.azurewebsites.net";
+    private final String TWITTER_CONSUMER_KEY = "o8QTwfzt6CdfDGndyqvLrg";
+    private final String TWITTER_CONSUMER_SECRET = "jqU2tq5QVUkK6JdFA22wtXZNrTumatvG9VpPAfK5M";
+    private final String TWITTER_CALLBACK_URL = "http://seteam4.azurewebsites.net";
+    private final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
+
 
     private Activity mActivity;
+    private RequestToken requestToken;
+    private Twitter twitter;
+    private AccessToken accessToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +48,12 @@ public class LoginActivity extends ActionBarActivity {
         setContentView(R.layout.activity_login);
         mActivity = this;
         registerButtons();
+
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
 
     }
 
@@ -76,6 +80,7 @@ public class LoginActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
     public void registerButtons(){
+        //Facebook Button
         View.OnClickListener fbClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -114,13 +119,17 @@ public class LoginActivity extends ActionBarActivity {
         Button facebookButton = (Button) findViewById(R.id.button_facebook);
         facebookButton.setOnClickListener(fbClickListener);
 
-        Button twitterButton = (Button) findViewById(R.id.button_twitter);
-        twitterButton.setOnClickListener(new View.OnClickListener() {
+        //Twitter Button
+        View.OnClickListener twitClickListener = new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
                 loginToTwitter();
             }
-        });
+        };
+
+        Button twitterButton = (Button) findViewById(R.id.button_twitter);
+        twitterButton.setOnClickListener(twitClickListener);
     }
 
     public void openMainActivity(){
@@ -130,25 +139,138 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     private void loginToTwitter() {
-
         ConfigurationBuilder builder = new ConfigurationBuilder();
         builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
         builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
         Configuration configuration = builder.build();
 
         TwitterFactory factory = new TwitterFactory(configuration);
-        Twitter twitter = factory.getInstance();
+        twitter = factory.getInstance();
 
+        WebView webview = new WebView(this);
+        webview.setWebViewClient(new WebViewClient(){
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (url.startsWith(TWITTER_CALLBACK_URL)) {
+                    setContentView(R.layout.activity_login);
+
+                    Uri uri = Uri.parse(url);
+                    // oAuth verifier
+                    String verifier = uri.getQueryParameter(URL_TWITTER_OAUTH_VERIFIER);
+                    Log.e("Made it ", verifier);
+                    try {
+                        // Get the access token
+                        accessToken = new GetTwitterAccessTokenTask().execute(verifier).get();
+
+                        // Getting user details from twitter
+                        long userID = accessToken.getUserId();
+
+                        Log.e("UserID=", String.valueOf(userID));
+
+                        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
+                        SharedPreferences.Editor prefEditor = pref.edit();
+
+                        prefEditor.putBoolean("IsLoggedIn", true);
+                        prefEditor.putString("LoginProvider", "Twitter");
+                        prefEditor.putString("ProviderKey", String.valueOf(userID));
+
+                        prefEditor.commit();
+
+                        openMainActivity();
+
+
+                    } catch (Exception e) {
+                        // Check log for login errors
+                        Log.e("Twitter Login Error", "> " + e.getMessage());
+                    }
+                }else{
+                    view.loadUrl(url);
+                }
+                return false;
+            }
+        });
+
+        setContentView(webview);
 
         try {
-            RequestToken requestToken = twitter
-                    .getOAuthRequestToken(TWITTER_CALLBACK_URL);
-            this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
-                    .parse(requestToken.getAuthenticationURL())));
-        } catch (TwitterException e) {
+            requestToken = new GetTwitterRequestTokenTask().execute().get();
+            //this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
+            //        .parse(requestToken.getAuthenticationURL())));
+            webview.loadUrl(requestToken.getAuthenticationURL());
+        }catch (InterruptedException e){
+            //todo handle
             e.printStackTrace();
+        }catch (ExecutionException e2){
+            //todo handle
+            e2.printStackTrace();
         }
 
+        /*
+        AccessToken accessToken = null;
+        while(accessToken == null) {
+            if (twitResponse != null) {
+                Uri uri = Uri.parse(twitResponse);
+                // oAuth verifier
+                String verifier = uri.getQueryParameter(URL_TWITTER_OAUTH_VERIFIER);
+                Log.e("Made it ", "yay");
+                try {
+                    // Get the access token
+                    accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
+
+                    // Getting user details from twitter
+                    long userID = accessToken.getUserId();
+
+                    Log.e("UserID=", String.valueOf(userID));
+
+                    /*
+                    SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
+                    SharedPreferences.Editor prefEditor = pref.edit();
+
+                    prefEditor.putBoolean("IsLoggedIn", true);
+                    prefEditor.putString("LoginProvider", "Twitter");
+                    prefEditor.putString("ProviderKey", String.valueOf(userID));
+
+                    prefEditor.commit();
+
+                    openMainActivity();
+
+
+                } catch (Exception e) {
+                    // Check log for login errors
+                    Log.e("Twitter Login Error", "> " + e.getMessage());
+                }
+
+            }
+        }*/
+    }
+
+    public class GetTwitterRequestTokenTask extends AsyncTask<String, Void, RequestToken> {
+
+        @Override
+        protected RequestToken doInBackground(String... strings) {
+            try {
+                return twitter.getOAuthRequestToken(TWITTER_CALLBACK_URL);
+            } catch (TwitterException e) {
+                //TODO HANDLE
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    public class GetTwitterAccessTokenTask extends AsyncTask<String, Void, AccessToken> {
+
+        @Override
+        protected AccessToken doInBackground(String... strings) {
+            try {
+                return twitter.getOAuthAccessToken(requestToken, strings[0]);
+            } catch (TwitterException e) {
+                //TODO HANDLE
+                e.printStackTrace();
+            }
+            return null;
+        }
     }
 
 }
