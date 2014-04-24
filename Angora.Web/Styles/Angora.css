@@ -6054,4 +6054,28 @@ body {
 #ScottImg:hover {
   background-position-x: -122px;
 }
+.event-feed div {
+  display: inline-block;
+}
+div.event-feed div.info {
+  width: 74%;
+}
+div.event-feed div.btn-group {
+  width: 25%;
+  margin-left: auto;
+}
+.help-box {
+  margin-left: 200px;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+label {
+  font-size: 14px;
+}
+.map_canvas {
+  height: 400px;
+  width: 83%;
+  margin-bottom: 10px;
+  margin-left: 195px;
+}
 /*# sourceMappingURL=angora.css.map */
