@@ -1,5 +1,6 @@
 package com.angora.angora;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.text.DateFormat;
@@ -7,7 +8,7 @@ import java.text.DateFormat;
 /**
  * Created by Alex on 3/19/14.
  */
-public class AngoraEvent {
+public class AngoraEvent implements Serializable {
     public String getName() {
         return name;
     }

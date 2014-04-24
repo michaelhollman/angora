@@ -2,7 +2,9 @@ package com.angora.angora;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -27,14 +29,27 @@ public class CacheHelper {
 
     public void storeUser(JSONObject user) throws IOException{
         ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(mActivity.getCacheDir(),"")+USER_STORAGE));
-        out.writeObject(user);
+        out.writeObject(user.toString());
         out.close();
     }
 
-    public JSONObject getStoredUser() throws IOException, ClassNotFoundException{
+    public JSONObject getStoredUser() throws IOException, ClassNotFoundException, JSONException{
         ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(new File(mActivity.getCacheDir(),"")+USER_STORAGE)));
-        JSONObject user = (JSONObject) in.readObject();
+        JSONObject user = new JSONObject((String) in.readObject());
         in.close();
         return user;
+    }
+
+    public void storeEvents(AngoraEvent[] events) throws IOException{
+        ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(mActivity.getCacheDir(),"")+USER_STORAGE));
+        out.writeObject(events);
+        out.close();
+    }
+
+    public AngoraEvent[] getStoredEvents() throws IOException, ClassNotFoundException{
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(new File(mActivity.getCacheDir(),"")+USER_STORAGE)));
+        AngoraEvent[] events = (AngoraEvent[]) in.readObject();
+        in.close();
+        return events;
     }
 }
