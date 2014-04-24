@@ -29,7 +29,7 @@ namespace Angora.Web.Models
         public DateTime EndDateTime { get; set; }
 
         [Display(Name= "Tags")]
-        public List<string> Tags { get; set; }
+        public List<Tag> Tags { get; set; }
     }
 
     public class EditEventViewModel
@@ -56,7 +56,7 @@ namespace Angora.Web.Models
         public DateTime EndDateTime { get; set; }
 
         [Display(Name = "Tags")]
-        public List<string> Tags { get; set; }
+        public List<Tag> Tags { get; set; }
     }
 
 }

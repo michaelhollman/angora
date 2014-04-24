@@ -102,6 +102,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EventSchedulerService.cs" />
     <Compile Include="EventService.cs" />
     <Compile Include="IEventService.cs" />
     <Compile Include="FooCDNService.cs" />

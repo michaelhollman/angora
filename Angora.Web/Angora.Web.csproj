@@ -305,12 +305,14 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\EventFeedController.cs" />
+    <Compile Include="Controllers\EventSchedulerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\EventFeedViewModel.cs" />
+    <Compile Include="Models\EventSchedulerViewModel.cs" />
     <Compile Include="Models\EventViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -398,11 +400,13 @@
     <Content Include="Views\Event\Edit.cshtml" />
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Styles\Angora\_helpers.less" />
+    <Content Include="Views\EventScheduler\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
     <None Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>

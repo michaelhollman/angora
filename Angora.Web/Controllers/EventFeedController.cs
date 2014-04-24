@@ -17,7 +17,7 @@ namespace Angora.Web.Controllers
 
         //
         // GET: /EventFeed/
-        [Route("Events")]
+        [Route("events")]
         public ActionResult Index()
         {
             EventFeedViewModel model = new EventFeedViewModel();

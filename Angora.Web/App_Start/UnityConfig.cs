@@ -42,6 +42,7 @@ namespace Angora.Web.App_Start
 
             // Services
             container.RegisterType<IEventService, EventService>();
+            container.RegisterType<IEventSchedulerService, EventSchedulerService>();
             container.RegisterType<IFooCDNService, FooCDNService>();
             container.RegisterType<IAngoraUserService, AngoraUserService>();
 

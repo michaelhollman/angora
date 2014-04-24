@@ -51,7 +51,7 @@ namespace Angora.Web.Controllers
                 Location = model.Location,
                 StartDateTime = model.StartDateTime,
                 EndDateTime = model.EndDateTime,
-                Tags = model.Tags.Select(t => t.ToTag()).ToList(),
+                Tags = model.Tags,
                 CreationTime = DateTime.UtcNow
             };
 
@@ -72,7 +72,7 @@ namespace Angora.Web.Controllers
                 Description = theEvent.Description,
                 Location = theEvent.Location,
                 StartDateTime = theEvent.StartDateTime,
-                Tags = theEvent.Tags.Select(t => t.ToString()).ToList()
+                Tags = theEvent.Tags,
             };
             return View(model);
         }
@@ -85,7 +85,7 @@ namespace Angora.Web.Controllers
             e.Description = model.Description;
             e.Location = model.Location;
             e.StartDateTime = model.StartDateTime;
-            e.Tags = model.Tags.Select(t => t.ToTag()).ToList();
+            e.Tags = model.Tags;
             _eventService.Edit(e);
             _unitOfWork.SaveChanges();
 
