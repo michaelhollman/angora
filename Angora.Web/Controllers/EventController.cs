@@ -6,6 +6,11 @@ using Angora.Services;
 using Angora.Web.Models;
 using Microsoft.AspNet.Identity;
 using Angora.Data;
+using System.Collections.Generic;
+using System.Net;
+using System.IO;
+using System.Xml.Linq;
+using System.Globalization;
 
 namespace Angora.Web.Controllers
 {
@@ -30,25 +35,29 @@ namespace Angora.Web.Controllers
         [Authorize]
         public ActionResult Create()
         {
-            NewEventViewModel newModel = new NewEventViewModel();
+
+            NewEventViewModel newModel = new NewEventViewModel { Latitude = "0", Longitude = "0" };
             return View(newModel);
         }
 
-        [Authorize]
-        public ActionResult CreateEvent(NewEventViewModel model)
-        {
-            //Google reverseGeo(model.Location);
-            //DateTime eventTime = DateTime.Parse(model.StartDateTime);
 
-            //alot of these will probs have to change
-            //I didn't use view models this summer so this is new stuff
+        /********
+         * These two functions not sure where put
+         * 
+         * 
+         * *********************/
+        [Authorize]
+        public ActionResult CreateEvent(NewEventViewModel model, string lat, string lng)
+        {
+            string coor = GetCoordinates(model.Location);
+            //string tags = model.Tags.Replace(" ", "");;
             Event newEvent = new Event()
             {
                 UserId = User.Identity.GetUserId(),
                 Name = model.Name,
                 Description = model.Description,
-                // this will have to change when google stuff added
                 Location = model.Location,
+                Coordinates = coor,
                 StartDateTime = model.StartDateTime,
                 EndDateTime = model.EndDateTime,
                 Tags = model.Tags,
@@ -73,6 +82,7 @@ namespace Angora.Web.Controllers
                 Location = theEvent.Location,
                 StartDateTime = theEvent.StartDateTime,
                 Tags = theEvent.Tags,
+                EndDateTime = theEvent.EndDateTime,
             };
             return View(model);
         }
@@ -84,9 +94,20 @@ namespace Angora.Web.Controllers
             e.Name = model.Name;
             e.Description = model.Description;
             e.Location = model.Location;
+            e.Coordinates = GetCoordinates(model.Location);
             e.StartDateTime = model.StartDateTime;
+            //string tags = model.Tags.Replace(" ", "");
             e.Tags = model.Tags;
             _eventService.Edit(e);
+            _unitOfWork.SaveChanges();
+
+            return RedirectToAction("Index", "EventFeed");
+        }
+
+        public ActionResult DeleteEvent(long id)
+        {
+            _eventService.Delete(id);
+
             _unitOfWork.SaveChanges();
 
             return RedirectToAction("Index", "EventFeed");
@@ -98,6 +119,51 @@ namespace Angora.Web.Controllers
             Event eventView = _eventService.FindById(id);
 
             return View();
+        }
+
+        private static string GetCoordinates(string address)
+        {
+            var requestUri = string.Format("http://maps.googleapis.com/maps/api/geocode/xml?address={0}&sensor=false", Uri.EscapeDataString(address));
+
+            var request = WebRequest.Create(requestUri);
+            var response = request.GetResponse();
+            var xdoc = XDocument.Load(response.GetResponseStream());
+
+            var result = xdoc.Element("GeocodeResponse").Element("result");
+            string location;
+
+            if (xdoc.Element("GeocodeResponse").Element("status").Value.Equals("OK"))
+            {
+                var locationElement = result.Element("geometry").Element("location");
+                var lat = locationElement.Element("lat");
+                var lng = locationElement.Element("lng");
+
+                location = lat.Value + "," + lng.Value;
+            }
+            else
+            {
+                location = "";
+            }
+
+            return location;
+        }
+
+        private static string ReverseGeocode(string latlng)
+        {
+            var requestUri = string.Format("https://maps.googleapis.com/maps/api/geocode/xml?latlng={0}&sensor=false", latlng);
+
+            var request = WebRequest.Create(requestUri);
+            var response = request.GetResponse();
+            var xdoc = XDocument.Load(response.GetResponseStream());
+
+            var result = xdoc.Element("GeocodeResponse").Element("result");
+            string location;
+
+            var addressElement = result.Element("formatted_address");
+
+            location = addressElement.Value;
+
+            return location;
         }
 
     }

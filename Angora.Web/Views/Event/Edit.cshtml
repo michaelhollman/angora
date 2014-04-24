@@ -24,13 +24,24 @@
             </div>
         </div>
 
+
         <div class="form-group">
-            @Html.LabelFor(model => model.Location, new { @class = "control-label col-md-2" })
+            <label class="control-label col-md-2" for="Location">
+                <span class="label label-info" onclick="toggleShow(document.getElementById('coor-help'))" style="margin-right: 10px">...</span>
+                Location
+            </label>
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Location, new { @class = "form-control", required = "required" })
+                @Html.TextBoxFor(model => model.Location, new { @class = "form-control", id = "geocomplete", required = "required" })
                 @Html.ValidationMessageFor(model => model.Location)
             </div>
         </div>
+
+        <div class="details help-box well well-sm" id="coor-help" style="display: none">
+            <p>Latitude:     <span data-geo="lat" id="lat"></span></p>
+
+            <p>Longitude:    <span data-geo="lng" id="lng"></span></p>
+        </div>
+        <div class="map_canvas"></div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.StartDateTime, new { @class = "control-label col-md-2" })
@@ -64,6 +75,33 @@
         </div>
 
         <div class="form-group">
+            <label class="control-label col-md-2" for="Tags">
+                <span class="label label-info" onclick="toggleShow(document.getElementById('tag-help'))" style="margin-right: 10px">?</span>
+                Tags
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Tags, new { @class = "form-control", required = "required" })
+                @Html.ValidationMessageFor(model => model.Tags)
+            </div>
+        </div>
+        <div class="help-box well well-sm" id="tag-help"style="display: none">
+            <div>
+                <p>
+                    Tag your events. This will help us suggest events to you, and allow other users to find
+                    your events easier.
+                </p>
+                <p>Tag events by typing the word(s) in the text box. For multiple tags, separate the tags with commas.</p>
+
+                <p>
+                    Example: I want to tag my basketball watching party with the tags "basketball" and the name of the team, "Huskers".
+                    I would type the following line into the text box:
+                </p>
+
+                <p>basketball, Huskers</p>
+            </div>
+        </div>
+
+        <div class="form-group">
             <div class="col-md-offset-2 col-md-2">
                 <button type="submit" class="btn btn-success width-100">Save</button>
             </div>
@@ -75,5 +113,35 @@
     @Html.ActionLink("Back to List", "Index", "EventFeed")
 </div>
 
+<script>
+    function toggleShow(element) {
+        if ($(element).is(":hidden")) {
+            $(element).slideDown();
+        }
+        else {
+            $(element).slideUp();
+        }
+    }
 
+    $(function () {
+
+        var options = {
+            map: ".map_canvas",
+            details: ".details",
+            detailsAttribute: "data-geo"
+        };
+
+        $("#geocomplete").geocomplete(options)
+          .bind("geocode:result", function (event, result) {
+              console.log("Result: " + result.formatted_address);
+          })
+          .bind("geocode:error", function (event, status) {
+              console.log("ERROR: " + status);
+          })
+          .bind("geocode:multiple", function (event, results) {
+              console.log("Multiple: " + results.length + " results found");
+          });
+
+    });
+</script>
 
