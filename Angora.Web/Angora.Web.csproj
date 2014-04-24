@@ -235,6 +235,22 @@
     <Content Include="Images\RachEl.jpg" />
     <Content Include="Images\Scott.jpg" />
     <Content Include="Images\ScottComb.jpg" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Scripts\jquery-2.1.0.intellisense.js" />
+    <Content Include="Scripts\jquery-2.1.0.js" />
+    <Content Include="Scripts\jquery-2.1.0.min.js" />
+    <Content Include="Scripts\jquery-2.1.0.min.map" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.geocomplete.js" />
+    <Content Include="Scripts\jquery.leanModal.min.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\respond.js" />
+    <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\lib\bootstrap.js" />
     <Content Include="Scripts\lib\bootstrap.min.js" />
     <None Include="Scripts\lib\jquery-2.1.0.intellisense.js" />
@@ -255,6 +271,12 @@
     </Content>
     <Content Include="Styles\Angora.min.css">
       <DependentUpon>Angora.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\Angora\event-feed.css">
+      <DependentUpon>event-feed.less</DependentUpon>
+    </Content>
+    <Content Include="Styles\Angora\event.css">
+      <DependentUpon>event.less</DependentUpon>
     </Content>
     <Content Include="Styles\Angora\landing.css">
       <DependentUpon>landing.less</DependentUpon>
@@ -398,6 +420,14 @@
     <Content Include="Views\Event\Edit.cshtml" />
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Styles\Angora\_helpers.less" />
+    <Content Include="Styles\Angora\event-feed.less" />
+    <Content Include="Styles\Angora\event-feed.css.map">
+      <DependentUpon>event-feed.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\Angora\event.less" />
+    <Content Include="Styles\Angora\event.css.map">
+      <DependentUpon>event.css</DependentUpon>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

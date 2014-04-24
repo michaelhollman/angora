@@ -22,6 +22,12 @@ namespace Angora.Web.Models
         //latitude then longitude
         public string Location { get; set; }
 
+        [Display(Name = "Latitude")]
+        public string Latitude { get; set; }
+
+        [Display(Name = "Longitude")]
+        public string Longitude { get; set; }
+
         [Display(Name = "Start Date and Time")]
         public DateTime StartDateTime { get; set; }
 
@@ -29,7 +35,7 @@ namespace Angora.Web.Models
         public DateTime EndDateTime { get; set; }
 
         [Display(Name= "Tags")]
-        public List<string> Tags { get; set; }
+        public string Tags { get; set; }
     }
 
     public class EditEventViewModel
@@ -49,14 +55,14 @@ namespace Angora.Web.Models
         //latitude then longitude
         public string Location { get; set; }
 
-        [Display(Name = "Start Date and StartDateTime")]
+        [Display(Name = "Start Date and Time")]
         public DateTime StartDateTime { get; set; }
 
-        [Display(Name = "End Date and StartDateTime")]
+        [Display(Name = "End Date and Time")]
         public DateTime EndDateTime { get; set; }
 
         [Display(Name = "Tags")]
-        public List<string> Tags { get; set; }
+        public string Tags { get; set; }
     }
 
 }
