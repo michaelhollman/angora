@@ -15,5 +15,6 @@
     <string name="title_activity_event_details">EventDetailsActivity</string>
     <string name="login_activity_instructions">Auderus requires that you have an existing Facebook or Twitter account.
         Please register online at auder.us before using the app.</string>
+    <string name="app_id">1440310966205344</string>
 
 </resources>

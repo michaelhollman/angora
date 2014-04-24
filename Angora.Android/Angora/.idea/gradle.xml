@@ -7,8 +7,9 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/angora" />
+            <option value="C:\Git\angora\Angora.Android\Angora" />
+            <option value="C:\Git\angora\Angora.Android\Angora\angora" />
+            <option value="C:\Git\angora\Angora.Android\Angora\facebook" />
           </set>
         </option>
       </GradleProjectSettings>

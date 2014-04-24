@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Angora.iml" filepath="$PROJECT_DIR$/Angora.iml" />
       <module fileurl="file://$PROJECT_DIR$/angora/angora.iml" filepath="$PROJECT_DIR$/angora/angora.iml" />
+      <module fileurl="file://$PROJECT_DIR$/facebook/facebook.iml" filepath="$PROJECT_DIR$/facebook/facebook.iml" />
     </modules>
   </component>
 </project>

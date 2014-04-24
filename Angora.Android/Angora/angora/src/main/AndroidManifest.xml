@@ -4,9 +4,11 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
 
     <uses-sdk android:minSdkVersion="11" />
 
@@ -25,12 +27,20 @@
             </intent-filter>
         </activity>
         <activity android:name="com.angora.angora.LoginActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="oauth" android:host="angora"/>
+            </intent-filter>
         </activity>
         <activity
             android:name="com.angora.angora.SnapAndGoActivity"
             android:label="@string/title_activity_snap_and_go"
             android:parentActivityName="com.angora.angora.MainActivity"
             android:screenOrientation="landscape" >
+
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
@@ -43,6 +53,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
         </activity>
+        <activity
+            android:name="com.facebook.LoginActivity" ></activity>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id"
+            />
     </application>
 
 </manifest>
