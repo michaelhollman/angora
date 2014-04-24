@@ -27,7 +27,7 @@
 
         <div class="form-group">
             <label class="control-label col-md-2" for="Location">
-                <span class="label label-info" onclick="toggleShow(document.getElementById('coor'))" style="margin-right: 10px">...</span>
+                <span class="label label-info" onclick="toggleShow(document.getElementById('coor-help'))" style="margin-right: 10px">...</span>
                 Location
             </label>
             <div class="col-md-10">
@@ -36,7 +36,7 @@
             </div>
         </div>
 
-        <div class="details what-is well well-sm" id="coor" style="display: none">
+        <div class="details help-box well well-sm" id="coor-help" style="display: none">
             <p>Latitude:     <span data-geo="lat" id="lat"></span></p>
 
             <p>Longitude:    <span data-geo="lng" id="lng"></span></p>
@@ -76,7 +76,7 @@
 
         <div class="form-group">
             <label class="control-label col-md-2" for="Tags">
-                <span class="label label-info" onclick="toggleShow(document.getElementById('tag'))" style="margin-right: 10px">?</span>
+                <span class="label label-info" onclick="toggleShow(document.getElementById('tag-help'))" style="margin-right: 10px">?</span>
                 Tags
             </label>
             <div class="col-md-10">
@@ -84,7 +84,7 @@
                 @Html.ValidationMessageFor(model => model.Tags)
             </div>
         </div>
-        <div class="what-is well well-sm" id="tag" style="display: none">
+        <div class="help-box well well-sm" id="tag-help"style="display: none">
             <div>
                 <p>
                     Tag your events. This will help us suggest events to you, and allow other users to find

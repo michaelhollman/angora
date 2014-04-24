@@ -139,7 +139,7 @@ namespace Angora.Web.Controllers
             }
             else
             {
-                location = "Not valid location";
+                location = "";
             }
 
             return location;
