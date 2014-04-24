@@ -35,17 +35,11 @@ namespace Angora.Web.Controllers
         [Authorize]
         public ActionResult Create()
         {
-
             NewEventViewModel newModel = new NewEventViewModel { Latitude = "0", Longitude = "0" };
             return View(newModel);
         }
 
 
-        /********
-         * These two functions not sure where put
-         * 
-         * 
-         * *********************/
         [Authorize]
         public ActionResult CreateEvent(NewEventViewModel model, string lat, string lng)
         {
@@ -96,7 +90,6 @@ namespace Angora.Web.Controllers
             e.Location = model.Location;
             e.Coordinates = GetCoordinates(model.Location);
             e.StartDateTime = model.StartDateTime;
-            //string tags = model.Tags.Replace(" ", "");
             e.Tags = model.Tags;
             _eventService.Edit(e);
             _unitOfWork.SaveChanges();

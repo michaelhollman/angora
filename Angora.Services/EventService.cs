@@ -15,7 +15,6 @@ namespace Angora.Services
 
         public long Create(Event newEvent)
         {
-            newEvent.Tags = new List<Tag>() { "foo".ToTag() };
             _eventRepo.Insert(newEvent);
 
             return newEvent.Id;
