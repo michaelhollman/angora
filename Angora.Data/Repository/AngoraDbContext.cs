@@ -7,12 +7,18 @@ namespace Angora.Data
 {
     public class AngoraDbContext : IdentityDbContext<AngoraUser>
     {
-        public AngoraDbContext() : base(ConfigurationManager.ConnectionStrings["AngoraDbConnection"].ConnectionString, false) { }
+        public AngoraDbContext()
+            : base(ConfigurationManager.ConnectionStrings["AngoraDbConnection"].ConnectionString, false)
+        {
+            this.Configuration.LazyLoadingEnabled = true;
+            this.Configuration.ProxyCreationEnabled = true;
+        }
 
         public DbSet<Event> Events { get; set; }
         public DbSet<EventScheduler> EventSchedulers { get; set; }
         public DbSet<EventSchedulerResponse> EventSchedulerResponses { get; set; }
         public DbSet<EventTime> EventTimes { get; set; }
         public DbSet<Tag> Tags { get; set; }
+        public DbSet<Location> Locations { get; set; }
     }
 }

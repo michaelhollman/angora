@@ -21,7 +21,7 @@ namespace Angora.Web.Controllers
         public ActionResult Index()
         {
             EventFeedViewModel model = new EventFeedViewModel();
-            model.Events = _eventService.FindEventsByUserId(User.Identity.GetUserId());
+            model.Events = _eventService.FindEventsCreatedByUser(User.Identity.GetUserId());
             return View(model);
         }
     }

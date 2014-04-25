@@ -6,12 +6,11 @@ namespace Angora.Services
     public interface IEventService
     {
         long Create(Event newEvent);
-        long Edit(Event oldEvent);
+        void Update(Event oldEvent);
         void Delete(Event oldEvent);
-
         void Delete(long id);
 
         Event FindById(long id);
-        IEnumerable<Event> FindEventsByUserId(string userId);
+        IEnumerable<Event> FindEventsCreatedByUser(string userId);
     }
 }

@@ -10,15 +10,15 @@ namespace Angora.Web.Models
     public class NewEventViewModel
     {
         [Required]
-        [Display(Name= "Event Name")]
+        [Display(Name = "Event Name")]
         //did we want to have something like this?
-        [StringLength(100,ErrorMessage="The event name is too long.")]
+        [StringLength(100, ErrorMessage = "The event name is too long.")]
         public string Name { get; set; }
-       
+
         [Display(Name = "Event Description")]
         public string Description { get; set; }
 
-        [Display(Name = "Location")]
+        [Display(Name = "LocationStr")]
         //latitude then longitude
         public string Location { get; set; }
 
@@ -31,39 +31,27 @@ namespace Angora.Web.Models
         [Display(Name = "Start Date and Time")]
         public DateTime StartDateTime { get; set; }
 
-        [Display(Name = "End Date and Time")]
-        public DateTime EndDateTime { get; set; }
-
-        [Display(Name= "Tags")]
-        public List<Tag> Tags { get; set; }
-
-    }
-
-    public class EditEventViewModel
-    {
-        public long EventId { get; set; }
-
-        [Required]
-        [Display(Name = "Event Name")]
-        //did we want to have something like this?
-        [StringLength(100, ErrorMessage = "The event name is too long.")]
-        public string Name { get; set; }
-
-        [Display(Name = "Event Description")]
-        public string Description { get; set; }
-
-        [Display(Name = "Location")]
-        //latitude then longitude
-        public string Location { get; set; }
-
-        [Display(Name = "Start Date and Time")]
-        public DateTime StartDateTime { get; set; }
-
-        [Display(Name = "End Date and Time")]
-        public DateTime EndDateTime { get; set; }
+        public int DurationHours { get; set; }
+        public int DurationMinutes { get; set; }
 
         [Display(Name = "Tags")]
         public List<Tag> Tags { get; set; }
+
     }
 
+    public class EventEditViewModel
+    {
+        public Event Event { get; set; }
+        public int DurationHours { get; set; }
+        public int DurationMinutes { get; set; }
+    }
+
+    public class EventViewModel
+    {
+        public Event Event { get; set; }
+        public bool ViewerIsCreator { get; set; }
+        public int DurationHours { get { return Event.EventTime.DurationInMinutes / 60; } }
+        public int DurationMinutes { get { return Event.EventTime.DurationInMinutes % 60; } }
+        public DateTime EndTime { get { return Event.EventTime.StartTime.AddMinutes(Event.EventTime.DurationInMinutes); } }
+    }
 }

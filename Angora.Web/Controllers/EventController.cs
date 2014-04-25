@@ -11,17 +11,20 @@ using System.Net;
 using System.IO;
 using System.Xml.Linq;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace Angora.Web.Controllers
 {
     public class EventController : Controller
     {
         private IEventService _eventService;
+        private IAngoraUserService _userService;
         private IUnitOfWork _unitOfWork;
 
-        public EventController(IEventService eventService, IUnitOfWork unitOfWork)
+        public EventController(IEventService eventService, IAngoraUserService userService, IUnitOfWork unitOfWork)
         {
             _eventService = eventService;
+            _userService = userService;
             _unitOfWork = unitOfWork;
         }
 
@@ -41,19 +44,28 @@ namespace Angora.Web.Controllers
 
 
         [Authorize]
-        public ActionResult CreateEvent(NewEventViewModel model, string lat, string lng)
+        public async Task<ActionResult> CreateEvent(NewEventViewModel model, string lat, string lng)
         {
-            string coor = GetCoordinates(model.Location);
-            //string tags = model.Tags.Replace(" ", "");;
-            Event newEvent = new Event()
+            EventTime eventTime = new EventTime
             {
-                UserId = User.Identity.GetUserId(),
+                StartTime = model.StartDateTime,
+                DurationInMinutes = model.DurationHours * 60 + model.DurationMinutes
+            };
+
+            Location location = new Location
+            {
+                NameOrAddress = model.Location,
+                Latitude = model.Latitude,
+                Longitude = model.Longitude
+            };
+
+            Event newEvent = new Event
+            {
+                Creator = await _userService.FindUserById(User.Identity.GetUserId()),
                 Name = model.Name,
                 Description = model.Description,
-                Location = model.Location,
-                Coordinates = coor,
-                StartDateTime = model.StartDateTime,
-                EndDateTime = model.EndDateTime,
+                Location = location,
+                EventTime = eventTime,
                 Tags = model.Tags,
                 CreationTime = DateTime.UtcNow
             };
@@ -68,30 +80,28 @@ namespace Angora.Web.Controllers
         public ActionResult Edit(long id)
         {
             var theEvent = _eventService.FindById(id);
-            EditEventViewModel model = new EditEventViewModel()
+
+            if (theEvent == null || !theEvent.Creator.Id.Equals(User.Identity.GetUserId()))
             {
-                EventId = theEvent.Id,
-                Name = theEvent.Name,
-                Description = theEvent.Description,
-                Location = theEvent.Location,
-                StartDateTime = theEvent.StartDateTime,
-                Tags = theEvent.Tags,
-                EndDateTime = theEvent.EndDateTime,
+                return RedirectToAction("Index", "EventFeed");
+            }
+
+            var model = new EventEditViewModel
+            {
+                Event = theEvent,
+                DurationHours = theEvent.EventTime.DurationInMinutes / 60,
+                DurationMinutes = theEvent.EventTime.DurationInMinutes % 60
             };
+
             return View(model);
         }
 
         [Authorize]
-        public ActionResult EditEvent(EditEventViewModel model)
+        public ActionResult EditEvent(EventEditViewModel model)
         {
-            var e = _eventService.FindById(model.EventId);
-            e.Name = model.Name;
-            e.Description = model.Description;
-            e.Location = model.Location;
-            e.Coordinates = GetCoordinates(model.Location);
-            e.StartDateTime = model.StartDateTime;
-            e.Tags = model.Tags;
-            _eventService.Edit(e);
+            model.Event.EventTime.DurationInMinutes = model.DurationHours * 60 + model.DurationMinutes;
+
+            _eventService.Update(model.Event);
             _unitOfWork.SaveChanges();
 
             return RedirectToAction("Index", "EventFeed");
@@ -137,24 +147,6 @@ namespace Angora.Web.Controllers
             {
                 location = "";
             }
-
-            return location;
-        }
-
-        private static string ReverseGeocode(string latlng)
-        {
-            var requestUri = string.Format("https://maps.googleapis.com/maps/api/geocode/xml?latlng={0}&sensor=false", latlng);
-
-            var request = WebRequest.Create(requestUri);
-            var response = request.GetResponse();
-            var xdoc = XDocument.Load(response.GetResponseStream());
-
-            var result = xdoc.Element("GeocodeResponse").Element("result");
-            string location;
-
-            var addressElement = result.Element("formatted_address");
-
-            location = addressElement.Value;
 
             return location;
         }

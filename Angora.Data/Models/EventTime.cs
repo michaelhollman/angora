@@ -8,8 +8,8 @@ namespace Angora.Data.Models
 {
     public class EventTime : BaseModel
     {
-        public DateTime Time { get; set; }
-        public int? DurationInMinutes { get; set; }
+        public DateTime StartTime { get; set; }
+        public int DurationInMinutes { get; set; }
     }
 
     public static class EventTimeExtensions
@@ -18,7 +18,8 @@ namespace Angora.Data.Models
         {
             return new EventTime
             {
-                Time = dt
+                StartTime = dt,
+                DurationInMinutes = 0
             };
         }
     }

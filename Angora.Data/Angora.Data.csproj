@@ -73,6 +73,7 @@
     <Compile Include="Models\EventScheduler.cs" />
     <Compile Include="Models\EventSchedulerResponse.cs" />
     <Compile Include="Models\EventTime.cs" />
+    <Compile Include="Models\Location.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="Repository\AngoraDbConfiguration.cs" />
     <Compile Include="Repository\AngoraDbContext.cs" />

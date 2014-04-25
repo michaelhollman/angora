@@ -40,7 +40,7 @@ namespace Angora.Web.Areas.Api.Controllers
         [Route("getEvents")]
         public List<Event> GetEvents(string userId)
         {
-            var events = _eventService.FindEventsByUserId(userId);
+            var events = _eventService.FindEventsCreatedByUser(userId);
             return events.ToList<Event>();
         }
 

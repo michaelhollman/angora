@@ -32,7 +32,7 @@ namespace Angora.UnitTests.Services
             var service = ServiceManager.GetService<IFooCDNService>();
             service.PutBlob("c745b6e4-66fc-4eeb-ac64-5499ab4ec118", "Memcache");
             string s = service.GetBlobInfo("c745b6e4-66fc-4eeb-ac64-5499ab4ec118");
-            Assert.IsTrue(s.Contains("Location\":0"));
+            Assert.IsTrue(s.Contains("LocationStr\":0"));
         }
 
         [TestMethod]

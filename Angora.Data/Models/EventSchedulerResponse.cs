@@ -8,8 +8,8 @@ namespace Angora.Data.Models
 {
     public class EventSchedulerResponse : BaseModel
     {
-        public AngoraUser User { get; set; }
-        public Dictionary<EventTime, SchedulerResponse> Responses { get; set; }
+        public virtual AngoraUser User { get; set; }
+        public virtual Dictionary<EventTime, SchedulerResponse> Responses { get; set; }
     }
 
     public enum SchedulerResponse

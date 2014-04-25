@@ -40,7 +40,7 @@ namespace Angora.Web.Controllers
             var model = new EventSchedulerViewModel();
 
             model.Event = theEvent;
-            model.ViewerOwnsEvent = theEvent.UserId.Equals(User.Identity.GetUserId());
+            model.ViewerOwnsEvent = theEvent.Creator.Id.Equals(User.Identity.GetUserId());
 
             return View(model);
         }
