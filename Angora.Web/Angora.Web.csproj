@@ -202,7 +202,7 @@
     <Content Include="Images\AuderusLogos\LogoFull.psd" />
     <None Include="Properties\PublishProfiles\seteam4 - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\seteam4 - Web Deploy.pubxml" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <None Include="Scripts\lib\jquery-1.10.2.intellisense.js" />
     <Content Include="Images\Logos\fb-blue-100.png" />
     <Content Include="Images\Logos\fb-blue-1024.png" />
     <Content Include="Images\Logos\fb-blue-114.png" />
@@ -242,6 +242,8 @@
     <Content Include="Scripts\jquery-2.1.0.min.js" />
     <Content Include="Scripts\jquery-2.1.0.min.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.geocomplete.js" />
+    <Content Include="Scripts\jquery.leanModal.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -249,11 +251,32 @@
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\lib\bootstrap.js" />
+    <Content Include="Scripts\lib\bootstrap.min.js" />
+    <None Include="Scripts\lib\jquery-2.1.0.intellisense.js" />
+    <Content Include="Scripts\lib\jquery-2.1.0.js" />
+    <Content Include="Scripts\lib\jquery-2.1.0.min.js" />
+    <Content Include="Scripts\lib\jquery-2.1.0.min.map" />
+    <None Include="Scripts\lib\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\lib\jquery.validate.js" />
+    <Content Include="Scripts\lib\jquery.validate.min.js" />
+    <Content Include="Scripts\lib\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\lib\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\lib\modernizr-2.6.2.js" />
+    <Content Include="Scripts\lib\respond.js" />
+    <Content Include="Scripts\lib\respond.min.js" />
+    <Content Include="Scripts\navbar.js" />
     <Content Include="Styles\Angora.css">
       <DependentUpon>angora.less</DependentUpon>
     </Content>
     <Content Include="Styles\Angora.min.css">
       <DependentUpon>Angora.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\Angora\event-feed.css">
+      <DependentUpon>event-feed.less</DependentUpon>
+    </Content>
+    <Content Include="Styles\Angora\event.css">
+      <DependentUpon>event.less</DependentUpon>
     </Content>
     <Content Include="Styles\Angora\landing.css">
       <DependentUpon>landing.less</DependentUpon>
@@ -301,6 +324,7 @@
     <Compile Include="App_Start\UnityWebApiActivator.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Api\Controllers\FooController.cs" />
+    <Compile Include="Areas\Api\Controllers\UserController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\EventFeedController.cs" />
@@ -397,6 +421,14 @@
     <Content Include="Views\Event\Edit.cshtml" />
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Styles\Angora\_helpers.less" />
+    <Content Include="Styles\Angora\event-feed.less" />
+    <Content Include="Styles\Angora\event-feed.css.map">
+      <DependentUpon>event-feed.css</DependentUpon>
+    </Content>
+    <Content Include="Styles\Angora\event.less" />
+    <Content Include="Styles\Angora\event.css.map">
+      <DependentUpon>event.css</DependentUpon>
+    </Content>
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

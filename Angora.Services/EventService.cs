@@ -31,6 +31,20 @@ namespace Angora.Services
         public void Delete(Event oldEvent)
         {
             _eventRepo.Delete(oldEvent);
+
+        }
+
+        public void Delete(long id)
+        {
+            Event e = FindById(id);
+
+            _eventRepo.Delete(e);
+
+        }
+
+        public void DeleteById(long id)
+        {
+            _eventRepo.Delete(_eventRepo.GetById(id));
         }
 
         public Event FindById(long id)
