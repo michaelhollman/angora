@@ -304,10 +304,10 @@ public class MainActivity extends ActionBarActivity
 
             TextView nameTextView = (TextView) rootView.findViewById(R.id.textView_name);
             try {
-                nameTextView.setText(mUser.getString("FirstName") + mUser.getString("LastName"));
+                nameTextView.setText(mUser.getString("FirstName") + " " + mUser.getString("LastName"));
 
             }catch (JSONException je){
-                Toast.makeText(getActivity(), "Error Refreshing Feed: "+ je.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Error Refreshing Profile: "+ je.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("Feed Activity", je.getMessage());
             }
 

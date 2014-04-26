@@ -1,6 +1,7 @@
 package com.angora.angora;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -17,18 +18,23 @@ import android.view.ViewGroup;
 import android.os.Build;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import java.io.IOException;
 
 public class SnapAndGoActivity extends Activity {
 
     private CameraPreview mPreview;
     private int CurrentCamera;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
         CurrentCamera = pref.getInt("preferredCamera", 0);
@@ -43,10 +49,44 @@ public class SnapAndGoActivity extends Activity {
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
 
-        ImageView nextCameraButton = (ImageView) findViewById(R.id.imageView_nextCamera);
+        final ImageView nextCameraButton = (ImageView) findViewById(R.id.imageView_nextCamera);
+        final Button captureButton = (Button) findViewById(R.id.button_capture);
+        final ImageView cancelButton = (ImageView) findViewById(R.id.imageView_cancel);
+        final ImageView acceptButton = (ImageView) findViewById(R.id.imageView_accept);
+
         nextCameraButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v) {
                 switchCameras();
+            }
+        });
+
+        captureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPreview.capture();
+                view.setVisibility(View.INVISIBLE);
+                nextCameraButton.setVisibility(View.INVISIBLE);
+                cancelButton.setVisibility(View.VISIBLE);
+                acceptButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                mPreview.refresh();
+                nextCameraButton.setVisibility(View.VISIBLE);
+                captureButton.setVisibility(View.VISIBLE);
+                view.setVisibility(View.INVISIBLE);
+                acceptButton.setVisibility(View.INVISIBLE);
+            }
+        });
+
+        acceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //todo do something with the picture
+
             }
         });
     }
@@ -67,6 +107,7 @@ public class SnapAndGoActivity extends Activity {
 
             mPreview.setCameraNum(CurrentCamera);
             mPreview.refresh();
+
         }
     }
 }

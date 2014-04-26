@@ -2,6 +2,7 @@ package com.angora.angora;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -14,6 +15,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     private SurfaceHolder mSurfaceHolder;
     private Camera mCamera;
     private boolean isPaused;
+    private int cameraNum;
 
     public int getCameraNum() {
         return cameraNum;
@@ -22,8 +24,6 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
     public void setCameraNum(int cameraNum) {
         this.cameraNum = cameraNum;
     }
-
-    private int cameraNum;
 
     public CameraPreview(Context context, int cameraNum) {
         super(context);
@@ -39,7 +39,7 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
 
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        if (isPaused){
+        if (isPaused || mCamera == null){
             mCamera = getCameraInstance(cameraNum);
             isPaused = false;
         }
@@ -48,38 +48,20 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             mCamera.setPreviewDisplay(surfaceHolder);
             //mCamera.startPreview();
         } catch (IOException e) {
-
+            //todo handle
         }
 
         Camera.Parameters parameters = mCamera.getParameters();
-        List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
-        Camera.Size previewSize = previewSizes.get(4); //480h x 720w
-
-        parameters.setPreviewSize(previewSize.width, previewSize.height);
         parameters.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
         parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
 
         mCamera.setParameters(parameters);
-
-        //Display display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        /*
-        Configuration config = getResources().getConfiguration();
-        int orientation = config.orientation;
-        if(orientation == config.ORIENTATION_PORTRAIT) {
-            mCamera.setDisplayOrientation(90);
-        } else if(orientation == config.ORIENTATION_LANDSCAPE) {
-            mCamera.setDisplayOrientation(180);
-        }
-        */
-
         mCamera.startPreview();
-
-
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i2, int i3) {
-        /*
+
         if (mSurfaceHolder.getSurface() != null){
             return;
         }
@@ -94,28 +76,16 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
             mCamera.setPreviewDisplay(mSurfaceHolder);
             mCamera.startPreview();
         } catch (Exception e){
-            //BAD THING
+            //todo handle
         }
-        */
-        Camera.Parameters parameters = mCamera.getParameters();
-        List<Camera.Size> previewSizes = parameters.getSupportedPreviewSizes();
-        Camera.Size previewSize = previewSizes.get(4); //480h x 720w
 
-        parameters.setPreviewSize(previewSize.width, previewSize.height);
+
+        Camera.Parameters parameters = mCamera.getParameters();
         parameters.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
         parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
 
         mCamera.setParameters(parameters);
-    /*
-        //Display display = ((WindowManager)getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay();
-        Configuration config = getResources().getConfiguration();
-        int orientation = config.orientation;
-        if(orientation == config.ORIENTATION_PORTRAIT) {
-            mCamera.setDisplayOrientation(90);
-        } else if(orientation == config.ORIENTATION_LANDSCAPE) {
-            mCamera.setDisplayOrientation(180);
-        }
-*/
+
         mCamera.startPreview();
     }
 
@@ -140,18 +110,36 @@ public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback
         return c; // returns null if camera is unavailable
     }
 
-    public void refresh(){
+    public void refresh() {
         if (mCamera != null){
             mCamera.stopPreview();
             mCamera.release();
-            mCamera = getCameraInstance(cameraNum);
 
-            try {
-                mCamera.setPreviewDisplay(mSurfaceHolder);
-                mCamera.startPreview();
-            } catch (IOException e) {
+        }
+        mCamera = getCameraInstance(cameraNum);
+        Log.d("Camera Preview", "Getting Camera " + cameraNum);
+        try {
+            Camera.Parameters parameters = mCamera.getParameters();
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+            mCamera.setParameters(parameters);
+            mCamera.setPreviewDisplay(mSurfaceHolder);
+            mCamera.startPreview();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void capture(){
+        Camera.PictureCallback callback = new Camera.PictureCallback() {
+            @Override
+            public void onPictureTaken(byte[] bytes, Camera camera) {
+                camera.stopPreview();
 
             }
+        };
+        if (mCamera != null){
+            mCamera.takePicture(null, callback, null);
         }
     }
 

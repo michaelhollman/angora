@@ -7,6 +7,7 @@ import java.text.DateFormat;
 
 /**
  * Created by Alex on 3/19/14.
+ * Serializable so that it can be cached
  */
 public class AngoraEvent implements Serializable {
     public String getName() {
