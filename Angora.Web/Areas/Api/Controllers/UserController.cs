@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Threading.Tasks;
 using Angora.Services;
 using Microsoft.AspNet.Identity;
 using Angora.Data.Models;
@@ -56,6 +57,25 @@ namespace Angora.Web.Areas.Api.Controllers
         public void DeleteEvent(long eventId)
         {
             _eventService.Delete(_eventService.FindById(eventId));
+        }
+
+        [HttpPost, Route("upload")]
+        public async Task<IHttpActionResult> Upload()
+        {
+            if (!Request.Content.IsMimeMultipartContent()) { 
+                throw new Exception();  //meow?
+            }
+            var provider = new MultipartMemoryStreamProvider();
+            await Request.Content.ReadAsMultipartAsync(provider);
+            foreach (var file in provider.Contents)
+            {
+                var filename = file.Headers.ContentDisposition.FileName.Trim('\"');
+                var buffer = await file.ReadAsByteArrayAsync();
+                //todo something with these things 
+
+            }
+
+            return Ok();
         }
     }
 }

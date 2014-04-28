@@ -5,6 +5,7 @@ import android.app.ListFragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -35,6 +36,10 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -60,6 +65,8 @@ public class MainActivity extends ActionBarActivity
     private CharSequence mTitle;
 
     private static JSONObject mUser;
+    private static AngoraEvent[] mEvents;
+    private SharedPreferences pref;
 
     private CacheHelper mCacheHelper;
 
@@ -71,12 +78,15 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
 
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
+        pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
         if (!pref.getBoolean("IsLoggedIn", false)){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
             return;
+        }
+        if (pref.getBoolean("NewPhoto", false)){
+
         }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -95,11 +105,16 @@ public class MainActivity extends ActionBarActivity
         } else {
             try{
                 mUser = mCacheHelper.getStoredUser();
-            }catch (IOException e){
-                //todo handle
-                Log.e("Hey", "Ya blew it");
-            }catch (ClassNotFoundException e2){
-                //todo handle
+                mEvents = mCacheHelper.getStoredEvents();
+            }catch (IOException ie){
+                Toast.makeText(this, "Error: "+ ie.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("Main Activity", ie.getMessage());
+            }catch (ClassNotFoundException ce){
+                Toast.makeText(this, "Error: "+ ce.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("Main Activity", ce.getMessage());
+            }catch (JSONException je){
+                Toast.makeText(this, "Error: "+ je.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("Main Activity", je.getMessage());
             }
         }
 
@@ -107,27 +122,35 @@ public class MainActivity extends ActionBarActivity
 
     private void refreshData(){
         CacheHelper ch = new CacheHelper(this);
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
         SharedPreferences.Editor editor = pref.edit();
         try{
             mUser = new LoginUserTask().execute(pref.getString("LoginProvider", null), pref.getString("ProviderKey", null)).get();
             ch.storeUser(mUser);
-        }catch (IOException e){
-            //todo handle
-        }catch (InterruptedException e2){
-            //todo handle
-        }catch (ExecutionException e3){
-            //todo handle
+            mEvents = new GetEventsTask().execute(mUser.getString("Id")).get();
+            ch.storeEvents(mEvents);
+        }catch (IOException ie){
+            Toast.makeText(this, "Error Refreshing Data: " + ie.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("Main Activity", ie.getMessage());
+            ie.printStackTrace();
+        }catch (InterruptedException ine){
+            Toast.makeText(this, "Error Refreshing Data: " + ine.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("Main Activity", ine.getMessage());
+            ine.printStackTrace();
+        }catch (ExecutionException ee){
+            Toast.makeText(this, "Error Refreshing Data: " + ee.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("Main Activity", ee.getMessage());
+            ee.printStackTrace();
+        }catch (JSONException je){
+            Toast.makeText(this, "Error Refreshing Data: " + je.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("Main Activity", je.getMessage());
         }
+
         editor.putLong("LastRefresh", System.nanoTime());
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        //This isn't being used in Beta Release.
-
-
         switch (position)   {
 
             case 0:
@@ -226,12 +249,19 @@ public class MainActivity extends ActionBarActivity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
-            AngoraEvent[] userEvent = generateFakeEvents();
+            try {
+                mEvents = new GetEventsTask().execute(mUser.getString("Id")).get();
+            }catch (Exception je){
+                 je.printStackTrace();
+            }
+            if (mEvents != null) {
+                mAdapter = new CustomAdapter(getActivity(), mEvents);
+                mListView = (ListView) rootView.findViewById(R.id.list);
+                mListView.setAdapter(mAdapter);
+            }else{
+                Toast.makeText(getActivity(), "No Events to show! Go make some!", Toast.LENGTH_SHORT).show();
+            }
 
-            mAdapter = new CustomAdapter(getActivity(), userEvent);
-
-            mListView = (ListView) rootView.findViewById(R.id.list);
-            mListView.setAdapter(mAdapter);
 
             return rootView;
         }
@@ -246,36 +276,8 @@ public class MainActivity extends ActionBarActivity
 */
         }
 
-        /*
-        this is purely for testing
-         */
-        public AngoraEvent[] generateFakeEvents(){
-            AngoraEvent[] userEvent = new AngoraEvent[15];
-            SimpleDateFormat parser = new SimpleDateFormat("MM/dd/yyy hh:mm a");
-            try{
-                userEvent[0] = new AngoraEvent("Birthday Party", "Alex Bainter", "Seward, NE", parser.parse("02/02/2014 4:00 PM"));
-                userEvent[1] = new AngoraEvent("Dance Party", "Billy Bob", "Lincoln, NE", parser.parse("02/08/2014 7:00 AM"));
-                userEvent[2] = new AngoraEvent("Hoe Down", "Dirty Dan", "Lincoln, NE", parser.parse("03/01/2014 5:00 PM"));
-                userEvent[3] = new AngoraEvent("Hootenanny", "Pinhead Larry", "Lincoln, NE", parser.parse("03/01/2014 5:00 PM"));
-                userEvent[4] = new AngoraEvent("\"Product\" Cook", "Walter White", "Albuquerque, NM", parser.parse("04/05/2014 6:00 AM"));
-                userEvent[5] = new AngoraEvent("Breakfast Party", "Walter White Jr.", "Alburquerque, NM", parser.parse("05/30/2014 11:00 AM"));
-                userEvent[6] = new AngoraEvent("Lil' Bringus Concert", "Mikey Mike", "Lincoln, NE", parser.parse("06/1/2014 6:00 PM"));
-                userEvent[7] = new AngoraEvent("Birthday Party", "Alex Bainter", "Seward, NE", parser.parse("02/02/2015 4:00 PM"));
-                userEvent[8] = new AngoraEvent("Dance Party", "Billy Bob", "Lincoln, NE", parser.parse("02/08/2015 7:00 AM"));
-                userEvent[9] = new AngoraEvent("Hoe Down", "Dirty Dan", "Lincoln, NE", parser.parse("03/01/2015 5:00 PM"));
-                userEvent[10] = new AngoraEvent("Hootenanny", "Pinhead Larry", "Lincoln, NE", parser.parse("03/01/2015 5:00 PM"));
-                userEvent[11] = new AngoraEvent("\"Product\" Cook", "Walter White", "Albuquerque, NM", parser.parse("04/05/2015 6:00 AM"));
-                userEvent[12] = new AngoraEvent("Breakfast Party", "Walter White Jr.", "Alburquerque, NM", parser.parse("05/30/2015 11:00 AM"));
-                userEvent[13] = new AngoraEvent("Lil' Bringus Concert", "Mikey Mike", "Lincoln, NE", parser.parse("06/1/2015 6:00 PM"));
-                userEvent[14] = new AngoraEvent("Movie Marathon", "Sarah Elmwood", "Omaha, NE", parser.parse("04/15/2015 7:00 PM"));
-
-            }catch(ParseException e){
-                this.getActivity().finish();
-            }
-
-            return userEvent;
-        }
     }
+
     public static class ProfileFragment extends Fragment {
 
         /**
@@ -310,9 +312,11 @@ public class MainActivity extends ActionBarActivity
 
             TextView nameTextView = (TextView) rootView.findViewById(R.id.textView_name);
             try {
-                nameTextView.setText(mUser.getString("FirstName") + mUser.getString("LastName"));
-            }catch (JSONException e){
-                //TODO Handle
+                nameTextView.setText(mUser.getString("FirstName") + " " + mUser.getString("LastName"));
+
+            }catch (JSONException je){
+                Toast.makeText(getActivity(), "Error Refreshing Profile: "+ je.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e("Feed Activity", je.getMessage());
             }
 
             return rootView;
@@ -328,12 +332,7 @@ public class MainActivity extends ActionBarActivity
                     getArguments().getInt(ARG_SECTION_NUMBER));
             */
         }
-
-
-
     }
-
-
 }
 
 class CustomAdapter extends BaseAdapter{
@@ -383,4 +382,6 @@ class CustomAdapter extends BaseAdapter{
 
         return vi;
     }
+
+
 }

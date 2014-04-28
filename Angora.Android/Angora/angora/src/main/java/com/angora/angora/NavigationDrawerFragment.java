@@ -250,7 +250,7 @@ public class NavigationDrawerFragment extends Fragment {
         }
 
         if (item.getItemId() == R.id.action_snap_and_go){
-            Intent intent = new Intent(getActivity(), SnapAndGoActivity.class);
+            Intent intent = new Intent(getActivity(), SnapAndGoBuiltIn.class);
             startActivity(intent);
             return true;
         }
