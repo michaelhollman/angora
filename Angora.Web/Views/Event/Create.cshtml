@@ -1,10 +1,11 @@
 ﻿@model Angora.Web.Models.NewEventViewModel
 
-@using (Html.BeginForm("CreateEvent", "Event", FormMethod.Post, new { lat = "this", lng = "that" }))
+<h2>Create New Event</h2>
+<hr />
+
+@using (Html.BeginForm("CreateEvent", "Event", FormMethod.Post))
 {
     <div class="form-horizontal">
-        <h2>Create New Event</h2>
-
         <div class="form-group">
             @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -22,8 +23,8 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label col-md-2" for="Location">
-                <span class="label label-info" onclick="toggleShow(document.getElementById('coor-help'))" style="margin-right: 10px">...</span>
+            <label class="control-label col-md-2">
+                <span class="label label-info" onclick="toggleShow(document.getElementById('coor-help'))" style="margin-right: 10px">?</span>
                 Location
             </label>
             <div class="col-md-10">
@@ -32,89 +33,78 @@
             </div>
         </div>
 
-        <div class="details help-box well well-sm" id="coor-help" style="display: none">
-            <p>
-                To benefit from our location-based services, select an autocomplete
-                entry after beginning to type the address.
-            </p>
-            <p>Latitude:     <span data-geo="lat" id="lat"></span></p>
-
-            <p>Longitude:    <span data-geo="lng" id="lng"></span></p>
+        <div class="row">
+            <div class="col-md-offset-2 col-md-10">
+                <div class="details help-box well well-sm" id="coor-help" style="display: none">
+                    <p>To benefit from our location-based services, select an autocomplete entry after beginning to type the address.</p>
+                </div>
+            </div>
         </div>
-        <div class="map_canvas"></div>
-
-
-
         <div class="form-group">
-            @Html.LabelFor(model => model.StartDateTime, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.StartDateTime, "{0:yyyy-MM-ddTHH:mm}",
-                    new
-                    {
-                        @class = "form-control",
-                        type = "datetime-local",
-                        min = DateTime.Now.ToString("yyyy-MM-ddTHH:mm"),
-                        max = DateTime.Now.AddYears(5).ToString("yyyy-MM-ddTHH:mm"),
-                        required = "required"
-                    })
-                @Html.ValidationMessageFor(model => model.StartDateTime)
+            <div class="col-md-offset-2 col-md-10">
+                <div class="map_canvas"></div>
             </div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.EndDateTime, new { @class = "control-label col-md-2" })
-            <div class="col-md-10 textBox">
-                @Html.TextBoxFor(model => model.EndDateTime, "{0:yyyy-MM-ddTHH:mm}", new
-                    {
-                        @class = "form-control",
-                        type = "datetime-local",
-                        min = DateTime.Now.ToString("yyyy-MM-ddTHH:mm"),
-                        max = DateTime.Now.AddYears(5).ToString("yyyy-MM-ddTHH:mm"),
-                        required = "required"
-                    })
-                @Html.ValidationMessageFor(model => model.EndDateTime)
+        <hr />
+
+        @Html.HiddenFor(m => m.ScheduleNow, new { id = "schedulenowfield", value = "True" })
+
+        <ul class="nav nav-tabs" id="schtabs">
+            <li id="schnowtab" class="@(Model.ScheduleNow ? "active" : "")">
+                <a href="#schnow" data-toggle="tab">Schedule Now</a>
+            </li>
+            <li id="schlatertab" class="@(!Model.ScheduleNow ? "active" : "")">
+                <a href="#schlater" data-toggle="tab">Find a Time</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade @(Model.ScheduleNow ? "in active" : "")" id="schnow">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.StartDateTime, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.StartDateTime, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", type = "datetime-local", min = DateTime.Now.ToString("yyyy-MM-ddTHH:mm"), max = DateTime.Now.AddYears(5).ToString("yyyy-MM-ddTHH:mm"), required = "required" })
+                        @Html.ValidationMessageFor(model => model.StartDateTime)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2">Duration</label>
+                    <label class="control-label col-md-1">Hours:</label>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(model => model.DurationHours, new { @class = "form-control", type = "number", min = "0", max = "24", step = "1", required = "required", style = "display:inline" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-1 col-md-offset-2">Minutes:</label>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(model => model.DurationMinutes, new { @class = "form-control", type = "number", min = "0", max = "59", step = "5", required = "required", style = "display:inline" })
+                    </div>
+                </div>
             </div>
+            <div class="tab-pane fade @(!Model.ScheduleNow ? "in active" : "")" id="schlater">You and your event guests can collaboratively find a time that works for everyone using the RSVP page for this event once it's created.</div>
         </div>
 
-        <div class="form-group">
-            <label class="control-label col-md-2" for="Tags">
-                <span class="label label-info" onclick="toggleShow(document.getElementById('tag-help'))" style="margin-right: 10px">?</span>
-                Tags
-            </label>
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.Tags, new { @class = "form-control", required = "required" })
-                @Html.ValidationMessageFor(model => model.Tags)
-            </div>
-        </div>
-        <div class="help-box well well-sm" id="tag-help" style="display: none">
-            <div>
-                <p>
-                    Tag your events. This will help us suggest events to you, and allow other users to find
-                    your events easier.
-                </p>
-                <p>Tag events by typing the word(s) in the text box. For multiple tags, separate the tags with commas.</p>
 
-                <p>
-                    Example: I want to tag my basketball watching party with the tags "basketball" and the name of the team, "Huskers".
-                    I would type the following line into the text box:
-                </p>
 
-                <p>basketball, Huskers</p>
-            </div>
+        <div id="latlong">
+            @Html.HiddenFor(model => model.Latitude, new { data_geo = "lat" })
+            @Html.HiddenFor(model => model.Longitude, new { data_geo = "lng" })
         </div>
+
+        <hr />
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-2">
                 <button type="submit" class="btn btn-success width-100" id="create">Create</button>
             </div>
+            <div class=" col-md-2">
+                <a href="@Url.Action("Back to List", "Index", "EventFeed")" class="btn btn-info width-100">Cancel</a>
+            </div>
         </div>
     </div>
 }
-
-<div>
-    @Html.ActionLink("Back to List", "Index", "EventFeed")
-</div>
-
 <script>
 
     function toggleShow(element) {
@@ -127,11 +117,15 @@
     }
 
     $(function () {
-
         var options = {
             map: ".map_canvas",
-            details: ".details",
-            detailsAttribute: "data-geo"
+            details: "#latlong",
+            detailsAttribute: "data-geo",
+            location: 'USA',
+            markerOptions: {
+                draggable: false,
+            },
+            types: ['geocode', 'establishment'],
         };
 
         $("#geocomplete").geocomplete(options)
@@ -145,6 +139,16 @@
               console.log("Multiple: " + results.length + " results found");
           });
 
-    });
 
+        $('#myTab a:last').tab('show');
+
+        $('#schnowtab').click(function () {
+            $('#schedulenowfield').val(true);
+        });
+
+        $('#schlatertab').click(function () {
+            $('#schedulenowfield').val(false);
+        });
+
+    });
 </script>

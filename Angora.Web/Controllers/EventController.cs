@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using Angora.Data.Models;
 using Angora.Services;
@@ -10,16 +11,20 @@ using System.Net;
 using System.IO;
 using System.Xml.Linq;
 using System.Globalization;
+using System.Threading.Tasks;
 
 namespace Angora.Web.Controllers
 {
     public class EventController : Controller
     {
         private IEventService _eventService;
+        private IAngoraUserService _userService;
         private IUnitOfWork _unitOfWork;
 
-        public EventController (IEventService eventService, IUnitOfWork unitOfWork){
+        public EventController(IEventService eventService, IAngoraUserService userService, IUnitOfWork unitOfWork)
+        {
             _eventService = eventService;
+            _userService = userService;
             _unitOfWork = unitOfWork;
         }
 
@@ -33,31 +38,42 @@ namespace Angora.Web.Controllers
         [Authorize]
         public ActionResult Create()
         {
-            NewEventViewModel newModel = new NewEventViewModel { Latitude = "0", Longitude = "0" };
-                return View(newModel);
+            NewEventViewModel model = new NewEventViewModel();
+            return View(model);
         }
 
 
-        /********
-         * These two functions not sure where put
-         * 
-         * 
-         * *********************/
         [Authorize]
-        public ActionResult CreateEvent(NewEventViewModel model, string lat, string lng)
+        public async Task<ActionResult> CreateEvent(NewEventViewModel model)
         {
-            string coor = GetCoordinates(model.Location);
-            //string tags = model.Tags.Replace(" ", "");;
-            Event newEvent = new Event()
+            var eventTime = new EventTime
             {
-                UserId = User.Identity.GetUserId(),
+                StartTime = model.StartDateTime,
+                DurationInMinutes = model.DurationHours * 60 + model.DurationMinutes
+            };
+
+            var scheduler = new EventScheduler
+            {
+                IsTimeSet = model.ScheduleNow,
+                ProposedTimes = new List<EventTime>(),
+                Responses = new List<EventSchedulerResponse>(),
+            };
+            
+            var location = new Location
+            {
+                NameOrAddress = model.Location,
+                Latitude = model.Latitude,
+                Longitude = model.Longitude
+            };
+
+            var newEvent = new Event
+            {
+                Creator = await _userService.FindUserById(User.Identity.GetUserId()),
                 Name = model.Name,
                 Description = model.Description,
-                Location = model.Location,
-                Coordinates = coor,
-                StartDateTime = model.StartDateTime,
-                EndDateTime = model.EndDateTime,
-                Tags = model.Tags,
+                Location = location,
+                EventTime = model.ScheduleNow ? eventTime : null,
+                Scheduler = scheduler,
                 CreationTime = DateTime.UtcNow
             };
 
@@ -71,32 +87,28 @@ namespace Angora.Web.Controllers
         public ActionResult Edit(long id)
         {
             var theEvent = _eventService.FindById(id);
-            EditEventViewModel model = new EditEventViewModel()
+
+            if (theEvent == null || !theEvent.Creator.Id.Equals(User.Identity.GetUserId()))
             {
-                EventId = theEvent.Id,
-                Name = theEvent.Name,
-                Description = theEvent.Description,
-                Location = theEvent.Location,
-                StartDateTime = theEvent.StartDateTime,
-                EndDateTime = theEvent.EndDateTime,
-                Tags = theEvent.Tags
+                return RedirectToAction("Index", "EventFeed");
+            }
+
+            var model = new EventEditViewModel
+            {
+                Event = theEvent,
+                DurationHours = theEvent.EventTime.DurationInMinutes / 60,
+                DurationMinutes = theEvent.EventTime.DurationInMinutes % 60
             };
+
             return View(model);
         }
 
         [Authorize]
-        public ActionResult EditEvent(EditEventViewModel model)
+        public ActionResult EditEvent(EventEditViewModel model)
         {
+            model.Event.EventTime.DurationInMinutes = model.DurationHours * 60 + model.DurationMinutes;
 
-            var e = _eventService.FindById(model.EventId);
-            e.Name = model.Name;
-            e.Description = model.Description;
-            e.Location = model.Location;
-            e.Coordinates = GetCoordinates(model.Location);
-            e.StartDateTime = model.StartDateTime;
-            //string tags = model.Tags.Replace(" ", "");
-            e.Tags = model.Tags;
-            _eventService.Edit(e);
+            _eventService.Update(model.Event);
             _unitOfWork.SaveChanges();
 
             return RedirectToAction("Index", "EventFeed");
@@ -130,11 +142,12 @@ namespace Angora.Web.Controllers
             var result = xdoc.Element("GeocodeResponse").Element("result");
             string location;
 
-            if (xdoc.Element("GeocodeResponse").Element("status").Value.Equals("OK")) { 
+            if (xdoc.Element("GeocodeResponse").Element("status").Value.Equals("OK"))
+            {
                 var locationElement = result.Element("geometry").Element("location");
                 var lat = locationElement.Element("lat");
                 var lng = locationElement.Element("lng");
-            
+
                 location = lat.Value + "," + lng.Value;
             }
             else
@@ -145,23 +158,5 @@ namespace Angora.Web.Controllers
             return location;
         }
 
-        private static string ReverseGeocode(string latlng)
-        {
-            var requestUri = string.Format("https://maps.googleapis.com/maps/api/geocode/xml?latlng={0}&sensor=false", latlng);
-
-            var request = WebRequest.Create(requestUri);
-            var response = request.GetResponse();
-            var xdoc = XDocument.Load(response.GetResponseStream());
-
-            var result = xdoc.Element("GeocodeResponse").Element("result");
-            string location;
-
-            var addressElement = result.Element("formatted_address");
-
-            location = addressElement.Value;
-
-            return location;
-        }
-
-	}
+    }
 }

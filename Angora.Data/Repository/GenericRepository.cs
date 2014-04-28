@@ -37,7 +37,14 @@ namespace Angora.Data
 
         public virtual T GetById(long id)
         {
-            return _dbSet.Single(t => t.Id == id);
+            try
+            {
+                return _dbSet.Single(t => t.Id == id);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         public T Single(Expression<Func<T, bool>> where)
