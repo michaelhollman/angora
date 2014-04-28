@@ -16,5 +16,6 @@
     <string name="login_activity_instructions">Auderus requires that you have an existing Facebook or Twitter account.
         Please register online at auder.us before using the app.</string>
     <string name="app_id">1440310966205344</string>
+    <string name="title_activity_snap_and_go_built_in">Snap &amp; Go</string>
 
 </resources>
