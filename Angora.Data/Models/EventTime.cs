@@ -22,5 +22,10 @@ namespace Angora.Data.Models
                 DurationInMinutes = 0
             };
         }
+
+        public static DateTime GetEndTime(this EventTime et)
+        {
+            return et.StartTime.AddMinutes(et.DurationInMinutes);
+        }
     }
 }

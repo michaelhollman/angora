@@ -52,6 +52,7 @@ namespace Angora.Web
             facebookOptions.Scope.Add("email");
             facebookOptions.Scope.Add("user_birthday");
             facebookOptions.Scope.Add("publish_stream");
+            facebookOptions.Scope.Add("user_photos");
 
             app.UseFacebookAuthentication(facebookOptions);
         }
