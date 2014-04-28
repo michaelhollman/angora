@@ -309,10 +309,17 @@ public class MainActivity extends ActionBarActivity
             View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
             TextView nameTextView = (TextView) rootView.findViewById(R.id.textView_name);
+            TextView locationTextView = (TextView) rootView.findViewById(R.id.textView_location);
             try {
-                nameTextView.setText(mUser.getString("FirstName") + mUser.getString("LastName"));
+                nameTextView.setText(mUser.getString("FirstName") + " " + mUser.getString("LastName"));
+                locationTextView.setText((mUser.getString("Location")));
+                String profilePicUrl = mUser.getString("ProfilePicturUrl");
+                if (profilePicUrl != null){
+                    //todo use picture
+                }
             }catch (JSONException e){
                 //TODO Handle
+                e.printStackTrace();
             }
 
             return rootView;
