@@ -5,6 +5,7 @@ import android.app.ListFragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -35,6 +36,10 @@ import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -61,6 +66,7 @@ public class MainActivity extends ActionBarActivity
 
     private static JSONObject mUser;
     private static AngoraEvent[] mEvents;
+    private SharedPreferences pref;
 
     private CacheHelper mCacheHelper;
 
@@ -72,12 +78,15 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
 
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
+        pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
         if (!pref.getBoolean("IsLoggedIn", false)){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
             return;
+        }
+        if (pref.getBoolean("NewPhoto", false)){
+
         }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
@@ -113,7 +122,6 @@ public class MainActivity extends ActionBarActivity
 
     private void refreshData(){
         CacheHelper ch = new CacheHelper(this);
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
         SharedPreferences.Editor editor = pref.edit();
         try{
             mUser = new LoginUserTask().execute(pref.getString("LoginProvider", null), pref.getString("ProviderKey", null)).get();
@@ -324,12 +332,7 @@ public class MainActivity extends ActionBarActivity
                     getArguments().getInt(ARG_SECTION_NUMBER));
             */
         }
-
-
-
     }
-
-
 }
 
 class CustomAdapter extends BaseAdapter{
@@ -379,4 +382,6 @@ class CustomAdapter extends BaseAdapter{
 
         return vi;
     }
+
+
 }
