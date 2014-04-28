@@ -206,43 +206,6 @@ public class LoginActivity extends ActionBarActivity {
             e2.printStackTrace();
         }
 
-        /*
-        AccessToken accessToken = null;
-        while(accessToken == null) {
-            if (twitResponse != null) {
-                Uri uri = Uri.parse(twitResponse);
-                // oAuth verifier
-                String verifier = uri.getQueryParameter(URL_TWITTER_OAUTH_VERIFIER);
-                Log.e("Made it ", "yay");
-                try {
-                    // Get the access token
-                    accessToken = twitter.getOAuthAccessToken(requestToken, verifier);
-
-                    // Getting user details from twitter
-                    long userID = accessToken.getUserId();
-
-                    Log.e("UserID=", String.valueOf(userID));
-
-                    /*
-                    SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
-                    SharedPreferences.Editor prefEditor = pref.edit();
-
-                    prefEditor.putBoolean("IsLoggedIn", true);
-                    prefEditor.putString("LoginProvider", "Twitter");
-                    prefEditor.putString("ProviderKey", String.valueOf(userID));
-
-                    prefEditor.commit();
-
-                    openMainActivity();
-
-
-                } catch (Exception e) {
-                    // Check log for login errors
-                    Log.e("Twitter Login Error", "> " + e.getMessage());
-                }
-
-            }
-        }*/
     }
 
     public class GetTwitterRequestTokenTask extends AsyncTask<String, Void, RequestToken> {
