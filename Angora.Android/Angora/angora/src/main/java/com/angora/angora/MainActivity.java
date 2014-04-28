@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,9 +67,12 @@ public class MainActivity extends ActionBarActivity
 
     private static JSONObject mUser;
     private static AngoraEvent[] mEvents;
-    private SharedPreferences pref;
+    private static SharedPreferences pref;
+    private static Context appContext;
 
     private CacheHelper mCacheHelper;
+
+    private ProgressBar progBar;
 
     private final long REFRESH_RATE = 60000; //60 seconds, in milliseconds
 
@@ -85,9 +89,9 @@ public class MainActivity extends ActionBarActivity
             finish();
             return;
         }
-        if (pref.getBoolean("NewPhoto", false)){
 
-        }
+        appContext = getApplicationContext();
+        progBar = (ProgressBar) findViewById(R.id.progressBar_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -107,13 +111,13 @@ public class MainActivity extends ActionBarActivity
                 mUser = mCacheHelper.getStoredUser();
                 mEvents = mCacheHelper.getStoredEvents();
             }catch (IOException ie){
-                Toast.makeText(this, "Error: "+ ie.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(appContext, "Error: "+ ie.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("Main Activity", ie.getMessage());
             }catch (ClassNotFoundException ce){
-                Toast.makeText(this, "Error: "+ ce.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(appContext, "Error: "+ ce.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("Main Activity", ce.getMessage());
             }catch (JSONException je){
-                Toast.makeText(this, "Error: "+ je.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(appContext, "Error: "+ je.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("Main Activity", je.getMessage());
             }
         }
@@ -121,31 +125,46 @@ public class MainActivity extends ActionBarActivity
     }
 
     private void refreshData(){
+        progBar.setVisibility(View.VISIBLE);
         CacheHelper ch = new CacheHelper(this);
         SharedPreferences.Editor editor = pref.edit();
         try{
             mUser = new LoginUserTask().execute(pref.getString("LoginProvider", null), pref.getString("ProviderKey", null)).get();
+            if (mUser == null){
+                //user hasn't registered with the site
+                SharedPreferences.Editor prefEditor = pref.edit();
+                prefEditor.putBoolean("IsLoggedIn", false);
+                prefEditor.commit();
+
+                Toast.makeText(appContext, "Please register before using the app!", Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+                return;
+            }
             ch.storeUser(mUser);
             mEvents = new GetEventsTask().execute(mUser.getString("Id")).get();
             ch.storeEvents(mEvents);
         }catch (IOException ie){
-            Toast.makeText(this, "Error Refreshing Data: " + ie.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(appContext, "Error Refreshing Data: " + ie.getMessage(), Toast.LENGTH_SHORT).show();
             Log.e("Main Activity", ie.getMessage());
             ie.printStackTrace();
         }catch (InterruptedException ine){
-            Toast.makeText(this, "Error Refreshing Data: " + ine.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(appContext, "Error Refreshing Data: " + ine.getMessage(), Toast.LENGTH_SHORT).show();
             Log.e("Main Activity", ine.getMessage());
             ine.printStackTrace();
         }catch (ExecutionException ee){
-            Toast.makeText(this, "Error Refreshing Data: " + ee.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(appContext, "Error Refreshing Data: " + ee.getMessage(), Toast.LENGTH_SHORT).show();
             Log.e("Main Activity", ee.getMessage());
             ee.printStackTrace();
         }catch (JSONException je){
-            Toast.makeText(this, "Error Refreshing Data: " + je.getMessage(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(appContext, "Error Refreshing Data: " + je.getMessage(), Toast.LENGTH_SHORT).show();
             Log.e("Main Activity", je.getMessage());
         }
 
         editor.putLong("LastRefresh", System.nanoTime());
+        progBar.setVisibility(View.INVISIBLE);
     }
 
     @Override
@@ -258,8 +277,9 @@ public class MainActivity extends ActionBarActivity
                 mAdapter = new CustomAdapter(getActivity(), mEvents);
                 mListView = (ListView) rootView.findViewById(R.id.list);
                 mListView.setAdapter(mAdapter);
-            }else{
-                Toast.makeText(getActivity(), "No Events to show! Go make some!", Toast.LENGTH_SHORT).show();
+            }else if (pref.getBoolean("IsLoggedIn", false)){
+                //if the user is logged in but has no events
+                Toast.makeText(appContext, "No Events to show! Go make some!", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -314,23 +334,17 @@ public class MainActivity extends ActionBarActivity
             TextView locationTextView = (TextView) rootView.findViewById(R.id.textView_location);
             try {
                 nameTextView.setText(mUser.getString("FirstName") + " " + mUser.getString("LastName"));
-<<<<<<< HEAD
                 locationTextView.setText((mUser.getString("Location")));
                 String profilePicUrl = mUser.getString("ProfilePicturUrl");
                 if (profilePicUrl != null){
                     //todo use picture
                 }
-            }catch (JSONException e){
+            }catch (JSONException je) {
                 //TODO Handle
-                e.printStackTrace();
-=======
-
-            }catch (JSONException je){
-                Toast.makeText(getActivity(), "Error Refreshing Profile: "+ je.getMessage(), Toast.LENGTH_SHORT).show();
+                je.printStackTrace();
+                Toast.makeText(appContext, "Error Refreshing Profile: " + je.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("Feed Activity", je.getMessage());
->>>>>>> origin/master
             }
-
             return rootView;
         }
 
