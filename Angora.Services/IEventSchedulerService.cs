@@ -9,7 +9,11 @@ namespace Angora.Services
 {
     public interface IEventSchedulerService
     {
-        void SetResponse(long eventId, string userId, SchedulerResponse response);
+        void SetResponse(long eventId, AngoraUser user, SchedulerResponse response, DateTime time);
+
+        void AddProposedTimeToEvent(long eventId, EventTime evTime);
+
+        void FinalizeTime(long eventId, DateTime time);
 
     }
 }

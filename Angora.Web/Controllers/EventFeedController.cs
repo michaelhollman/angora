@@ -2,6 +2,7 @@
 using Angora.Services;
 using Angora.Web.Models;
 using Microsoft.AspNet.Identity;
+using System.Linq;
 
 namespace Angora.Web.Controllers
 {
@@ -20,8 +21,13 @@ namespace Angora.Web.Controllers
         [Route("events")]
         public ActionResult Index()
         {
-            EventFeedViewModel model = new EventFeedViewModel();
-            model.Events = _eventService.FindEventsCreatedByUser(User.Identity.GetUserId());
+            var model = new EventFeedViewModel();
+            var events = _eventService.FindEventsCreatedByUser(User.Identity.GetUserId());
+            model.Events = events.Select(e => new EventViewModel()
+            {
+                Event = e,
+                ViewerIsCreator = User.Identity.GetUserId().Equals(e.Creator.Id),
+            });
             return View(model);
         }
     }

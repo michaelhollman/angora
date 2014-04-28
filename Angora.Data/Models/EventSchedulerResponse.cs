@@ -9,7 +9,8 @@ namespace Angora.Data.Models
     public class EventSchedulerResponse : BaseModel
     {
         public virtual AngoraUser User { get; set; }
-        public virtual Dictionary<EventTime, SchedulerResponse> Responses { get; set; }
+        public virtual DateTime Time { get; set; }
+        public virtual SchedulerResponse Response { get; set; }
     }
 
     public enum SchedulerResponse
@@ -17,6 +18,6 @@ namespace Angora.Data.Models
         No = 0,
         Yes = 1,
         Maybe = 3,
-        //NoResponse = -1
+        NoResponse = -1
     }
 }

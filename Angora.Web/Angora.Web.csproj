@@ -421,7 +421,7 @@
     <Content Include="Views\Event\Edit.cshtml" />
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Styles\Angora\_helpers.less" />
-    <Content Include="Views\EventScheduler\Index.cshtml" />
+    <Content Include="Views\EventScheduler\FindTime.cshtml" />
     <Content Include="Styles\Angora\event-feed.less" />
     <Content Include="Styles\Angora\event-feed.css.map">
       <DependentUpon>event-feed.css</DependentUpon>
@@ -430,6 +430,7 @@
     <Content Include="Styles\Angora\event.css.map">
       <DependentUpon>event.css</DependentUpon>
     </Content>
+    <Content Include="Views\EventScheduler\RSVP.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

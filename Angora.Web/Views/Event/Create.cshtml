@@ -23,7 +23,7 @@
         </div>
 
         <div class="form-group">
-            <label class="control-label col-md-2" for="Location">
+            <label class="control-label col-md-2">
                 <span class="label label-info" onclick="toggleShow(document.getElementById('coor-help'))" style="margin-right: 10px">?</span>
                 Location
             </label>
@@ -46,46 +46,47 @@
             </div>
         </div>
 
-        <ul class="nav nav-tabs" id="schtabs">
-            <li class="active"><a href="#schnow" data-toggle="tab">Schedule Now</a></li>
-            <li><a href="#schlater" data-toggle="tab">Schedule Later</a></li>
+        <hr />
 
+        @Html.HiddenFor(m => m.ScheduleNow, new { id = "schedulenowfield", value = "True" })
+
+        <ul class="nav nav-tabs" id="schtabs">
+            <li id="schnowtab" class="@(Model.ScheduleNow ? "active" : "")">
+                <a href="#schnow" data-toggle="tab">Schedule Now</a>
+            </li>
+            <li id="schlatertab" class="@(!Model.ScheduleNow ? "active" : "")">
+                <a href="#schlater" data-toggle="tab">Find a Time</a>
+            </li>
         </ul>
 
         <div class="tab-content">
-            <div class="tab-pane active" id="schnow">...</div>
-            <div class="tab-pane" id="schlater">...</div>
+            <div class="tab-pane fade @(Model.ScheduleNow ? "in active" : "")" id="schnow">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.StartDateTime, new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.StartDateTime, "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", type = "datetime-local", min = DateTime.Now.ToString("yyyy-MM-ddTHH:mm"), max = DateTime.Now.AddYears(5).ToString("yyyy-MM-ddTHH:mm"), required = "required" })
+                        @Html.ValidationMessageFor(model => model.StartDateTime)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2">Duration</label>
+                    <label class="control-label col-md-1">Hours:</label>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(model => model.DurationHours, new { @class = "form-control", type = "number", min = "0", max = "24", step = "1", required = "required", style = "display:inline" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-md-1 col-md-offset-2">Minutes:</label>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(model => model.DurationMinutes, new { @class = "form-control", type = "number", min = "0", max = "59", step = "5", required = "required", style = "display:inline" })
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade @(!Model.ScheduleNow ? "in active" : "")" id="schlater">You and your event guests can collaboratively find a time that works for everyone using the RSVP page for this event once it's created.</div>
         </div>
 
-        <div class="form-group">
-            @Html.LabelFor(model => model.StartDateTime, new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.StartDateTime, "{0:yyyy-MM-ddTHH:mm}",
-                    new
-                    {
-                        @class = "form-control",
-                        type = "datetime-local",
-                        min = DateTime.Now.ToString("yyyy-MM-ddTHH:mm"),
-                        max = DateTime.Now.AddYears(5).ToString("yyyy-MM-ddTHH:mm"),
-                        required = "required"
-                    })
-                @Html.ValidationMessageFor(model => model.StartDateTime)
-            </div>
-        </div>
 
-        <div class="form-group">
-            <label class="control-label col-md-2">Duration</label>
-            <label class="control-label col-md-1">Hours:</label>
-            <div class="col-md-2">
-                @Html.TextBoxFor(model => model.DurationHours, new { @class = "form-control", type = "number", min = "0", max = "24", step = "1", required = "required", style = "display:inline" })
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-md-1 col-md-offset-2">Minutes:</label>
-            <div class="col-md-2">
-                @Html.TextBoxFor(model => model.DurationMinutes, new { @class = "form-control", type = "number", min = "0", max = "59", step = "5", required = "required", style = "display:inline" })
-            </div>
-        </div>
 
         <div id="latlong">
             @Html.HiddenFor(model => model.Latitude, new { data_geo = "lat" })
@@ -139,7 +140,15 @@
           });
 
 
-        $('#myTab a:last').tab('show')
+        $('#myTab a:last').tab('show');
+
+        $('#schnowtab').click(function () {
+            $('#schedulenowfield').val(true);
+        });
+
+        $('#schlatertab').click(function () {
+            $('#schedulenowfield').val(false);
+        });
 
     });
 </script>

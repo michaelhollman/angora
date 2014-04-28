@@ -38,35 +38,42 @@ namespace Angora.Web.Controllers
         [Authorize]
         public ActionResult Create()
         {
-            NewEventViewModel newModel = new NewEventViewModel { Latitude = "0", Longitude = "0" };
-            return View(newModel);
+            NewEventViewModel model = new NewEventViewModel();
+            return View(model);
         }
 
 
         [Authorize]
-        public async Task<ActionResult> CreateEvent(NewEventViewModel model, string lat, string lng)
+        public async Task<ActionResult> CreateEvent(NewEventViewModel model)
         {
-            EventTime eventTime = new EventTime
+            var eventTime = new EventTime
             {
                 StartTime = model.StartDateTime,
                 DurationInMinutes = model.DurationHours * 60 + model.DurationMinutes
             };
 
-            Location location = new Location
+            var scheduler = new EventScheduler
+            {
+                IsTimeSet = model.ScheduleNow,
+                ProposedTimes = new List<EventTime>(),
+                Responses = new List<EventSchedulerResponse>(),
+            };
+            
+            var location = new Location
             {
                 NameOrAddress = model.Location,
                 Latitude = model.Latitude,
                 Longitude = model.Longitude
             };
 
-            Event newEvent = new Event
+            var newEvent = new Event
             {
                 Creator = await _userService.FindUserById(User.Identity.GetUserId()),
                 Name = model.Name,
                 Description = model.Description,
                 Location = location,
-                EventTime = eventTime,
-                Tags = model.Tags,
+                EventTime = model.ScheduleNow ? eventTime : null,
+                Scheduler = scheduler,
                 CreationTime = DateTime.UtcNow
             };
 

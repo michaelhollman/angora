@@ -1,11 +1,15 @@
-.event-feed div {
-  display: inline-block;
+.event-feed-title-btns {
+  margin: -10px -15px;
 }
-div.event-feed div.info {
-  width: 74%;
+.event-feed-title-btns .btn {
+  height: 100%;
 }
-div.event-feed div.btn-group {
-  width: 25%;
-  margin-left: auto;
+.event-feed-header {
+  margin-bottom: 20px;
+}
+.event-feed-header .btn {
+  height: 42px;
+  padding: 8px 15px;
+  margin-top: 20px;
 }
 /*# sourceMappingURL=event-feed.css.map */

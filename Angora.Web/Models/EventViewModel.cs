@@ -9,6 +9,12 @@ namespace Angora.Web.Models
 {
     public class NewEventViewModel
     {
+        public NewEventViewModel()
+        {
+            ScheduleNow = true;
+            StartDateTime = DateTime.Today.AddDays(1);
+        }
+
         [Required]
         [Display(Name = "Event Name")]
         //did we want to have something like this?
@@ -28,15 +34,15 @@ namespace Angora.Web.Models
         [Display(Name = "Longitude")]
         public string Longitude { get; set; }
 
+        public bool ScheduleNow { get; set; }
+
         [Display(Name = "Start Date and Time")]
         public DateTime StartDateTime { get; set; }
 
         public int DurationHours { get; set; }
         public int DurationMinutes { get; set; }
 
-        [Display(Name = "Tags")]
-        public List<Tag> Tags { get; set; }
-
+        //public List<Tag> Tags { get; set; }
     }
 
     public class EventEditViewModel
