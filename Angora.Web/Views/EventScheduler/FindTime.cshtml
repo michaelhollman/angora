@@ -1,0 +1,75 @@
+﻿@model Angora.Web.Models.EventSchedulerViewModel
+
+<h2>Help find a time for @Model.Event.Name</h2>
+<hr />
+<div class="form-horizontal">
+    @if (Model.Times.Count == 0)
+    {
+
+        <h3>Nobody has suggested a time yet.</h3>
+        <h4>You should get on that!</h4>}
+
+    @foreach (var t in Model.Times)
+    {
+        <div class="form-group">
+
+            <p class="control-label col-md-4">@t.Time.ToString("ddd, MMM d, yyyy 'at' h:mm tt")</p>
+            <div class="col-md-5">
+                <div class="btn-group btn-group-justified">
+                    <div class="btn-group">
+                        <a class="btn @(t.CurrentUserResponse == Angora.Data.Models.SchedulerResponse.Yes ? "btn-success" : "btn-primary")" href="@Url.Action("FindTime", new { dt = t.Time, response = Angora.Data.Models.SchedulerResponse.Yes })">Yes! (@t.YesCount)</a>
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn @(t.CurrentUserResponse == Angora.Data.Models.SchedulerResponse.Maybe ? "btn-success" : "btn-primary")" href="@Url.Action("FindTime", new { dt = t.Time, response = Angora.Data.Models.SchedulerResponse.Maybe })">Maybe (@t.MaybeCount)</a>
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn  @(t.CurrentUserResponse == Angora.Data.Models.SchedulerResponse.No ? "btn-success" : "btn-primary")" href="@Url.Action("FindTime", new { dt = t.Time, response = Angora.Data.Models.SchedulerResponse.No })">No (@t.NoCount)</a>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.ViewerIsCreator && t.YesCount > 0)
+            {
+                <div class="col-md-2">
+                    <a class="btn btn-info width-100" href="@Url.Action("FinalizeTime", new { time = t.Time })">Use this time</a>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-12">
+        <a class="btn btn-primary btn-lg" id="add-time-pre"><span class="glyphicon gl glyphicon-plus"></span>  Add a Time</a>
+    </div>
+</div>
+<div id="add-time-form" style="display:none">
+    @using (Html.BeginForm("AddTime", "EventScheduler"))
+    {
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="control-label col-md-2">Start Date and Time</label>
+                <div class="col-md-10">
+                    @Html.TextBox("startDateTime", DateTime.Today.AddDays(1), "{0:yyyy-MM-ddTHH:mm}", new { @class = "form-control", type = "datetime-local", min = DateTime.Now.ToString("yyyy-MM-ddTHH:mm"), max = DateTime.Now.AddYears(5).ToString("yyyy-MM-ddTHH:mm"), required = "required" })
+                    <span class="field-validation-valid" data-valmsg-for="StartDateTime" data-valmsg-replace="true"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-3">
+                    <button class="btn btn-primary btn-lg width-100" type="submit"><span class="glyphicon gl glyphicon-plus"></span>  Add Time</button>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    $('#add-time-pre').click(function () {
+        $('#add-time-pre').hide();
+        $('#add-time-form').show();
+    })
+</script>
+
