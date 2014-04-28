@@ -133,6 +133,9 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
                         "User cancelled image capture", Toast.LENGTH_SHORT)
                         .show();
                         */
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+
             } else {
                 // failed to capture image
                 Toast.makeText(getApplicationContext(),
