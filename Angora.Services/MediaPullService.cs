@@ -16,8 +16,8 @@ namespace Angora.Services
         public void PullFromFacebook(string accessToken, Event theEvent)
         {
             var user = new FacebookClient(accessToken);
-            int since = ConvertToTimestamp(theEvent.StartDateTime);
-            int until = ConvertToTimestamp(theEvent.EndDateTime);
+            int since = ConvertToTimestamp(theEvent.EventTime.StartTime);
+            int until = ConvertToTimestamp(theEvent.EventTime.GetEndTime());
             JsonObject feed;
             JsonArray data;
             int count = 1; // makes it enter the loop the first time
@@ -55,19 +55,21 @@ namespace Angora.Services
             }
         }
 
-        public void PullFromTwitter(string accessToken, string accessSecret, Event theEvent){
+        public void PullFromTwitter(string accessToken, string accessSecret, Event theEvent)
+        {
             var service = new TwitterService("o8QTwfzt6CdfDGndyqvLrg", "jqU2tq5QVUkK6JdFA22wtXZNrTumatvG9VpPAfK5M", accessToken, accessSecret);
-            var tweets = service.ListTweetsOnHomeTimeline(new ListTweetsOnHomeTimelineOptions{Count = 10});
+            var tweets = service.ListTweetsOnHomeTimeline(new ListTweetsOnHomeTimelineOptions { Count = 10 });
             bool keepGoing = true;
             long max = 0;
             do
             {
-                if (tweets != null) { 
+                if (tweets != null)
+                {
                     foreach (var tweet in tweets)
                     {
                         DateTime tweetTime = tweet.CreatedDate.ToLocalTime();
-                        keepGoing = tweetTime > theEvent.StartDateTime;
-                        if (keepGoing && theEvent.EndDateTime > tweetTime)
+                        keepGoing = tweetTime > theEvent.EventTime.StartTime;
+                        if (keepGoing && theEvent.EventTime.GetEndTime() > tweetTime)
                         {
                             var name = tweet.User.Name;
                             var text = tweet.Text;
@@ -83,7 +85,7 @@ namespace Angora.Services
             } while (keepGoing);
         }
 
-        private int ConvertToTimestamp(DateTime date)
+        private static int ConvertToTimestamp(DateTime date)
         {
             DateTime epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             return (int)(date.ToUniversalTime() - epoch).TotalSeconds;
