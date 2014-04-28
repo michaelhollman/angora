@@ -6074,6 +6074,27 @@ body {
   padding: 8px 15px;
   margin-top: 20px;
 }
+.event-feed-item a {
+  color: #fff;
+  text-decoration: none;
+}
+.event-feed-item a:hover {
+  text-decoration: none;
+  color: #fff;
+}
+.event-feed-item:hover .panel-heading,
+.event-feed-item:hover .btn {
+  background-color: #3c933c;
+}
+.event-feed-item:hover .panel-heading .btn:hover,
+.event-feed-item:hover .btn .btn:hover {
+  background-color: #df691a;
+}
+.event-details {
+  /*margin: 20px 0;*/
+  padding: 0 30px 15px 15px;
+  border-right: 5px solid #df691a;
+}
 .help-box {
   font-size: 14px;
   margin-bottom: 15px;

@@ -19,11 +19,12 @@
     <p>There's nothing to see here... you should make some events!</p>
 }
 
+
 @foreach (var e in Model.Events)
 {
     var ev = e.Event;
 
-    <div class="panel panel-success">
+    <div class="panel panel-success event-feed-item">
         <div class="panel-heading">
             <div class="btn-group event-feed-title-btns pull-right">
 
@@ -31,7 +32,7 @@
                 @if (ev.EventTime == null || ev.EventTime.StartTime == null || ev.Scheduler == null || !ev.Scheduler.IsTimeSet)
                 {
                     <a href="@Url.Action("Index", "EventScheduler", new { id = ev.Id })" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Help find a time">
-                    <span class="glyphicon glyphicon-calendar"></span>
+                        <span class="glyphicon glyphicon-calendar"></span>
                     </a>
                 }
                 else
@@ -51,23 +52,25 @@
                 }
 
             </div>
-
-            <h2 class="panel-title text-overflow-ellipses">@e.Event.Name</h2>
+            <a href="@Url.Action("Details", "Event", new { id=e.Event.Id})">
+                <h2 class="panel-title text-overflow-ellipses">@e.Event.Name</h2>
+            </a>
         </div>
-        <div class="panel-body">
-            Hosted by @ev.Creator.FirstName @ev.Creator.LastName <br />
-            @if (ev.EventTime != null && ev.EventTime.StartTime != null && ev.Scheduler != null && ev.Scheduler.IsTimeSet)
-            {
-                @ev.EventTime.StartTime.ToString("dddd, MMMM d, yyyy 'at' h:mm tt") <br />
-            }
-            @ev.Location.NameOrAddress
-        </div>
+        <a href="@Url.Action("Details", "Event", new { id = e.Event.Id })">
 
-        <div class="panel-footer">
-            <p class="text-overflow-ellipses no-margin">@ev.Description</p>
-        </div>
+            <div class="panel-body">
+                Hosted by @ev.Creator.FirstName @ev.Creator.LastName <br />
+                @if (ev.EventTime != null && ev.EventTime.StartTime != null && ev.Scheduler != null && ev.Scheduler.IsTimeSet)
+                {
+                    @ev.EventTime.StartTime.ToString("dddd, MMMM d, yyyy 'at' h:mm tt") <br />
+                }
+                @ev.Location.NameOrAddress
+            </div>
 
-
+            <div class="panel-footer">
+                <p class="text-overflow-ellipses no-margin">@ev.Description</p>
+            </div>
+        </a>
     </div>
 }
 

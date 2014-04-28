@@ -12,4 +12,20 @@
   padding: 8px 15px;
   margin-top: 20px;
 }
+.event-feed-item a {
+  color: #fff;
+  text-decoration: none;
+}
+.event-feed-item a:hover {
+  text-decoration: none;
+  color: #fff;
+}
+.event-feed-item:hover .panel-heading,
+.event-feed-item:hover .btn {
+  background-color: #47a447;
+}
+.event-feed-item:hover .panel-heading .btn:hover,
+.event-feed-item:hover .btn .btn:hover {
+  background-color: #ff0000;
+}
 /*# sourceMappingURL=event-feed.css.map */

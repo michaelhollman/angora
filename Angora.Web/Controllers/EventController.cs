@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 
 namespace Angora.Web.Controllers
 {
+    [Authorize]
+    [RoutePrefix("event")]
     public class EventController : Controller
     {
         private IEventService _eventService;
@@ -28,22 +30,36 @@ namespace Angora.Web.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        //
-        // GET: /Event/
+        [Route("")]
         public ActionResult Index()
         {
             return RedirectToAction("Index", "EventFeed");
         }
 
-        [Authorize]
+        [Route("{id}")]
+        public ActionResult Details(long id)
+        {
+            var theEvent = _eventService.FindById(id);
+
+            var model = new EventViewModel
+            {
+                Event = theEvent,
+                ViewerIsCreator = User.Identity.GetUserId().Equals(theEvent.Creator.Id)
+            };
+
+            return View("Details", model);
+        }
+
+        [HttpGet]
+        [Route("new")]
         public ActionResult Create()
         {
             NewEventViewModel model = new NewEventViewModel();
             return View(model);
         }
 
-
-        [Authorize]
+        [HttpPost]
+        [Route("new")]
         public async Task<ActionResult> CreateEvent(NewEventViewModel model)
         {
             var eventTime = new EventTime
@@ -58,7 +74,7 @@ namespace Angora.Web.Controllers
                 ProposedTimes = new List<EventTime>(),
                 Responses = new List<EventSchedulerResponse>(),
             };
-            
+
             var location = new Location
             {
                 NameOrAddress = model.Location,
@@ -83,7 +99,8 @@ namespace Angora.Web.Controllers
             return RedirectToAction("Index", "EventFeed");
         }
 
-        [Authorize]
+        [HttpGet]
+        [Route("{id}/edit")]
         public ActionResult Edit(long id)
         {
             var theEvent = _eventService.FindById(id);
@@ -96,14 +113,15 @@ namespace Angora.Web.Controllers
             var model = new EventEditViewModel
             {
                 Event = theEvent,
-                DurationHours = theEvent.EventTime.DurationInMinutes / 60,
-                DurationMinutes = theEvent.EventTime.DurationInMinutes % 60
+                DurationHours = theEvent.EventTime == null ? 0 : theEvent.EventTime.DurationInMinutes / 60,
+                DurationMinutes = theEvent.EventTime == null ? 0 : theEvent.EventTime.DurationInMinutes % 60
             };
 
             return View(model);
         }
 
-        [Authorize]
+        [HttpPost]
+        [Route("{id}/edit")]
         public ActionResult EditEvent(EventEditViewModel model)
         {
             model.Event.EventTime.DurationInMinutes = model.DurationHours * 60 + model.DurationMinutes;
@@ -114,6 +132,7 @@ namespace Angora.Web.Controllers
             return RedirectToAction("Index", "EventFeed");
         }
 
+        [Route("{id}/delete")]
         public ActionResult DeleteEvent(long id)
         {
             _eventService.Delete(id);
@@ -122,41 +141,5 @@ namespace Angora.Web.Controllers
 
             return RedirectToAction("Index", "EventFeed");
         }
-
-        [Authorize]
-        public ActionResult ViewEvent(long id)
-        {
-            Event eventView = _eventService.FindById(id);
-
-            return View();
-        }
-
-        private static string GetCoordinates(string address)
-        {
-            var requestUri = string.Format("http://maps.googleapis.com/maps/api/geocode/xml?address={0}&sensor=false", Uri.EscapeDataString(address));
-
-            var request = WebRequest.Create(requestUri);
-            var response = request.GetResponse();
-            var xdoc = XDocument.Load(response.GetResponseStream());
-
-            var result = xdoc.Element("GeocodeResponse").Element("result");
-            string location;
-
-            if (xdoc.Element("GeocodeResponse").Element("status").Value.Equals("OK"))
-            {
-                var locationElement = result.Element("geometry").Element("location");
-                var lat = locationElement.Element("lat");
-                var lng = locationElement.Element("lng");
-
-                location = lat.Value + "," + lng.Value;
-            }
-            else
-            {
-                location = "";
-            }
-
-            return location;
-        }
-
     }
 }
