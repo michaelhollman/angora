@@ -42,7 +42,7 @@ namespace Angora.Web.Areas.Api.Controllers
         public List<Event> GetEvents(string userId)
         {
             var events = _eventService.FindEventsCreatedByUser(userId);
-            return events.ToList<Event>();
+            return events.ToList();
         }
 
         [HttpPost]

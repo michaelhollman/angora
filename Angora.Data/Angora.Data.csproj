@@ -74,14 +74,16 @@
     <Compile Include="Models\EventSchedulerResponse.cs" />
     <Compile Include="Models\EventTime.cs" />
     <Compile Include="Models\Location.cs" />
+    <Compile Include="Models\MediaItem.cs" />
+    <Compile Include="Models\Post.cs" />
     <Compile Include="Models\Tag.cs" />
-    <Compile Include="Repository\AngoraDbConfiguration.cs" />
-    <Compile Include="Repository\AngoraDbContext.cs" />
-    <Compile Include="Repository\IRepository.cs" />
+    <Compile Include="AngoraDbConfiguration.cs" />
+    <Compile Include="AngoraDbContext.cs" />
+    <Compile Include="IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Repository\GenericRepository.cs" />
-    <Compile Include="Repository\IUnitOfWork.cs" />
-    <Compile Include="Repository\UnitOfWork.cs" />
+    <Compile Include="GenericRepository.cs" />
+    <Compile Include="IUnitOfWork.cs" />
+    <Compile Include="UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

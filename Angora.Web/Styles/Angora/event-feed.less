@@ -14,5 +14,24 @@
         padding: 8px 15px;
         margin-top: 20px;
     }
+}
 
+.event-feed-item {
+    & a {
+        color: #fff;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: none;
+            color: #fff;
+        }
+    }
+
+    &:hover .panel-heading, &:hover .btn {
+        background-color: #3c933c;
+
+        .btn:hover {
+            background-color: @brand-primary;
+        }
+    }
 }
