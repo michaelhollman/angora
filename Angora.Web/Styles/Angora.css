@@ -6091,9 +6091,8 @@ body {
   background-color: #df691a;
 }
 .event-details {
-  /*margin: 20px 0;*/
-  padding: 0 30px 15px 15px;
-  border-right: 5px solid #df691a;
+  border-bottom: 3px solid #df691a;
+  margin-bottom: 25px;
 }
 .help-box {
   font-size: 14px;

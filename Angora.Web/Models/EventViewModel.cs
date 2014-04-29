@@ -55,6 +55,7 @@ namespace Angora.Web.Models
     public class EventViewModel
     {
         public Event Event { get; set; }
+        public AngoraUser Viewer { get; set; }
         public bool ViewerIsCreator { get; set; }
         public int DurationHours { get { return Event.EventTime.DurationInMinutes / 60; } }
         public int DurationMinutes { get { return Event.EventTime.DurationInMinutes % 60; } }

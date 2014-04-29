@@ -1,6 +1,6 @@
 ﻿@model Angora.Web.Models.EventSchedulerViewModel
 
-<h2>Help find a time for @Model.Event.Name</h2>
+<h2>Help find a time for <a href="@Url.Action("Details","Event")">@Model.Event.Name</a></h2>
 <hr />
 <div class="form-horizontal">
     @if (Model.Times.Count == 0)
@@ -16,15 +16,9 @@
             <p class="control-label col-md-4">@t.Time.ToString("ddd, MMM d, yyyy 'at' h:mm tt")</p>
             <div class="col-md-5">
                 <div class="btn-group btn-group-justified">
-                    <div class="btn-group">
-                        <a class="btn @(t.CurrentUserResponse == Angora.Data.Models.SchedulerResponse.Yes ? "btn-success" : "btn-primary")" href="@Url.Action("FindTime", new { dt = t.Time, response = Angora.Data.Models.SchedulerResponse.Yes })">Yes! (@t.YesCount)</a>
-                    </div>
-                    <div class="btn-group">
-                        <a class="btn @(t.CurrentUserResponse == Angora.Data.Models.SchedulerResponse.Maybe ? "btn-success" : "btn-primary")" href="@Url.Action("FindTime", new { dt = t.Time, response = Angora.Data.Models.SchedulerResponse.Maybe })">Maybe (@t.MaybeCount)</a>
-                    </div>
-                    <div class="btn-group">
-                        <a class="btn  @(t.CurrentUserResponse == Angora.Data.Models.SchedulerResponse.No ? "btn-success" : "btn-primary")" href="@Url.Action("FindTime", new { dt = t.Time, response = Angora.Data.Models.SchedulerResponse.No })">No (@t.NoCount)</a>
-                    </div>
+                    <a class="btn @(t.CurrentUserResponse == Angora.Data.Models.SchedulerResponse.Yes ? "btn-success" : "btn-primary")" href="@Url.Action("FindTime", new { dt = t.Time, response = Angora.Data.Models.SchedulerResponse.Yes })">Yes! (@t.YesCount)</a>
+                    <a class="btn @(t.CurrentUserResponse == Angora.Data.Models.SchedulerResponse.Maybe ? "btn-success" : "btn-primary")" href="@Url.Action("FindTime", new { dt = t.Time, response = Angora.Data.Models.SchedulerResponse.Maybe })">Maybe (@t.MaybeCount)</a>
+                    <a class="btn  @(t.CurrentUserResponse == Angora.Data.Models.SchedulerResponse.No ? "btn-success" : "btn-primary")" href="@Url.Action("FindTime", new { dt = t.Time, response = Angora.Data.Models.SchedulerResponse.No })">No (@t.NoCount)</a>
                 </div>
             </div>
 

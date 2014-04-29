@@ -37,14 +37,15 @@ namespace Angora.Web.Controllers
         }
 
         [Route("{id}")]
-        public ActionResult Details(long id)
+        public async Task<ActionResult> Details(long id)
         {
             var theEvent = _eventService.FindById(id);
 
             var model = new EventViewModel
             {
                 Event = theEvent,
-                ViewerIsCreator = User.Identity.GetUserId().Equals(theEvent.Creator.Id)
+                ViewerIsCreator = User.Identity.GetUserId().Equals(theEvent.Creator.Id),
+                Viewer = await _userService.FindUserById(User.Identity.GetUserId()),
             };
 
             return View("Details", model);
