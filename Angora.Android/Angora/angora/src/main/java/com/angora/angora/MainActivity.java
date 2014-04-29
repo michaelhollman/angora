@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -268,20 +269,25 @@ public class MainActivity extends ActionBarActivity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
-            try {
-                mEvents = new GetEventsTask().execute(mUser.getString("Id")).get();
-            }catch (Exception je){
-                 je.printStackTrace();
-            }
+
+            TextView noEventsTextView = (TextView) rootView.findViewById(R.id.textView_noEvents);
+
             if (mEvents != null) {
-                mAdapter = new CustomAdapter(getActivity(), mEvents);
-                mListView = (ListView) rootView.findViewById(R.id.list);
-                mListView.setAdapter(mAdapter);
-            }else if (pref.getBoolean("IsLoggedIn", false)){
+                if (mEvents.length > 0) {
+                    mAdapter = new CustomAdapter(getActivity(), mEvents);
+                    mListView = (ListView) rootView.findViewById(R.id.list);
+                    mListView.setAdapter(mAdapter);
+                    noEventsTextView.setVisibility(View.GONE);
+                } else if (pref.getBoolean("IsLoggedIn", false)) {
+                    //if the user is logged in but has no events
+                    noEventsTextView.setVisibility(View.VISIBLE);
+                    Toast.makeText(appContext, "No Events to show! Go make some!", Toast.LENGTH_SHORT).show();
+                }
+            }else if (pref.getBoolean("IsLoggedIn", false)) {
                 //if the user is logged in but has no events
+                noEventsTextView.setVisibility(View.VISIBLE);
                 Toast.makeText(appContext, "No Events to show! Go make some!", Toast.LENGTH_SHORT).show();
             }
-
 
             return rootView;
         }
