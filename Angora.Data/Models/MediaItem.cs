@@ -10,6 +10,7 @@ namespace Angora.Data.Models
     {
         public string FooCDNBlob { get; set; }
         public MediaType MediaType { get; set; }
+        public ulong Size { get; set; }
     }
 
     public enum MediaType

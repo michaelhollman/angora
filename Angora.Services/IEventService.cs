@@ -12,5 +12,6 @@ namespace Angora.Services
 
         Event FindById(long id);
         IEnumerable<Event> FindEventsCreatedByUser(string userId);
+        IEnumerable<Event> FindEventsWithBlobs();
     }
 }

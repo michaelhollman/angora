@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Angora.Data;
 using Angora.Data.Models;
+using System.Linq;
 
 namespace Angora.Services
 {
@@ -63,6 +64,11 @@ namespace Angora.Services
         {
             IEnumerable<Event> events = _eventRepo.Find(e => e.Creator.Id.Equals(userId));
             return events;
+        }
+
+        public IEnumerable<Event> FindEventsWithBlobs()
+        {
+           return _eventRepo.Find(e => e.Posts != null && e.Posts.Count > 0 && e.Posts.Any(p => p.MediaItem != null && !string.IsNullOrWhiteSpace(p.MediaItem.FooCDNBlob)));
         }
     }
 }
