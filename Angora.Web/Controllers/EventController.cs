@@ -12,6 +12,7 @@ using System.IO;
 using System.Xml.Linq;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Angora.Web.Controllers
 {
@@ -21,12 +22,14 @@ namespace Angora.Web.Controllers
     {
         private IEventService _eventService;
         private IAngoraUserService _userService;
+        private IFooCDNService _fooCDNService;
         private IUnitOfWork _unitOfWork;
 
-        public EventController(IEventService eventService, IAngoraUserService userService, IUnitOfWork unitOfWork)
+        public EventController(IEventService eventService, IAngoraUserService userService, IFooCDNService fooCDNService, IUnitOfWork unitOfWork)
         {
             _eventService = eventService;
             _userService = userService;
+            _fooCDNService = fooCDNService;
             _unitOfWork = unitOfWork;
         }
 
@@ -49,6 +52,50 @@ namespace Angora.Web.Controllers
             };
 
             return View("Details", model);
+        }
+
+        [HttpPost]
+        [Route("{id}/post")]
+        public async Task<ActionResult> Post(long id, string text, HttpPostedFileBase picture = null, bool shareOnFacebook = false, bool tweet = false)
+        {
+            MediaItem mediaItem = null;
+            if (picture != null)
+            {
+                MemoryStream target = new MemoryStream();
+                picture.InputStream.CopyTo(target);
+                var pictureData = target.ToArray();
+
+                var extension = Path.GetExtension(picture.FileName).TrimStart('.');
+                string blob = _fooCDNService.CreateNewBlob(string.Format("image/{0}", extension));
+
+                //async
+                _fooCDNService.PostToBlob(blob, pictureData, picture.FileName);
+
+                mediaItem = new MediaItem
+                {
+                    FooCDNBlob = blob,
+                    Size = (ulong)pictureData.LongLength,
+                    MediaType = MediaType.Photo
+                };
+            }
+
+            var post = new Post
+            {
+                User = await _userService.FindUserById(User.Identity.GetUserId()),
+                MediaItem = mediaItem,
+                PostText = text,
+                PostTime = DateTime.UtcNow,
+            };
+
+            var vent = _eventService.FindById(id);
+
+            vent.Posts = vent.Posts ?? new List<Post>();
+            vent.Posts.Add(post);
+
+            _eventService.Update(vent);
+            _unitOfWork.SaveChanges();
+
+            return RedirectToAction("Details", new { id = id });
         }
 
         [HttpGet]

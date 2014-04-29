@@ -71,22 +71,22 @@
             <div class="col-md-12">
                 <div class="well well-sm ">
 
-                    @using (Html.BeginForm("", "", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    @using (Html.BeginForm("Post", "Event", new { id = Model.Event.Id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
                     {
                         <div class="form-group">
-                            <textarea name="text" class="form-control" rows="2" placeholder="Share something with people going to @Model.Event.Name..."></textarea>
+                            <textarea name="text" class="form-control" rows="2" placeholder="Share something with people going to @Model.Event.Name..." required></textarea>
                         </div>
                         <div class="form-group row" style="margin-bottom:0">
                             <div class="col-sm-5">
                                 <label>
-                                    <input type="file" name="image" accept="image/*" />
+                                    <input type="file" name="picture" accept="image/*" />
                                 </label>
                             </div>
                             <div class="col-sm-3">
                                 @if (Model.Viewer.IsLinkedWithFacebook())
                                 {
                                     <label>
-                                        <input type="checkbox" name="shareOnFacebook" /> Share on Facebook
+                                        <input type="checkbox" name="shareOnFacebook" value="True" /> Share on Facebook
                                     </label>
                                 }
                             </div>
@@ -94,7 +94,7 @@
                                 @if (Model.Viewer.IsLinkedWithTwitter())
                                 {
                                     <label>
-                                        <input type="checkbox" name="tweet" /> Tweet
+                                        <input type="checkbox" name="tweet" value="True" /> Tweet
                                     </label>
                                 }
                             </div>
