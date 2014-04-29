@@ -36,7 +36,7 @@ public class GetEventsTask extends AsyncTask<String, Void, AngoraEvent[]> {
 
         try{
             url = new URL(urlString.toString());
-            Log.e("Getting Events", urlString.toString());
+            Log.i("Getting Events", urlString.toString());
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();

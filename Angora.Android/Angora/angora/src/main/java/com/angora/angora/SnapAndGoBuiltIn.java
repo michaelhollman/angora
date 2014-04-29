@@ -17,10 +17,15 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -78,7 +83,7 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        // save file url in bundle as it will be null on scren orientation
+        // save file url in bundle as it will be null on screen orientation
         // changes
         outState.putParcelable("file_uri", fileUri);
     }
@@ -214,6 +219,8 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
             {
                 FileInputStream fileInputStream = new FileInputStream(new File(fileUri.getPath()) );
 
+                Log.i("SnapNGo", urlServer.toString());
+
                 URL url = new URL(urlServer.toString());
                 connection = (HttpURLConnection) url.openConnection();
 
@@ -226,12 +233,14 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
                 connection.setRequestMethod("POST");
 
                 connection.setRequestProperty("Connection", "Keep-Alive");
-                connection.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
+                connection.setRequestProperty("Content-Type", "multipart/form-data; boundary="+boundary);
 
                 outputStream = new DataOutputStream( connection.getOutputStream() );
                 outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-                outputStream.writeBytes("Content-Disposition: form-data; name=\"picture\";filename=\"" + fileUri.getPath() +"\"" + lineEnd);
+                outputStream.writeBytes("Content-Disposition: form-data; name=\"picture\"; filename=\"" + fileUri.getPath() +"\"" + lineEnd);
+                outputStream.writeBytes("Content-Type: image/jpeg" + lineEnd);
                 outputStream.writeBytes(lineEnd);
+
 
                 bytesAvailable = fileInputStream.available();
                 bufferSize = Math.min(bytesAvailable, maxBufferSize);
@@ -255,14 +264,19 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
                 outputStream.flush();
                 outputStream.close();
 
+
+
                 int response = connection.getResponseCode();
-                Log.d("SnapAndGo", "Response is " + response);
+                String responseMessage = connection.getResponseMessage();
+                Log.i("SnapAndGo", "Response is " + response + ":" + responseMessage);
             }
             catch (Exception ex)
             {
                 //todo Exception handling
                 ex.printStackTrace();
             }
+
+
             return null;
         }
 
