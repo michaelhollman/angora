@@ -226,7 +226,7 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
 
                 outputStream = new DataOutputStream( connection.getOutputStream() );
                 outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-                outputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + fileUri.getPath() +"\"" + lineEnd);
+                outputStream.writeBytes("Content-Disposition: form-data; name=\"picture\";filename=\"" + fileUri.getPath() +"\"" + lineEnd);
                 outputStream.writeBytes(lineEnd);
 
                 bytesAvailable = fileInputStream.available();
