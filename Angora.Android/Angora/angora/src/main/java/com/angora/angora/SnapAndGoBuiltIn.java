@@ -197,7 +197,8 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
             HttpURLConnection connection = null;
             DataOutputStream outputStream = null;
             DataInputStream inputStream = null;
-            String urlServer = "http://seteam4.azurewebsites.net/api/user/upload";
+            StringBuilder urlServer = new StringBuilder();
+            String siteUrl = "http://seteam4.azurewebsites.net/api/user/upload/";
             String lineEnd = "\r\n";
             String twoHyphens = "--";
             String boundary =  "*****";
@@ -206,11 +207,14 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
             byte[] buffer;
             int maxBufferSize = 1*1024*1024;
 
+            urlServer.append(siteUrl);
+            urlServer.append(1);
+
             try
             {
                 FileInputStream fileInputStream = new FileInputStream(new File(fileUri.getPath()) );
 
-                URL url = new URL(urlServer);
+                URL url = new URL(urlServer.toString());
                 connection = (HttpURLConnection) url.openConnection();
 
                 // Allow Inputs &amp; Outputs.
