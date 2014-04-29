@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace Angora.Web.Controllers
 {
     [Authorize]
-    [RoutePrefix("event/{id}/rsvp")]
+    [RoutePrefix("event/{id}/findtime")]
     public class EventSchedulerController : Controller
     {
         private IUnitOfWork _unitOfWork { get; set; }
@@ -52,7 +52,7 @@ namespace Angora.Web.Controllers
 
             if (theEvent.Scheduler.IsTimeSet)
             {
-                return View("RSVP", model);
+                return RedirectToAction("Details", "Event", new { id = id });
             }
 
             model.Times = theEvent.Scheduler.ProposedTimes.Select(pt =>

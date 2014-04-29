@@ -12,7 +12,6 @@ namespace Angora.Services
         Post Create(Post post);
         Post FindById(long id);
         IEnumerable<Post> FindPostsForEvent(long eventId);
-
-
+        void AddOrUpdatePostToEvent(long eventId, Post post);
     }
 }
