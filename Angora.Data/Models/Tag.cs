@@ -10,6 +10,11 @@ namespace Angora.Data.Models
     {
         String Text { get; set; }
 
+        public Tag()
+        {
+            Text = string.Empty;
+        }
+
         public Tag(string tag)
         {
             Text = tag;
