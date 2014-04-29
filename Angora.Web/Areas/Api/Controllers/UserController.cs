@@ -41,7 +41,7 @@ namespace Angora.Web.Areas.Api.Controllers
         public AngoraUser Login(string provider, string providerKey)
         {
             var user = _userService.FindUser(new UserLoginInfo(provider, providerKey));
-            
+
             //TODO if the user is not found, will return null
             return user;
         }
@@ -69,28 +69,46 @@ namespace Angora.Web.Areas.Api.Controllers
         }
 
         [HttpPost, Route("upload/{eventId}")]
-        public async Task<IHttpActionResult> Upload(long eventId, HttpPostedFileBase picture)
+        public async Task<IHttpActionResult> Upload(long eventId)
         {
-            MediaItem mediaItem = null;
-            if (picture != null)
+            byte[] picture;
+            var fileName = string.Empty;
+
+            if (Request.Content.IsMimeMultipartContent())
             {
-                MemoryStream target = new MemoryStream();
-                picture.InputStream.CopyTo(target);
-                var pictureData = target.ToArray();
-
-                var extension = Path.GetExtension(picture.FileName).TrimStart('.');
-                string blob = _fooCDNService.CreateNewBlob(string.Format("image/{0}", extension));
-
-                
-                await _fooCDNService.PostToBlob(blob, pictureData, picture.FileName);
-
-                mediaItem = new MediaItem
+                try
                 {
-                    FooCDNBlob = blob,
-                    Size = (ulong)pictureData.LongLength,
-                    MediaType = MediaType.Photo
-                };
+                    var content = (await Request.Content.ReadAsMultipartAsync()).Contents.First();
+                    fileName = content.Headers.ContentDisposition.FileName.TrimEnd('"').TrimStart('"');
+                    picture = await content.ReadAsByteArrayAsync();
+                }
+                catch (Exception e)
+                {
+                    throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.InternalServerError, e));
+                }
             }
+            else
+            {
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotAcceptable, "This request is not properly formatted"));
+            }
+
+            MediaItem mediaItem = null;
+            if (picture.Length == 0)
+            {
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotAcceptable, "The content was empty or unsuccessfully delivered"));
+            }
+
+            var extension = Path.GetExtension(fileName).TrimStart('.');
+            string blob = _fooCDNService.CreateNewBlob(string.Format("image/{0}", extension));
+
+            _fooCDNService.PostToBlob(blob, picture, fileName);
+
+            mediaItem = new MediaItem
+            {
+                FooCDNBlob = blob,
+                Size = (ulong)picture.LongLength,
+                MediaType = MediaType.Photo
+            };
 
             var post = new Post
             {
@@ -100,13 +118,7 @@ namespace Angora.Web.Areas.Api.Controllers
                 PostTime = DateTime.UtcNow,
             };
 
-            post = _postService.Create(post);
-
-            var vent = _eventService.FindById(eventId);
-            vent.Posts = vent.Posts ?? new List<Post>();
-            vent.Posts.Add(post);
-
-            _eventService.Update(vent);
+            _postService.AddOrUpdatePostToEvent(eventId, post);
             _unitOfWork.SaveChanges();
 
             return Ok();
