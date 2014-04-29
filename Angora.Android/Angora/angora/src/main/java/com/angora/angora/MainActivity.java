@@ -335,7 +335,7 @@ public class MainActivity extends ActionBarActivity
             try {
                 nameTextView.setText(mUser.getString("FirstName") + " " + mUser.getString("LastName"));
                 locationTextView.setText((mUser.getString("Location")));
-                String profilePicUrl = mUser.getString("ProfilePicturUrl");
+                String profilePicUrl = mUser.getString("ProfilePictureUrl");
                 if (profilePicUrl != null){
                     //todo use picture
                 }
