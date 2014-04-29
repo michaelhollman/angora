@@ -1,8 +1,11 @@
 package com.angora.angora;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -197,7 +200,7 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
             HttpURLConnection connection = null;
             DataOutputStream outputStream = null;
             DataInputStream inputStream = null;
-            String urlServer = "http://seteam4.azurewebsites.net/api/user/upload";
+            StringBuilder urlString = new StringBuilder();
             String lineEnd = "\r\n";
             String twoHyphens = "--";
             String boundary =  "*****";
@@ -206,11 +209,17 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
             byte[] buffer;
             int maxBufferSize = 1*1024*1024;
 
+            LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+            Location lastLocation = lm.getLastKnownLocation(lm.GPS_PROVIDER);
+            urlString.append("http://seteam4.azurewebsites.net/api/user/upload?lat=");
+            urlString.append(lastLocation.getLatitude());
+            urlString.append("&lon=").append(lastLocation.getLongitude());
+
             try
             {
                 FileInputStream fileInputStream = new FileInputStream(new File(fileUri.getPath()) );
 
-                URL url = new URL(urlServer);
+                URL url = new URL(urlString.toString());
                 connection = (HttpURLConnection) url.openConnection();
 
                 // Allow Inputs &amp; Outputs.

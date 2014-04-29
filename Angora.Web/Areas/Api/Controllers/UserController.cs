@@ -77,5 +77,25 @@ namespace Angora.Web.Areas.Api.Controllers
 
             return Ok();
         }
+        
+        [HttpPost, Route("upload")]
+        public async Task<IHttpActionResult> Upload(string lat, string lon)
+        {
+            if (!Request.Content.IsMimeMultipartContent())
+            {
+                throw new Exception();  //meow?
+            }
+            var provider = new MultipartMemoryStreamProvider();
+            await Request.Content.ReadAsMultipartAsync(provider);
+            foreach (var file in provider.Contents)
+            {
+                var filename = file.Headers.ContentDisposition.FileName.Trim('\"');
+                var buffer = await file.ReadAsByteArrayAsync();
+                //todo something with these things 
+
+            }
+
+            return Ok();
+        }
     }
 }
