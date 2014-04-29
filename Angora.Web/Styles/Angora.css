@@ -5975,6 +5975,9 @@ body {
 .no-margin {
   margin: 0 !important;
 }
+.no-padding {
+  padding: 0 !important;
+}
 .login-social-img {
   height: 20px;
 }
@@ -6089,10 +6092,6 @@ body {
 .event-feed-item:hover .panel-heading .btn:hover,
 .event-feed-item:hover .btn .btn:hover {
   background-color: #df691a;
-}
-.event-details {
-  border-bottom: 3px solid #df691a;
-  margin-bottom: 25px;
 }
 .help-box {
   font-size: 14px;

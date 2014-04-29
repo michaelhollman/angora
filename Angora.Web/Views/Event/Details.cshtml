@@ -107,11 +107,33 @@
             </div>
         </div>
 
+        @foreach (var p in Model.Event.Posts)
+        {
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="pull-right">
+                        <span class="small">
+                            @p.PostTime.ToLocalTime().ToString("ddd, MMM d, yyyy  h:mm tt")
+                        </span>
+                    </div>
+                    @p.User.FirstName @p.User.LastName
+                </div>
+                @if (p.MediaItem != null && !string.IsNullOrWhiteSpace(p.MediaItem.FooCDNBlob))
+                {
+                    <img class="panel-body img-responsive no-margin no-padding" src="@p.MediaItem.GetUrl()" />
+                    <div class="panel-footer">@p.PostText</div>
+                }
+                else
+                {
+                    <div class="panel-footer">@p.PostText</div>
+                }
+            </div>
+        }
 
-        <p>Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet </p>
-        <p>Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet </p>
-        <p>Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet </p>
-
+        @if (Model.Event.Posts == null || Model.Event.Posts.Count == 0)
+        {
+            <p>Nobody has said anything yet...</p>
+        }
 
     </div>
 </div>

@@ -23,13 +23,15 @@ namespace Angora.Web.Controllers
         private IEventService _eventService;
         private IAngoraUserService _userService;
         private IFooCDNService _fooCDNService;
+        private IPostService _postService;
         private IUnitOfWork _unitOfWork;
 
-        public EventController(IEventService eventService, IAngoraUserService userService, IFooCDNService fooCDNService, IUnitOfWork unitOfWork)
+        public EventController(IEventService eventService, IAngoraUserService userService, IFooCDNService fooCDNService,IPostService postService, IUnitOfWork unitOfWork)
         {
             _eventService = eventService;
             _userService = userService;
             _fooCDNService = fooCDNService;
+            _postService = postService;
             _unitOfWork = unitOfWork;
         }
 
@@ -43,6 +45,7 @@ namespace Angora.Web.Controllers
         public async Task<ActionResult> Details(long id)
         {
             var theEvent = _eventService.FindById(id);
+            theEvent.Posts = theEvent.Posts.OrderByDescending(p => p.PostTime).ToList();
 
             var model = new EventViewModel
             {
@@ -87,8 +90,9 @@ namespace Angora.Web.Controllers
                 PostTime = DateTime.UtcNow,
             };
 
-            var vent = _eventService.FindById(id);
+            post = _postService.Create(post);
 
+            var vent = _eventService.FindById(id);
             vent.Posts = vent.Posts ?? new List<Post>();
             vent.Posts.Add(post);
 

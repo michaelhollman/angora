@@ -12,5 +12,6 @@ namespace Angora.Data.Models
         public virtual MediaItem MediaItem { get; set; }
         public DateTime PostTime { get; set; }
         public string PostText { get; set; }
+        public long EventId { get; set; }
     }
 }
