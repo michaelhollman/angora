@@ -250,6 +250,9 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
                 fileInputStream.close();
                 outputStream.flush();
                 outputStream.close();
+
+                int response = connection.getResponseCode();
+                Log.d("SnapAndGo", "Response is " + response);
             }
             catch (Exception ex)
             {
