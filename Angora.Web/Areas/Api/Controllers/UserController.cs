@@ -10,6 +10,9 @@ using Microsoft.AspNet.Identity;
 using Angora.Data.Models;
 using Facebook;
 using TweetSharp;
+using System.Web;
+using System.IO;
+using Angora.Data;
 
 namespace Angora.Web.Areas.Api.Controllers
 {
@@ -18,11 +21,17 @@ namespace Angora.Web.Areas.Api.Controllers
     {
         private IAngoraUserService _userService;
         private IEventService _eventService;
+        private IFooCDNService _fooCDNService;
+        private IPostService _postService;
+        private IUnitOfWork _unitOfWork;
 
-        public UserController(IAngoraUserService userService, IEventService eventService)
+        public UserController(IAngoraUserService userService, IEventService eventService, IFooCDNService fooCDNService, IPostService postService, IUnitOfWork unitOfWork)
         {
             _userService = userService;
             _eventService = eventService;
+            _fooCDNService = fooCDNService;
+            _postService = postService;
+            _unitOfWork = unitOfWork;
         }
 
         // GET api/<controller>/login
@@ -59,21 +68,46 @@ namespace Angora.Web.Areas.Api.Controllers
             _eventService.Delete(_eventService.FindById(eventId));
         }
 
-        [HttpPost, Route("upload")]
-        public async Task<IHttpActionResult> Upload()
+        [HttpPost, Route("upload/{eventId}")]
+        public async Task<IHttpActionResult> Upload(long eventId, HttpPostedFileBase picture)
         {
-            if (!Request.Content.IsMimeMultipartContent()) { 
-                throw new Exception();  //meow?
-            }
-            var provider = new MultipartMemoryStreamProvider();
-            await Request.Content.ReadAsMultipartAsync(provider);
-            foreach (var file in provider.Contents)
+            MediaItem mediaItem = null;
+            if (picture != null)
             {
-                var filename = file.Headers.ContentDisposition.FileName.Trim('\"');
-                var buffer = await file.ReadAsByteArrayAsync();
-                //todo something with these things 
+                MemoryStream target = new MemoryStream();
+                picture.InputStream.CopyTo(target);
+                var pictureData = target.ToArray();
 
+                var extension = Path.GetExtension(picture.FileName).TrimStart('.');
+                string blob = _fooCDNService.CreateNewBlob(string.Format("image/{0}", extension));
+
+                
+                await _fooCDNService.PostToBlob(blob, pictureData, picture.FileName);
+
+                mediaItem = new MediaItem
+                {
+                    FooCDNBlob = blob,
+                    Size = (ulong)pictureData.LongLength,
+                    MediaType = MediaType.Photo
+                };
             }
+
+            var post = new Post
+            {
+                User = await _userService.FindUserById(User.Identity.GetUserId()),
+                MediaItem = mediaItem,
+                PostText = string.Empty,
+                PostTime = DateTime.UtcNow,
+            };
+
+            post = _postService.Create(post);
+
+            var vent = _eventService.FindById(eventId);
+            vent.Posts = vent.Posts ?? new List<Post>();
+            vent.Posts.Add(post);
+
+            _eventService.Update(vent);
+            _unitOfWork.SaveChanges();
 
             return Ok();
         }
