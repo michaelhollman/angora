@@ -27,7 +27,7 @@
     <div class="panel panel-success event-feed-item">
         <div class="panel-heading">
             <div class="btn-group event-feed-title-btns pull-right">
-                @if (ev.EventTime == null || ev.EventTime.StartTime == null || ev.Scheduler == null || !ev.Scheduler.IsTimeSet)
+                @if (!(ev.EventTime != null && ev.EventTime.StartTime != null || (ev.Scheduler != null && ev.Scheduler.IsTimeSet)))
                 {
                     <a href="@Url.Action("Index", "EventScheduler", new { id = ev.Id })" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Help find a time">
                         <span class="glyphicon glyphicon-calendar"></span>
@@ -51,7 +51,7 @@
 
             <div class="panel-body">
                 Hosted by @ev.Creator.FirstName @ev.Creator.LastName <br />
-                @if (ev.EventTime != null && ev.EventTime.StartTime != null && ev.Scheduler != null && ev.Scheduler.IsTimeSet)
+                @if (ev.EventTime != null && ev.EventTime.StartTime != null || (ev.Scheduler != null && ev.Scheduler.IsTimeSet))
                 {
                     @ev.EventTime.StartTime.ToString("dddd, MMMM d, yyyy 'at' h:mm tt") <br />
                 }

@@ -209,7 +209,7 @@ namespace Angora.Web.Controllers
             _eventService.Update(model.Event);
             _unitOfWork.SaveChanges();
 
-            return RedirectToAction("Index", "EventFeed");
+            return RedirectToAction("Details", "Event", new { id = model.Event.Id });
         }
 
         [Route("{id}/delete")]
