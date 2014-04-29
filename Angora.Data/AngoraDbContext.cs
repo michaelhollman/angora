@@ -20,5 +20,7 @@ namespace Angora.Data
         public DbSet<EventTime> EventTimes { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<Location> Locations { get; set; }
+        public DbSet<Post> Posts { get; set; }
+        public DbSet<MediaItem> MediaItems { get; set; }
     }
 }

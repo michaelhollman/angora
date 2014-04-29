@@ -14,7 +14,7 @@ namespace Angora.Data
         T Single(Expression<Func<T, bool>> where);
         T First(Expression<Func<T, bool>> where);
         void Delete(T entity);
-        void Insert(T entity);
+        T Insert(T entity);
         void Update(T entity);
     }
 }

@@ -6,12 +6,12 @@ namespace Angora.Services
 {
     public class EventService : ServiceBase, IEventService
     {
-        private GenericRepository<Event> _eventRepo;
-        private GenericRepository<EventTime> _eventTimeRepo;
-        private GenericRepository<EventScheduler> _eventSchedulerRepo;
-        private GenericRepository<Location> _locationRepo;
+        private IRepository<Event> _eventRepo;
+        private IRepository<EventTime> _eventTimeRepo;
+        private IRepository<EventScheduler> _eventSchedulerRepo;
+        private IRepository<Location> _locationRepo;
 
-        public EventService(GenericRepository<Event> eventRepo, GenericRepository<EventTime> eventTimeRepo, GenericRepository<EventScheduler> eventSchedulerRepo, GenericRepository<Location> locationRepo)
+        public EventService(IRepository<Event> eventRepo, IRepository<EventTime> eventTimeRepo, IRepository<EventScheduler> eventSchedulerRepo, IRepository<Location> locationRepo)
         {
             _eventRepo = eventRepo;
             _eventTimeRepo = eventTimeRepo;
@@ -19,11 +19,9 @@ namespace Angora.Services
             _locationRepo = locationRepo;
         }
 
-        public long Create(Event newEvent)
+        public Event Create(Event newEvent)
         {
-            _eventRepo.Insert(newEvent);
-
-            return newEvent.Id;
+            return _eventRepo.Insert(newEvent);
         }
 
         public void Update(Event e)
@@ -55,8 +53,7 @@ namespace Angora.Services
 
         public Event FindById(long id)
         {
-            Event thisEvent = _eventRepo.GetById(id);
-            return thisEvent;
+            return _eventRepo.GetById(id);
         }
 
         public IEnumerable<Event> FindEventsCreatedByUser(string userId)
