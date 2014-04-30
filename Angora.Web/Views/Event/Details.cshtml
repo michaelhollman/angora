@@ -79,7 +79,11 @@
 
     <div class="col-md-7">
         <div class="row">
-
+            <div class="col-md-12">
+                <h4>Posts</h4>
+            </div>
+        </div>
+        <div class="row">
             <div class="col-md-12">
                 @if (User.Identity.IsAuthenticated)
                 {
@@ -128,14 +132,16 @@
                 <div class="panel-heading">
                     <div class="pull-right">
                         <span class="small">
+                            
                             @p.PostTime.ToLocalTime().ToString("ddd, MMM d, yyyy  h:mm tt")
+                            
                         </span>
                     </div>
                     @p.User.FirstName @p.User.LastName
                 </div>
                 @if (p.MediaItem != null && !string.IsNullOrWhiteSpace(p.MediaItem.FooCDNBlob))
                 {
-                    <img class="panel-body img-responsive no-margin no-padding" src="@p.MediaItem.GetUrl()" />
+                    <img class="panel-body img-responsive no-margin no-padding width-100" src="@p.MediaItem.GetUrl()" />
                 }
                 @if (!string.IsNullOrWhiteSpace(p.PostText))
                 {

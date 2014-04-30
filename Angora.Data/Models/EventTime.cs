@@ -8,7 +8,18 @@ namespace Angora.Data.Models
 {
     public class EventTime : BaseModel
     {
-        public DateTime StartTime { get; set; }
+        private DateTime _startTime { get; set; }
+        public DateTime StartTime
+        {
+            get
+            {
+                return DateTime.SpecifyKind(_startTime, DateTimeKind.Utc);
+            }
+            set
+            {
+                _startTime = value;
+            }
+        }
         public int DurationInMinutes { get; set; }
     }
 
