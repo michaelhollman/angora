@@ -5,23 +5,31 @@
     <h1 style="color: #fff; font-size: 5em; text-align: center; line-height:200px; font-weight:600">Welcome to Auderus</h1>
 </div>
 <div>
-    <h1>About Angora</h1>
+    <h1>About Auderus</h1>
     <p>
-        Angora is a new social networking site aimed at making planning events easier. Angora allows you to create, schedule, and invite
-        friends for all of your events. Once an event is over, Angora automatically aggregates digital media from the event that was posted
-        on other social media sites to make it easy to look back on your great time.
+        Auderus is a brand new social networking site designed to make planning and chronicling events easier.
+        Creating an event is as simple as specifiying a start time, choosing a location, and inviting facebook friends or twitter followers.
+        After the event, Auderus will automatically pull in media that attendees posted during the event either on
+        Facebook or Twitter and put it all in one spot. There's no more need to search through multiple social networks to
+        find photos or videos from an event you attended. In the near future, Auderus will also be able to suggest events
+        in your area that you may be interested in attending. And the best part is Auderus is completely free,
+        so there is no reason not to try it. Just sign in with your Facebook or Twitter account to start taking
+        advantage of Auderus' amazing features today.
     </p>
-    <p>
-        We are so sure that you will enjoy Angora, that if you are not satisfied we will give you your money back.
-        So sign up today.
-    </p>
-    <h1>About the Team</h1>
-    <table style="border-collapse: separate;">
-        <tr><td style="padding: 10px 0px;"><div id="RachaelImg"></div></td><td style="padding: 10px;">Rachael is a hard-working lady that is really good at getting second place.</td></tr>
-        <tr><td style="padding: 10px 0px;"><div id="MichaelImg"></div></td><td style="padding: 10px;">Michael is a spooboo.</td></tr>
-        <tr><td style="padding: 10px 0px;"><div id="AlexImg"></div></td><td style="padding: 10px;">Alex likes long walks on the beach and baking in his easy bake oven.</td></tr>
-        <tr><td style="padding: 10px 0px;"><div id="ScottImg"></div></td><td style="padding: 10px;">Scott is the best.</td></tr>
-    </table>
-</div>
 
+</div>
+@if (!User.Identity.IsAuthenticated) { 
+    <section style="margin-top: 40px;">
+        <h4>Please login with your Facebook or Twitter account.</h4>
+
+        <a href="@Url.Action("ExternalLogin", "Account", new { provider = "Facebook", returnUrl = Url.Action("Index", "Home") })" class="btn btn-primary" id="Facebook">
+            <img src="/images/logos/fb-white-50.png" class="login-social-img" />
+            Facebook
+        </a>
+        <a href="@Url.Action("ExternalLogin", "Account", new { provider = "Twitter", returnUrl = Url.Action("Index", "Home") })" class="btn btn-primary" id="Twitter">
+            <img src="/images/logos/twitter-white.png" class="login-social-img" />
+            Twitter
+        </a>
+    </section>
+}
 

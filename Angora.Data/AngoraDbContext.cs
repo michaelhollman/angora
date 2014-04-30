@@ -22,5 +22,6 @@ namespace Angora.Data
         public DbSet<Location> Locations { get; set; }
         public DbSet<Post> Posts { get; set; }
         public DbSet<MediaItem> MediaItems { get; set; }
+        public DbSet<RSVP> RSVPs { get; set; }
     }
 }

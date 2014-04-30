@@ -1,6 +1,8 @@
 package com.angora.angora;
 
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +36,7 @@ public class GetEventsTask extends AsyncTask<String, Void, AngoraEvent[]> {
 
         try{
             url = new URL(urlString.toString());
+            Log.e("Getting Events", urlString.toString());
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
@@ -53,19 +56,22 @@ public class GetEventsTask extends AsyncTask<String, Void, AngoraEvent[]> {
                 AngoraEvent[] events = new AngoraEvent[eventsJSON.length()];
                 for (int i = 0; i < eventsJSON.length(); i++) {
                     JSONObject currentEvent = eventsJSON.getJSONObject(i);
-                    //todo get creator (API change)
+                    JSONObject currentEventTime = currentEvent.getJSONObject("EventTime");
+                    JSONObject currentEventCreator = currentEvent.getJSONObject("Creator");
+                    JSONObject currentEventLocation = currentEvent.getJSONObject("Location");
                     events[i] = new AngoraEvent(currentEvent.getString("Id"),
                             currentEvent.getString("Name"),
-                            "CREATOR",
+                            currentEventCreator.getString("FirstName") + " " + currentEventCreator.getString("LastName"),
                             currentEvent.getString("Description"),
-                            currentEvent.getString("Location"),
-                            parser.parse(currentEvent.getString("StartDateTime")));
+                            currentEventLocation.getString("NameOrAddress"),
+                            parser.parse(currentEventTime.getString("StartTime")));
                 }
                 return events;
             }
         }catch (Exception e){
             //todo handle
             e.printStackTrace();
+
         }
 
 

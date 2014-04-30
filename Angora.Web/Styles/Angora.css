@@ -1,4 +1,4 @@
-@import url("//fonts.googleapis.com/css?family=Open+Sans:300,400,700");
+﻿@import url("//fonts.googleapis.com/css?family=Open+Sans:300,400,700");
 /*! normalize.css v3.0.0 | MIT License | git.io/normalize */
 html {
   font-family: sans-serif;
@@ -5573,87 +5573,6 @@ button.close {
     bottom: 20px;
   }
 }
-.clearfix:before,
-.clearfix:after,
-.container:before,
-.container:after,
-.container-fluid:before,
-.container-fluid:after,
-.row:before,
-.row:after,
-.form-horizontal .form-group:before,
-.form-horizontal .form-group:after,
-.btn-toolbar:before,
-.btn-toolbar:after,
-.btn-group-vertical > .btn-group:before,
-.btn-group-vertical > .btn-group:after,
-.nav:before,
-.nav:after,
-.navbar:before,
-.navbar:after,
-.navbar-header:before,
-.navbar-header:after,
-.navbar-collapse:before,
-.navbar-collapse:after,
-.pager:before,
-.pager:after,
-.panel-body:before,
-.panel-body:after,
-.modal-footer:before,
-.modal-footer:after {
-  content: " ";
-  display: table;
-}
-.clearfix:after,
-.container:after,
-.container-fluid:after,
-.row:after,
-.form-horizontal .form-group:after,
-.btn-toolbar:after,
-.btn-group-vertical > .btn-group:after,
-.nav:after,
-.navbar:after,
-.navbar-header:after,
-.navbar-collapse:after,
-.pager:after,
-.panel-body:after,
-.modal-footer:after {
-  clear: both;
-}
-.center-block {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-.pull-right {
-  float: right !important;
-}
-.pull-left {
-  float: left !important;
-}
-.hide {
-  display: none !important;
-}
-.show {
-  display: block !important;
-}
-.invisible {
-  visibility: hidden;
-}
-.text-hide {
-  font: 0/0 a;
-  color: transparent;
-  text-shadow: none;
-  background-color: transparent;
-  border: 0;
-}
-.hidden {
-  display: none !important;
-  visibility: hidden !important;
-}
-.affix {
-  position: fixed;
-}
 @-ms-viewport {
   width: device-width;
 }
@@ -5932,6 +5851,87 @@ label,
 .popover-title {
   border: none;
 }
+.clearfix:before,
+.clearfix:after,
+.container:before,
+.container:after,
+.container-fluid:before,
+.container-fluid:after,
+.row:before,
+.row:after,
+.form-horizontal .form-group:before,
+.form-horizontal .form-group:after,
+.btn-toolbar:before,
+.btn-toolbar:after,
+.btn-group-vertical > .btn-group:before,
+.btn-group-vertical > .btn-group:after,
+.nav:before,
+.nav:after,
+.navbar:before,
+.navbar:after,
+.navbar-header:before,
+.navbar-header:after,
+.navbar-collapse:before,
+.navbar-collapse:after,
+.pager:before,
+.pager:after,
+.panel-body:before,
+.panel-body:after,
+.modal-footer:before,
+.modal-footer:after {
+  content: " ";
+  display: table;
+}
+.clearfix:after,
+.container:after,
+.container-fluid:after,
+.row:after,
+.form-horizontal .form-group:after,
+.btn-toolbar:after,
+.btn-group-vertical > .btn-group:after,
+.nav:after,
+.navbar:after,
+.navbar-header:after,
+.navbar-collapse:after,
+.pager:after,
+.panel-body:after,
+.modal-footer:after {
+  clear: both;
+}
+.center-block {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+.pull-right {
+  float: right !important;
+}
+.pull-left {
+  float: left !important;
+}
+.hide {
+  display: none !important;
+}
+.show {
+  display: block !important;
+}
+.invisible {
+  visibility: hidden;
+}
+.text-hide {
+  font: 0/0 a;
+  color: transparent;
+  text-shadow: none;
+  background-color: transparent;
+  border: 0;
+}
+.hidden {
+  display: none !important;
+  visibility: hidden !important;
+}
+.affix {
+  position: fixed;
+}
 body {
   padding-top: 70px;
 }
@@ -6019,49 +6019,71 @@ body {
 .nav-tabs {
   margin-bottom: 15px;
 }
+#aboutContainer {
+  width: 100%;
+  min-width: 720px;
+  margin-bottom: 25px;
+}
+#TeamPhotoTable {
+  border-collapse: separate;
+  width: 100%;
+}
 #RachaelImg {
   padding: 0px;
-  background: url(/Images/RachaelComb.jpg);
-  width: 112px;
-  height: 90px;
-  background-size: 236px 90px;
+  background: url(/Images/NewRachaelComb.jpg);
+  width: 168px;
+  height: 135px;
+  background-size: 371px 135px;
   background-repeat: no-repeat;
+  margin: auto;
 }
 #RachaelImg:hover {
-  background-position-x: -122px;
+  background-position-x: -191px;
 }
 #MichaelImg {
   padding: 0px;
-  background: url(/Images/MichaelCombined.jpg);
-  width: 112px;
-  height: 90px;
-  background-size: 235px 90px;
+  background: url(/Images/NewMichaelComb.jpg);
+  width: 168px;
+  height: 135px;
+  background-size: 383px 135px;
   background-repeat: no-repeat;
+  margin: auto;
 }
 #MichaelImg:hover {
-  background-position-x: -122px;
+  background-position-x: -202px;
 }
 #AlexImg {
   padding: 0px;
-  background: url(/Images/AlexComb.jpg);
-  width: 112px;
-  height: 90px;
-  background-size: 236px 90px;
+  background: url(/Images/NewAlexComb.jpg);
+  width: 168px;
+  height: 135px;
+  background-size: 366px 135px;
   background-repeat: no-repeat;
+  margin: auto;
 }
 #AlexImg:hover {
-  background-position-x: -122px;
+  background-position-x: -189px;
 }
 #ScottImg {
   padding: 0px;
-  background: url(/Images/ScottComb.jpg);
-  width: 112px;
-  height: 90px;
-  background-size: 240px 90px;
+  background: url(/Images/NewScottComb.jpg);
+  width: 168px;
+  height: 135px;
+  background-size: 423px 135px;
+  background-position-x: -22px;
   background-repeat: no-repeat;
+  margin: auto;
 }
 #ScottImg:hover {
-  background-position-x: -122px;
+  background-position-x: -234px;
+}
+.teamName {
+  padding-top: 10px;
+  text-align: center;
+}
+.teamTitle {
+  padding-top: 5px;
+  text-align: center;
 }
 .event-feed-title-btns {
   margin: -10px -15px;

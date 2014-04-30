@@ -46,6 +46,7 @@ namespace Angora.Web.App_Start
             container.RegisterType<IFooCDNService, FooCDNService>();
             container.RegisterType<IAngoraUserService, AngoraUserService>();
             container.RegisterType<IPostService, PostService>();
+            container.RegisterType<IRSVPService, RSVPService>();
 
             // DB stuff
             container.RegisterType<DbConfiguration, AngoraDbConfiguration>();
@@ -59,6 +60,7 @@ namespace Angora.Web.App_Start
             container.RegisterType<IRepository<MediaItem>, GenericRepository<MediaItem>>();
             container.RegisterType<IRepository<Post>, GenericRepository<Post>>();
             container.RegisterType<IRepository<Tag>, GenericRepository<Tag>>();
+            container.RegisterType<IRepository<RSVP>, GenericRepository<RSVP>>();
 
             // User Stuff
             container.RegisterType<IUserStore<AngoraUser>, UserStore<AngoraUser>>();

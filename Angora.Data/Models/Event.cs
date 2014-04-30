@@ -14,6 +14,6 @@ namespace Angora.Data.Models
         public DateTime CreationTime { get; set; }
         public virtual EventScheduler Scheduler { get; set; }
         public virtual List<Post> Posts { get; set; }
-
+        public virtual List<RSVP> RSVPs { get; set; }
     }
 }
