@@ -13,7 +13,7 @@ A few notes on building and running:
 - LESS compilation is currently handled by Web Essentials 2013. If the styling for things looks wonky, the LESS probably needs to be recompiled, since the minified CSS is not in the repository.
 
 Android:
-Made with Android Studio ver 0.4.2 (using Gradle 0.9).
+Made with Android Studio ver 0.5.4 (using Gradle 0.9).
 Please download Android studio and import the project with that.
 Building the project manually with Gradle currently requires you create your own settings.gradle file, not to mention it is untested.
 
