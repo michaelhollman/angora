@@ -5,8 +5,7 @@
 <hr />
 
 <div class="row">
-    <div class="col-md-5 event-details">
-
+    <div class="col-md-5">
         <div class="row">
             <div class="col-md-12">
                 <h4>RSVP</h4>
@@ -14,25 +13,20 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <div class="btn-group btn-group-justified">
-                    @*<a class="btn @(t.CurrentUserResponse == Angora.Data.Models.SchedulerResponse.Yes ? "btn-success" : "btn-primary")" href="@Url.Action("FindTime", new { dt = t.Time, response = Angora.Data.Models.SchedulerResponse.Yes })">Yes! (@t.YesCount)</a>*@
-
-                    @*<a class="btn @(t.CurrentUserResponse == Angora.Data.Models.SchedulerResponse.Maybe ? "btn-success" : "btn-primary")" href="@Url.Action("FindTime", new { dt = t.Time, response = Angora.Data.Models.SchedulerResponse.Maybe })">Maybe (@t.MaybeCount)</a>*@
-
-                    @*<a class="btn  @(t.CurrentUserResponse == Angora.Data.Models.SchedulerResponse.No ? "btn-success" : "btn-primary")" href="@Url.Action("FindTime", new { dt = t.Time, response = Angora.Data.Models.SchedulerResponse.No })">No (@t.NoCount)</a>*@
-                    <a class="btn btn-primary" href="#">Yes! (44)</a>
-
-                    <a class="btn btn-primary" href="#">Maybe (44)</a>
-
-                    <a class="btn btn-primary" href="#">No (8)</a>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <h6 class="pull-right">
-                    74 people invited
-                </h6>
+                @using (Html.BeginForm("RSVP", "Event", FormMethod.Post))
+                {
+                    <div class="btn-group btn-group-justified">
+                        <div class="btn-group">
+                            <button type="submit" name="response" value="@RSVPStatus.Yes" class="btn @(Model.ViewerRSVP == RSVPStatus.Yes ? "btn-success" : "btn-primary")">Yes! (@Model.RSVPCounts[RSVPStatus.Yes])</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="submit" name="response" value="@RSVPStatus.Maybe" class="btn @(Model.ViewerRSVP == RSVPStatus.Maybe ? "btn-success" : "btn-primary")">Maybe (@Model.RSVPCounts[RSVPStatus.Maybe])</button>
+                        </div>
+                        <div class="btn-group">
+                            <button type="submit" name="response" value="@RSVPStatus.No" class="btn @(Model.ViewerRSVP == RSVPStatus.No ? "btn-success" : "btn-primary")">No (@Model.RSVPCounts[RSVPStatus.No])</button>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
         <div class="row">&nbsp;</div>
@@ -64,50 +58,71 @@
             <p>@Model.Event.Description</p>
         </div>
 
+        @if (Model.ViewerIsCreator)
+        {
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="btn-group btn-group-justified">
+
+                        <a href="@Url.Action("Edit", "Event", new { id = Model.Event.Id })" class="btn btn-primary width-100">
+                            <span class="glyphicon glyphicon-pencil"></span> Edit
+                        </a>
+
+                        <a href="@Url.Action("DeleteEvent", "Event", new { id = Model.Event.Id })" class="btn btn-primary width-100">
+                            <span class="glyphicon glyphicon-remove"></span> Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
 
     <div class="col-md-7">
         <div class="row">
-            <div class="col-md-12">
-                <div class="well well-sm ">
 
-                    @using (Html.BeginForm("Post", "Event", new { id = Model.Event.Id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
-                    {
-                        <div class="form-group">
-                            <textarea name="text" class="form-control" rows="2" placeholder="Share something with people going to @Model.Event.Name..." required></textarea>
-                        </div>
-                        <div class="form-group row" style="margin-bottom:0">
-                            <div class="col-sm-5">
-                                <label>
-                                    <input type="file" name="picture" accept="image/*" />
-                                </label>
+            <div class="col-md-12">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="well well-sm ">
+
+                        @using (Html.BeginForm("Post", "Event", new { id = Model.Event.Id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                        {
+                            <div class="form-group">
+                                <textarea name="text" class="form-control" rows="2" placeholder="Share something with people going to @Model.Event.Name..." required></textarea>
                             </div>
-                            <div class="col-sm-3">
-                                @if (Model.Viewer.IsLinkedWithFacebook())
-                                {
+                            <div class="form-group row" style="margin-bottom:0">
+                                <div class="col-sm-5">
                                     <label>
-                                        <input type="checkbox" name="shareOnFacebook" value="True" /> Share on Facebook
+                                        <input type="file" name="picture" accept="image/*" />
                                     </label>
-                                }
+                                </div>
+                                <div class="col-sm-3">
+                                    @if (Model.Viewer.IsLinkedWithFacebook())
+                                    {
+                                        <label>
+                                            <input type="checkbox" name="shareOnFacebook" value="True" /> Share on Facebook
+                                        </label>
+                                    }
+                                </div>
+                                <div class="col-sm-2">
+                                    @if (Model.Viewer.IsLinkedWithTwitter())
+                                    {
+                                        <label>
+                                            <input type="checkbox" name="tweet" value="True" /> Tweet
+                                        </label>
+                                    }
+                                </div>
+                                <div class="col-sm-2">
+                                    <input type="submit" class="btn btn-primary btn-sm width-100" value="Post" />
+                                </div>
                             </div>
-                            <div class="col-sm-2">
-                                @if (Model.Viewer.IsLinkedWithTwitter())
-                                {
-                                    <label>
-                                        <input type="checkbox" name="tweet" value="True" /> Tweet
-                                    </label>
-                                }
-                            </div>
-                            <div class="col-sm-2">
-                                <input type="submit" class="btn btn-primary btn-sm width-100" value="Post" />
-                            </div>
-                        </div>
-                    }
-                </div>
+                        }
+                    </div>
+                }
             </div>
         </div>
 
-        @foreach (var p in Model.Event.Posts)
+        @foreach (var p in Model.Event.Posts.Where(x => (x.MediaItem != null && !string.IsNullOrWhiteSpace(x.MediaItem.FooCDNBlob)) || !string.IsNullOrWhiteSpace(x.PostText)))
         {
             <div class="panel">
                 <div class="panel-heading">
@@ -121,9 +136,8 @@
                 @if (p.MediaItem != null && !string.IsNullOrWhiteSpace(p.MediaItem.FooCDNBlob))
                 {
                     <img class="panel-body img-responsive no-margin no-padding" src="@p.MediaItem.GetUrl()" />
-                    <div class="panel-footer">@p.PostText</div>
                 }
-                else
+                @if (!string.IsNullOrWhiteSpace(p.PostText))
                 {
                     <div class="panel-footer">@p.PostText</div>
                 }

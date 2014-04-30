@@ -114,6 +114,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IMediaPullService.cs" />
+    <Compile Include="IRSVPService.cs" />
     <Compile Include="IPostService.cs" />
     <Compile Include="MediaPullService.cs" />
     <Compile Include="EventSchedulerService.cs" />
@@ -123,6 +124,7 @@
     <Compile Include="IFooCDNService.cs" />
     <Compile Include="IAngoraUserService.cs" />
     <Compile Include="IEventSchedulerService.cs" />
+    <Compile Include="RSVPService.cs" />
     <Compile Include="PostService.cs" />
     <Compile Include="ServiceBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

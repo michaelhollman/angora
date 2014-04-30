@@ -430,7 +430,6 @@
     <Content Include="Styles\Angora\event.css.map">
       <DependentUpon>event.css</DependentUpon>
     </Content>
-    <Content Include="Views\EventScheduler\RSVP.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

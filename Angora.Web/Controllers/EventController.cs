@@ -24,14 +24,16 @@ namespace Angora.Web.Controllers
         private IAngoraUserService _userService;
         private IFooCDNService _fooCDNService;
         private IPostService _postService;
+        private IRSVPService _rsvpService;
         private IUnitOfWork _unitOfWork;
 
-        public EventController(IEventService eventService, IAngoraUserService userService, IFooCDNService fooCDNService,IPostService postService, IUnitOfWork unitOfWork)
+        public EventController(IEventService eventService, IAngoraUserService userService, IFooCDNService fooCDNService, IPostService postService, IRSVPService rsvpService, IUnitOfWork unitOfWork)
         {
             _eventService = eventService;
             _userService = userService;
             _fooCDNService = fooCDNService;
             _postService = postService;
+            _rsvpService = rsvpService;
             _unitOfWork = unitOfWork;
         }
 
@@ -44,14 +46,27 @@ namespace Angora.Web.Controllers
         [Route("{id}")]
         public async Task<ActionResult> Details(long id)
         {
-            var theEvent = _eventService.FindById(id);
-            theEvent.Posts = theEvent.Posts.OrderByDescending(p => p.PostTime).ToList();
+            var vent = _eventService.FindById(id);
+            vent.Posts = vent.Posts != null ? vent.Posts.OrderByDescending(p => p.PostTime).ToList() : new List<Post>();
+            vent.RSVPs = vent.RSVPs ?? new List<RSVP>();
+
+            var viewer = await _userService.FindUserById(User.Identity.GetUserId());
+
+            var viewerRSVP = vent.RSVPs.SingleOrDefault(r => r.User.Id.Equals(viewer.Id));
+            var viewerRSVPResponse = viewerRSVP != null ? viewerRSVP.Response : RSVPStatus.NoResponse;
+
+            var counts = new Dictionary<RSVPStatus, int>();
+            counts.Add(RSVPStatus.Yes, vent.RSVPs.Count(r => r.Response == RSVPStatus.Yes));
+            counts.Add(RSVPStatus.No, vent.RSVPs.Count(r => r.Response == RSVPStatus.No));
+            counts.Add(RSVPStatus.Maybe, vent.RSVPs.Count(r => r.Response == RSVPStatus.Maybe));
 
             var model = new EventViewModel
             {
-                Event = theEvent,
-                ViewerIsCreator = User.Identity.GetUserId().Equals(theEvent.Creator.Id),
-                Viewer = await _userService.FindUserById(User.Identity.GetUserId()),
+                Event = vent,
+                ViewerIsCreator = User.Identity.GetUserId().Equals(vent.Creator.Id),
+                Viewer = viewer,
+                ViewerRSVP = viewerRSVPResponse,
+                RSVPCounts = counts
             };
 
             return View("Details", model);
@@ -90,13 +105,26 @@ namespace Angora.Web.Controllers
                 PostTime = DateTime.UtcNow,
             };
 
-            post = _postService.Create(post);
+            _postService.AddOrUpdatePostToEvent(id, post);
+            _unitOfWork.SaveChanges();
 
+            return RedirectToAction("Details", new { id = id });
+        }
+
+        [HttpPost]
+        [Route("{id}/rsvp")]
+        public async Task<ActionResult> RSVP(long id, RSVPStatus response)
+        {
             var vent = _eventService.FindById(id);
-            vent.Posts = vent.Posts ?? new List<Post>();
-            vent.Posts.Add(post);
 
-            _eventService.Update(vent);
+            var rsvp = vent.RSVPs != null ? vent.RSVPs.SingleOrDefault(r => r.User.Id.Equals(User.Identity.GetUserId())) : null;
+            rsvp = rsvp ?? new RSVP
+            {
+                User = await _userService.FindUserById(User.Identity.GetUserId()),
+            };
+            rsvp.Response = response;
+
+            _rsvpService.AddOrUpdateRSVPToEvent(id, rsvp);
             _unitOfWork.SaveChanges();
 
             return RedirectToAction("Details", new { id = id });
@@ -181,7 +209,7 @@ namespace Angora.Web.Controllers
             _eventService.Update(model.Event);
             _unitOfWork.SaveChanges();
 
-            return RedirectToAction("Index", "EventFeed");
+            return RedirectToAction("Details", "Event", new { id = model.Event.Id });
         }
 
         [Route("{id}/delete")]

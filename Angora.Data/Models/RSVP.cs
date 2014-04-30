@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Angora.Data.Models
 {
-    public class EventSchedulerResponse : BaseModel
+    public class RSVP : BaseModel
     {
         public virtual AngoraUser User { get; set; }
-        public virtual DateTime Time { get; set; }
-        public virtual SchedulerResponse Response { get; set; }
+        public RSVPStatus Response { get; set; }
+        public long EventId { get; set; }
     }
 
-    public enum SchedulerResponse
+    public enum RSVPStatus
     {
         Yes = 1,
         No = 2,

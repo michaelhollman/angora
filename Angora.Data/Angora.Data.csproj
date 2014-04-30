@@ -76,6 +76,7 @@
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\MediaItem.cs" />
     <Compile Include="Models\Post.cs" />
+    <Compile Include="Models\RSVP.cs" />
     <Compile Include="Models\Tag.cs" />
     <Compile Include="AngoraDbConfiguration.cs" />
     <Compile Include="AngoraDbContext.cs" />
