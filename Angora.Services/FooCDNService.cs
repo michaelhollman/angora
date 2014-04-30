@@ -28,7 +28,15 @@ namespace Angora.Services
             var image = new ByteArrayContent(bytes);
             var extension = Path.GetExtension(filename).TrimStart('.');
             filename = Path.GetFileName(filename);
-            image.Headers.ContentType = MediaTypeHeaderValue.Parse(string.Format("image/{0}", extension));
+
+            if (extension.Equals("txt"))
+            {
+                image.Headers.ContentType = MediaTypeHeaderValue.Parse("text/plain");
+            }
+            else
+            {
+                image.Headers.ContentType = MediaTypeHeaderValue.Parse(string.Format("image/{0}", extension));
+            }
 
             requestContent.Add(image, "data", filename);
 
