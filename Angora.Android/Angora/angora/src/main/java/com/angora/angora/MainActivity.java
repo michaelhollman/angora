@@ -35,6 +35,7 @@ import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -73,8 +74,6 @@ public class MainActivity extends ActionBarActivity
 
     private CacheHelper mCacheHelper;
 
-    private ProgressBar progBar;
-
     private final long REFRESH_RATE = 60000; //60 seconds, in milliseconds
 
     @Override
@@ -92,7 +91,6 @@ public class MainActivity extends ActionBarActivity
         }
 
         appContext = getApplicationContext();
-        progBar = (ProgressBar) findViewById(R.id.progressBar_main);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -126,7 +124,6 @@ public class MainActivity extends ActionBarActivity
     }
 
     private void refreshData(){
-        progBar.setVisibility(View.VISIBLE);
         CacheHelper ch = new CacheHelper(this);
         SharedPreferences.Editor editor = pref.edit();
         try{
@@ -144,6 +141,7 @@ public class MainActivity extends ActionBarActivity
                 finish();
                 return;
             }
+            editor.putString("AngoraId", mUser.getString("Id"));
             ch.storeUser(mUser);
             mEvents = new GetEventsTask().execute(mUser.getString("Id")).get();
             ch.storeEvents(mEvents);
@@ -165,7 +163,8 @@ public class MainActivity extends ActionBarActivity
         }
 
         editor.putLong("LastRefresh", System.nanoTime());
-        progBar.setVisibility(View.INVISIBLE);
+        editor.commit();
+
     }
 
     @Override
@@ -233,6 +232,10 @@ public class MainActivity extends ActionBarActivity
             startActivity(intent);
             finish();
             return true;
+        }else if (id == R.id.action_refresh){
+            refreshData();
+            //open the feed again
+            onNavigationDrawerItemSelected(0);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -363,6 +366,113 @@ public class MainActivity extends ActionBarActivity
             ((MainActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
             */
+        }
+    }
+
+    public class LoginUserTask extends AsyncTask<String, Void, JSONObject>
+    {
+
+        private final String SITE_URL = "http://seteam4.azurewebsites.net/api/user/login?";
+
+        @Override
+        protected JSONObject doInBackground(String... strings) {
+            StringBuilder urlString = new StringBuilder();
+            urlString.append(SITE_URL);
+            urlString.append("provider=").append(strings[0]);
+            urlString.append("&providerKey=").append(strings[1]);
+
+            HttpURLConnection urlConnection = null;
+            URL url = null;
+            JSONObject object = null;
+
+            try
+            {
+                url = new URL(urlString.toString());
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+                InputStream inStream = null;
+                inStream = urlConnection.getInputStream();
+                BufferedReader bReader = new BufferedReader(new InputStreamReader(inStream));
+                String temp, response = "";
+                while ((temp = bReader.readLine()) != null)
+                    response += temp;
+                bReader.close();
+                inStream.close();
+                urlConnection.disconnect();
+                object = (JSONObject) new JSONTokener(response).nextValue();
+            }
+            catch (Exception e)
+            {
+                //TODO handle
+                e.printStackTrace();
+            }
+
+            return (object);
+        }
+
+
+    }
+
+    public class GetEventsTask extends AsyncTask<String, Void, AngoraEvent[]> {
+
+
+        private final String SITE_URL = "http://seteam4.azurewebsites.net/api/user/getEvents?";
+
+        @Override
+        protected AngoraEvent[] doInBackground(String... strings) {
+            StringBuilder urlString = new StringBuilder();
+            urlString.append(SITE_URL);
+            urlString.append("userId=").append(strings[0]);
+
+            HttpURLConnection urlConnection = null;
+            URL url = null;
+            JSONObject object = null;
+            JSONArray eventsJSON = null;
+
+            try{
+                url = new URL(urlString.toString());
+                Log.i("Getting Events", urlString.toString());
+                urlConnection = (HttpURLConnection) url.openConnection();
+                urlConnection.setRequestMethod("GET");
+                urlConnection.connect();
+                InputStream inStream = null;
+                inStream = urlConnection.getInputStream();
+                BufferedReader bReader = new BufferedReader(new InputStreamReader(inStream));
+                String temp, response = "";
+                while ((temp = bReader.readLine()) != null)
+                    response += temp;
+                bReader.close();
+                inStream.close();
+                urlConnection.disconnect();
+                //return (JSONObject) new JSONTokener(response).nextValue();
+                eventsJSON = new JSONArray(response);
+                SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                if (eventsJSON != null) {
+                    AngoraEvent[] events = new AngoraEvent[eventsJSON.length()];
+                    for (int i = 0; i < eventsJSON.length(); i++) {
+                        JSONObject currentEvent = eventsJSON.getJSONObject(i);
+                        JSONObject currentEventTime = currentEvent.getJSONObject("EventTime");
+                        JSONObject currentEventCreator = currentEvent.getJSONObject("Creator");
+                        JSONObject currentEventLocation = currentEvent.getJSONObject("Location");
+                        events[i] = new AngoraEvent(currentEvent.getString("Id"),
+                                currentEvent.getString("Name"),
+                                currentEventCreator.getString("FirstName") + " " + currentEventCreator.getString("LastName"),
+                                currentEventCreator.getString("Id"),
+                                currentEvent.getString("Description"),
+                                currentEventLocation.getString("NameOrAddress"),
+                                parser.parse(currentEventTime.getString("StartTime")));
+                    }
+                    return events;
+                }
+            }catch (Exception e){
+                //todo handle
+                e.printStackTrace();
+
+            }
+
+
+            return null;
         }
     }
 }

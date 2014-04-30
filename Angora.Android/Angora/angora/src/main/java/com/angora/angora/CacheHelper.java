@@ -28,26 +28,26 @@ public class CacheHelper {
     }
 
     public void storeUser(JSONObject user) throws IOException{
-        ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(mActivity.getCacheDir(),"")+USER_STORAGE));
+        ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(mActivity.getCacheDir(),"user")+USER_STORAGE));
         out.writeObject(user.toString());
         out.close();
     }
 
     public JSONObject getStoredUser() throws IOException, ClassNotFoundException, JSONException{
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(new File(mActivity.getCacheDir(),"")+USER_STORAGE)));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(new File(mActivity.getCacheDir(),"user")+USER_STORAGE)));
         JSONObject user = new JSONObject((String) in.readObject());
         in.close();
         return user;
     }
 
     public void storeEvents(AngoraEvent[] events) throws IOException{
-        ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(mActivity.getCacheDir(),"")+USER_STORAGE));
+        ObjectOutput out = new ObjectOutputStream(new FileOutputStream(new File(mActivity.getCacheDir(),"events")+USER_STORAGE));
         out.writeObject(events);
         out.close();
     }
 
     public AngoraEvent[] getStoredEvents() throws IOException, ClassNotFoundException{
-        ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(new File(mActivity.getCacheDir(),"")+USER_STORAGE)));
+        ObjectInputStream in = new ObjectInputStream(new FileInputStream(new File(new File(mActivity.getCacheDir(),"events")+USER_STORAGE)));
         AngoraEvent[] events = (AngoraEvent[]) in.readObject();
         in.close();
         return events;

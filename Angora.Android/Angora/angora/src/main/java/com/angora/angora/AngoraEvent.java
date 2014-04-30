@@ -68,20 +68,31 @@ public class AngoraEvent implements Serializable {
         this.id = id;
     }
 
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
+    }
+
     private String id;
     private String name;
     private String creator;
+    private String creatorId;
     private String location;
     private String description;
     private Date startDate;
 
+
     public AngoraEvent(){};
 
 
-    public AngoraEvent(String id, String name, String creator, String description, String location, Date startDate){
+    public AngoraEvent(String id, String name, String creator, String creatorId, String description, String location, Date startDate){
         this.id = id;
         this.name = name;
         this.creator = creator;
+        this.creatorId = creatorId;
         this.description = description;
         this.location = location;
         this.startDate = startDate;
