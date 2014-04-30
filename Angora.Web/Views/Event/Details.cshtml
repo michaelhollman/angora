@@ -137,7 +137,8 @@
                             
                         </span>
                     </div>
-                    @p.User.FirstName @p.User.LastName
+                    <img src="@p.User.ProfilePictureUrl" class="profile-pic-sm profile-pic-posts"/>
+                       @p.User.FirstName @p.User.LastName
                 </div>
                 @if (p.MediaItem != null && !string.IsNullOrWhiteSpace(p.MediaItem.FooCDNBlob))
                 {

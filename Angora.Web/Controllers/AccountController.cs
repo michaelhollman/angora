@@ -18,10 +18,12 @@ namespace Angora.Web.Controllers
     public class AccountController : Controller
     {
         private IAngoraUserService _userService;
+        private IMediaPullService _mediaPullService;
 
-        public AccountController(IAngoraUserService userService)
+        public AccountController(IAngoraUserService userService, IMediaPullService mediaPullService)
         {
             _userService = userService;
+            _mediaPullService = mediaPullService;
         }
 
         [AllowAnonymous]
@@ -85,7 +87,7 @@ namespace Angora.Web.Controllers
                 var accessToken = GetExtendedFacebookAccessToken(externalCookie.Claims.First(x => x.Type.Contains("FacebookAccessToken")).Value);
                 dynamic facebookUser = new FacebookClient(accessToken).Get(loginInfo.Login.ProviderKey);
 
-                user = new AngoraUser
+                user = new AngoraUser()
                 {
                     FacebookAccessToken = accessToken,
                     FirstName = facebookUser.first_name,
@@ -117,7 +119,7 @@ namespace Angora.Web.Controllers
                     lastName = "";
                 }
 
-                user = new AngoraUser
+                user = new AngoraUser()
                 {
                     FirstName = firstName,
                     LastName = lastName,
@@ -268,6 +270,8 @@ namespace Angora.Web.Controllers
         {
             var model = param ?? new ManageAccountViewModel();
             model.User = await _userService.FindUserById(User.Identity.GetUserId());
+            model.FacebookPic = _mediaPullService.GetFacebookProfilePic(model.User.FacebookAccessToken);
+
             return View("Index", model);
         }
 
@@ -299,6 +303,26 @@ namespace Angora.Web.Controllers
 
             return await Index(model);
         }
+
+        [HttpGet]
+        [Authorize]
+        [Route("pic/{provider}")]
+        public async Task<ActionResult> SetProfilePic(string provider)
+        {
+            var user = await _userService.FindUserById(User.Identity.GetUserId());
+
+            if ( provider.Equals("facebook", StringComparison.OrdinalIgnoreCase) && user.IsLinkedWithFacebook())
+            {
+                user.ProfilePictureUrl = _mediaPullService.GetFacebookProfilePic(user.FacebookAccessToken);
+                await _userService.UpdateUser(user);
+            }
+            else if ( provider.Equals("twitter", StringComparison.OrdinalIgnoreCase) && user.IsLinkedWithTwitter())
+            {
+
+            }
+            return RedirectToAction("Index");
+        }
+
 
         #endregion
     }

@@ -99,21 +99,29 @@
             <div class="panel panel-default">
                 <div class="panel-heading">Profile Picture</div>
                 <ul class="list-group">
-                    <li class="list-group-item media">
-                        <img class="profile-pic-sm pull-left media-object" src="@(Model.User.ProfilePictureUrl ?? "/Images/default-user-profile.png")" alt="Facebook profile picture">
-                        <div class="media-body">
-                            <button class="btn btn-primary width-100 text-left">Use Facebook profile picture ... eventually</button>
-                        </div>
-                    </li>
-                    <li class="list-group-item media">
-                        <img class="profile-pic-sm pull-left media-object" src="@(Model.User.ProfilePictureUrl ?? "/Images/default-user-profile.png")" alt="Twitter profile picture">
+                    @if (Model.User.IsLinkedWithFacebook())
+                    {
+                        <li class="list-group-item media">
+                            <img class="profile-pic-sm pull-left media-object" src="@(Model.FacebookPic ?? "/Images/default-user-profile.png")" alt="Facebook profile picture">
+                            <div class="media-body">
+                                <a href="@Url.Action("SetProfilePic", "Account", new { provider = "facebook" })" class="btn btn-primary width-100 text-left">Use Facebook profile picture</a>
+                            </div>
+                        </li>
+                    }
 
-                        <div class="media-body">
-                            <button class="btn btn-primary width-100 text-left">Use Twitter profile picture ... someday</button>
-                        </div>
-                    </li>
+                    @if (Model.User.IsLinkedWithTwitter())
+                    {
+                        <li class="list-group-item media">
+                            <img class="profile-pic-sm pull-left media-object" src="@(Model.User.ProfilePictureUrl ?? "/Images/default-user-profile.png")" alt="Twitter profile picture">
+
+                            <div class="media-body">
+                                <button class="btn btn-primary width-100 text-left">Use Twitter profile picture ... someday</button>
+                            </div>
+                        </li>
+                    }
 
                 </ul>
+
             </div>
         </div>
 

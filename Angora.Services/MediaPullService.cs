@@ -11,8 +11,18 @@ using Newtonsoft.Json;
 
 namespace Angora.Services
 {
-    class MediaPullService : ServiceBase, IMediaPullService
+    public class MediaPullService : ServiceBase, IMediaPullService
     {
+
+        public string GetFacebookProfilePic(string accessToken)
+        {
+            var user = new FacebookClient(accessToken);
+            var json = user.Get<JsonObject>("me/picture?redirect=false&height=200&width=200");
+            return ((JsonObject)json["data"])["url"].ToString();
+        }
+
+
+
         public void PullFromFacebook(string accessToken, Event theEvent)
         {
             var user = new FacebookClient(accessToken);
