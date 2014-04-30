@@ -192,7 +192,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
-    <Content Include="Images\AlexComb.jpg" />
     <Content Include="Images\AuderusLogos\Logo8.png" />
     <Content Include="Images\AuderusLogos\LogoFull.png" />
     <Content Include="Images\AuderusLogos\LogoFullOrange.png" />
@@ -225,16 +224,12 @@
     <Content Include="Images\Logos\fb-white-72.png" />
     <Content Include="Images\Logos\twitter-blue.png" />
     <Content Include="Images\Logos\twitter-white.png" />
-    <Content Include="Images\Alex.jpg" />
     <Content Include="Images\EventImage.jpeg" />
     <Content Include="Images\EventImage3.png" />
-    <Content Include="Images\Michael.jpg" />
-    <Content Include="Images\MichaelCombined.jpg" />
-    <Content Include="Images\Rachael2.jpg" />
-    <Content Include="Images\RachaelComb.jpg" />
-    <Content Include="Images\RachEl.jpg" />
-    <Content Include="Images\Scott.jpg" />
-    <Content Include="Images\ScottComb.jpg" />
+    <Content Include="Images\NewAlexComb.jpg" />
+    <Content Include="Images\NewMichaelComb.jpg" />
+    <Content Include="Images\NewRachaelComb.jpg" />
+    <Content Include="Images\NewScottComb.jpg" />
     <Content Include="Scripts\jquery.geocomplete.js" />
     <Content Include="Scripts\jquery.leanModal.min.js" />
     <Content Include="Scripts\lib\bootstrap.js" />
@@ -430,6 +425,8 @@
     <Content Include="Styles\Angora\event.css.map">
       <DependentUpon>event.css</DependentUpon>
     </Content>
+    <Content Include="Views\EventScheduler\RSVP.cshtml" />
+    <Content Include="Views\Home\About.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
