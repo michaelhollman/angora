@@ -1,6 +1,7 @@
 package com.angora.angora;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -22,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -56,6 +58,8 @@ import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    public final static String EXTRA_EVENT_ID = "com.angora.angora.EVENT_ID";
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -121,6 +125,11 @@ public class MainActivity extends ActionBarActivity
             }
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
     }
 
     private void refreshData(){
@@ -280,6 +289,15 @@ public class MainActivity extends ActionBarActivity
                     mAdapter = new CustomAdapter(getActivity(), mEvents);
                     mListView = (ListView) rootView.findViewById(R.id.list);
                     mListView.setAdapter(mAdapter);
+                    mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            Intent intent = new Intent(getActivity(), SnapAndGoBuiltIn.class);
+                            intent.putExtra(EXTRA_EVENT_ID, mEvents[i].getId());
+                            startActivity(intent);
+                        }
+                    });
+
                     noEventsTextView.setVisibility(View.GONE);
                 } else if (pref.getBoolean("IsLoggedIn", false)) {
                     //if the user is logged in but has no events
@@ -458,7 +476,6 @@ public class MainActivity extends ActionBarActivity
                         events[i] = new AngoraEvent(currentEvent.getString("Id"),
                                 currentEvent.getString("Name"),
                                 currentEventCreator.getString("FirstName") + " " + currentEventCreator.getString("LastName"),
-                                currentEventCreator.getString("Id"),
                                 currentEvent.getString("Description"),
                                 currentEventLocation.getString("NameOrAddress"),
                                 parser.parse(currentEventTime.getString("StartTime")));

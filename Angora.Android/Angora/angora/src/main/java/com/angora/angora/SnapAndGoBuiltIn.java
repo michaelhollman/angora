@@ -46,15 +46,18 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
     private static final String IMAGE_DIRECTORY_NAME = "Auderus";
 
     private Uri fileUri; // file url to store image/video
-
     private ImageView imgPreview;
-
     private ProgressBar progbar;
+
+    private String eventId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_snap_and_go_built_in);
+
+        Intent intent = getIntent();
+        eventId = intent.getStringExtra(MainActivity.EXTRA_EVENT_ID);
 
         progbar = (ProgressBar) findViewById(R.id.progressBarUpload);
 
@@ -225,7 +228,7 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
             urlServer.append(siteUrl);
             urlServer.append(strings[0]);
             urlServer.append("/upload/");
-            urlServer.append(1);
+            urlServer.append(eventId);
 
             try
             {
