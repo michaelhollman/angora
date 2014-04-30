@@ -5975,6 +5975,9 @@ body {
 .no-margin {
   margin: 0 !important;
 }
+.no-padding {
+  padding: 0 !important;
+}
 .login-social-img {
   height: 20px;
 }
@@ -6095,6 +6098,22 @@ body {
   height: 42px;
   padding: 8px 15px;
   margin-top: 20px;
+}
+.event-feed-item a {
+  color: #fff;
+  text-decoration: none;
+}
+.event-feed-item a:hover {
+  text-decoration: none;
+  color: #fff;
+}
+.event-feed-item:hover .panel-heading,
+.event-feed-item:hover .btn {
+  background-color: #3c933c;
+}
+.event-feed-item:hover .panel-heading .btn:hover,
+.event-feed-item:hover .btn .btn:hover {
+  background-color: #df691a;
 }
 .help-box {
   font-size: 14px;

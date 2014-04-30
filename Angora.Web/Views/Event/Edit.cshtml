@@ -49,10 +49,13 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="control-label col-md-2">Start Date and Time</label>
-            <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Event.EventTime.StartTime, "{0:yyyy-MM-ddTHH:mm}",
+        @if (Model.Event.EventTime != null && Model.Event.EventTime.StartTime != null || (Model.Event.Scheduler != null && Model.Event.Scheduler.IsTimeSet))
+        {
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Start Date and Time</label>
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Event.EventTime.StartTime, "{0:yyyy-MM-ddTHH:mm}",
                     new
                     {
                         @class = "form-control",
@@ -61,22 +64,31 @@
                         max = DateTime.Now.AddYears(5).ToString("yyyy-MM-ddTHH:mm"),
                         required = "required"
                     })
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label class="control-label col-md-2">Duration</label>
-            <label class="control-label col-md-1">Hours:</label>
-            <div class="col-md-2">
-                @Html.TextBoxFor(model => model.DurationHours, new { @class = "form-control", type = "number", min = "0", max = "24", step = "1", required = "required", style = "display:inline" })
+            <div class="form-group">
+                <label class="control-label col-md-2">Duration</label>
+                <label class="control-label col-md-1">Hours:</label>
+                <div class="col-md-2">
+                    @Html.TextBoxFor(model => model.DurationHours, new { @class = "form-control", type = "number", min = "0", max = "24", step = "1", required = "required", style = "display:inline" })
+                </div>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-md-1 col-md-offset-2">Minutes:</label>
-            <div class="col-md-2">
-                @Html.TextBoxFor(model => model.DurationMinutes, new { @class = "form-control", type = "number", min = "0", max = "59", step = "5", required = "required", style = "display:inline" })
+            <div class="form-group">
+                <label class="control-label col-md-1 col-md-offset-2">Minutes:</label>
+                <div class="col-md-2">
+                    @Html.TextBoxFor(model => model.DurationMinutes, new { @class = "form-control", type = "number", min = "0", max = "59", step = "5", required = "required", style = "display:inline" })
+                </div>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="form-group">
+                <div class="col-md-10 col-md-offset-2">
+                    This event doesn't have a time set. You can try <a href="@Url.Action("Index","EventScheduler")">finding a time</a>.
+                </div>
+            </div>
+        }
 
         <div id="latlong">
             @Html.HiddenFor(m => m.Event.Location.Latitude, new { data_geo = "lat" })
@@ -90,7 +102,7 @@
                 <button type="submit" class="btn btn-success width-100">Save</button>
             </div>
             <div class=" col-md-2">
-                <a href="@Url.Action("Back to List", "Index", "EventFeed")" class="btn btn-info width-100">Cancel</a>
+                <a href="@Url.Action("Index", "EventFeed")" class="btn btn-info width-100">Cancel</a>
             </div>
         </div>
     </div>

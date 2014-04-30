@@ -5,7 +5,7 @@ namespace Angora.Services
 {
     public interface IEventService
     {
-        long Create(Event newEvent);
+        Event Create(Event newEvent);
         void Update(Event oldEvent);
         void Delete(Event oldEvent);
         void Delete(long id);

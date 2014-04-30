@@ -6,6 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.angora.android.MainActivity$FeedFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="No events to show...go make some!"
+        android:id="@+id/textView_noEvents"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone" />
+
     <ListView
         android:id="@+id/list"
         android:layout_width="fill_parent"

@@ -55,9 +55,12 @@ namespace Angora.Web.Models
     public class EventViewModel
     {
         public Event Event { get; set; }
+        public AngoraUser Viewer { get; set; }
         public bool ViewerIsCreator { get; set; }
+        public RSVPStatus ViewerRSVP { get; set; }
+        public Dictionary<RSVPStatus, int> RSVPCounts { get; set; }
         public int DurationHours { get { return Event.EventTime.DurationInMinutes / 60; } }
         public int DurationMinutes { get { return Event.EventTime.DurationInMinutes % 60; } }
-        public DateTime EndTime { get { return Event.EventTime.StartTime.AddMinutes(Event.EventTime.DurationInMinutes); } }
+        public DateTime EndTime { get { return Event.EventTime.GetEndTime(); } }
     }
 }

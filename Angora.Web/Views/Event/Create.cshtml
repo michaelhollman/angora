@@ -83,10 +83,8 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane fade @(!Model.ScheduleNow ? "in active" : "")" id="schlater">You and your event guests can collaboratively find a time that works for everyone using the RSVP page for this event once it's created.</div>
+            <div class="tab-pane fade @(!Model.ScheduleNow ? "in active" : "")" id="schlater">You and your event guests can collaboratively find a time that works for everyone using the Find a Time page for this event once it's created.</div>
         </div>
-
-
 
         <div id="latlong">
             @Html.HiddenFor(model => model.Latitude, new { data_geo = "lat" })
@@ -105,8 +103,8 @@
         </div>
     </div>
 }
-<script>
 
+<script>
     function toggleShow(element) {
         if ($(element).is(":hidden")) {
             $(element).slideDown();
@@ -149,6 +147,5 @@
         $('#schlatertab').click(function () {
             $('#schedulenowfield').val(false);
         });
-
     });
 </script>

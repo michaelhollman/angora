@@ -45,20 +45,26 @@ namespace Angora.Web.App_Start
             container.RegisterType<IEventSchedulerService, EventSchedulerService>();
             container.RegisterType<IFooCDNService, FooCDNService>();
             container.RegisterType<IAngoraUserService, AngoraUserService>();
+            container.RegisterType<IPostService, PostService>();
+            container.RegisterType<IRSVPService, RSVPService>();
 
             // DB stuff
             container.RegisterType<DbConfiguration, AngoraDbConfiguration>();
-            container.RegisterType<GenericRepository<BaseModel>>();
             container.RegisterType<IUnitOfWork, UnitOfWork>(new PerRequestLifetimeManager());
             container.RegisterType<DbContext, AngoraDbContext>(new PerRequestLifetimeManager());
+            container.RegisterType<IRepository<Event>, GenericRepository<Event>>();
+            container.RegisterType<IRepository<EventScheduler>, GenericRepository<EventScheduler>>();
+            container.RegisterType<IRepository<EventSchedulerResponse>, GenericRepository<EventSchedulerResponse>>();
+            container.RegisterType<IRepository<EventTime>, GenericRepository<EventTime>>();
+            container.RegisterType<IRepository<Location>, GenericRepository<Location>>();
+            container.RegisterType<IRepository<MediaItem>, GenericRepository<MediaItem>>();
+            container.RegisterType<IRepository<Post>, GenericRepository<Post>>();
+            container.RegisterType<IRepository<Tag>, GenericRepository<Tag>>();
+            container.RegisterType<IRepository<RSVP>, GenericRepository<RSVP>>();
 
             // User Stuff
             container.RegisterType<IUserStore<AngoraUser>, UserStore<AngoraUser>>();
             container.RegisterType<UserManager<AngoraUser>>();
-
-            //var userManager = new UserManager<AngoraUser>(container.<UserStore<AngoraUser>>());
-            //userManager.UserValidator = new UserValidator<AngoraUser>(userManager) { AllowOnlyAlphanumericUserNames = false };
-            //container.RegisterInstance<UserManager<AngoraUser>>(userManager);
         }
     }
 }

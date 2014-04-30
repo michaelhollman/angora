@@ -12,38 +12,134 @@ using System.IO;
 using System.Xml.Linq;
 using System.Globalization;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Angora.Web.Controllers
 {
+    [Authorize]
+    [RoutePrefix("event")]
     public class EventController : Controller
     {
         private IEventService _eventService;
         private IAngoraUserService _userService;
+        private IFooCDNService _fooCDNService;
+        private IPostService _postService;
+        private IRSVPService _rsvpService;
         private IUnitOfWork _unitOfWork;
 
-        public EventController(IEventService eventService, IAngoraUserService userService, IUnitOfWork unitOfWork)
+        public EventController(IEventService eventService, IAngoraUserService userService, IFooCDNService fooCDNService, IPostService postService, IRSVPService rsvpService, IUnitOfWork unitOfWork)
         {
             _eventService = eventService;
             _userService = userService;
+            _fooCDNService = fooCDNService;
+            _postService = postService;
+            _rsvpService = rsvpService;
             _unitOfWork = unitOfWork;
         }
 
-        //
-        // GET: /Event/
+        [Route("")]
         public ActionResult Index()
         {
             return RedirectToAction("Index", "EventFeed");
         }
 
-        [Authorize]
+        [Route("{id}")]
+        public async Task<ActionResult> Details(long id)
+        {
+            var vent = _eventService.FindById(id);
+            vent.Posts = vent.Posts != null ? vent.Posts.OrderByDescending(p => p.PostTime).ToList() : new List<Post>();
+            vent.RSVPs = vent.RSVPs ?? new List<RSVP>();
+
+            var viewer = await _userService.FindUserById(User.Identity.GetUserId());
+
+            var viewerRSVP = vent.RSVPs.SingleOrDefault(r => r.User.Id.Equals(viewer.Id));
+            var viewerRSVPResponse = viewerRSVP != null ? viewerRSVP.Response : RSVPStatus.NoResponse;
+
+            var counts = new Dictionary<RSVPStatus, int>();
+            counts.Add(RSVPStatus.Yes, vent.RSVPs.Count(r => r.Response == RSVPStatus.Yes));
+            counts.Add(RSVPStatus.No, vent.RSVPs.Count(r => r.Response == RSVPStatus.No));
+            counts.Add(RSVPStatus.Maybe, vent.RSVPs.Count(r => r.Response == RSVPStatus.Maybe));
+
+            var model = new EventViewModel
+            {
+                Event = vent,
+                ViewerIsCreator = User.Identity.GetUserId().Equals(vent.Creator.Id),
+                Viewer = viewer,
+                ViewerRSVP = viewerRSVPResponse,
+                RSVPCounts = counts
+            };
+
+            return View("Details", model);
+        }
+
+        [HttpPost]
+        [Route("{id}/post")]
+        public async Task<ActionResult> Post(long id, string text, HttpPostedFileBase picture = null, bool shareOnFacebook = false, bool tweet = false)
+        {
+            MediaItem mediaItem = null;
+            if (picture != null)
+            {
+                MemoryStream target = new MemoryStream();
+                picture.InputStream.CopyTo(target);
+                var pictureData = target.ToArray();
+
+                var extension = Path.GetExtension(picture.FileName).TrimStart('.');
+                string blob = _fooCDNService.CreateNewBlob(string.Format("image/{0}", extension));
+
+                //async
+                _fooCDNService.PostToBlob(blob, pictureData, picture.FileName);
+
+                mediaItem = new MediaItem
+                {
+                    FooCDNBlob = blob,
+                    Size = (ulong)pictureData.LongLength,
+                    MediaType = MediaType.Photo
+                };
+            }
+
+            var post = new Post
+            {
+                User = await _userService.FindUserById(User.Identity.GetUserId()),
+                MediaItem = mediaItem,
+                PostText = text,
+                PostTime = DateTime.UtcNow,
+            };
+
+            _postService.AddOrUpdatePostToEvent(id, post);
+            _unitOfWork.SaveChanges();
+
+            return RedirectToAction("Details", new { id = id });
+        }
+
+        [HttpPost]
+        [Route("{id}/rsvp")]
+        public async Task<ActionResult> RSVP(long id, RSVPStatus response)
+        {
+            var vent = _eventService.FindById(id);
+
+            var rsvp = vent.RSVPs != null ? vent.RSVPs.SingleOrDefault(r => r.User.Id.Equals(User.Identity.GetUserId())) : null;
+            rsvp = rsvp ?? new RSVP
+            {
+                User = await _userService.FindUserById(User.Identity.GetUserId()),
+            };
+            rsvp.Response = response;
+
+            _rsvpService.AddOrUpdateRSVPToEvent(id, rsvp);
+            _unitOfWork.SaveChanges();
+
+            return RedirectToAction("Details", new { id = id });
+        }
+
+        [HttpGet]
+        [Route("new")]
         public ActionResult Create()
         {
             NewEventViewModel model = new NewEventViewModel();
             return View(model);
         }
 
-
-        [Authorize]
+        [HttpPost]
+        [Route("new")]
         public async Task<ActionResult> CreateEvent(NewEventViewModel model)
         {
             var eventTime = new EventTime
@@ -58,7 +154,7 @@ namespace Angora.Web.Controllers
                 ProposedTimes = new List<EventTime>(),
                 Responses = new List<EventSchedulerResponse>(),
             };
-            
+
             var location = new Location
             {
                 NameOrAddress = model.Location,
@@ -83,7 +179,8 @@ namespace Angora.Web.Controllers
             return RedirectToAction("Index", "EventFeed");
         }
 
-        [Authorize]
+        [HttpGet]
+        [Route("{id}/edit")]
         public ActionResult Edit(long id)
         {
             var theEvent = _eventService.FindById(id);
@@ -96,14 +193,15 @@ namespace Angora.Web.Controllers
             var model = new EventEditViewModel
             {
                 Event = theEvent,
-                DurationHours = theEvent.EventTime.DurationInMinutes / 60,
-                DurationMinutes = theEvent.EventTime.DurationInMinutes % 60
+                DurationHours = theEvent.EventTime == null ? 0 : theEvent.EventTime.DurationInMinutes / 60,
+                DurationMinutes = theEvent.EventTime == null ? 0 : theEvent.EventTime.DurationInMinutes % 60
             };
 
             return View(model);
         }
 
-        [Authorize]
+        [HttpPost]
+        [Route("{id}/edit")]
         public ActionResult EditEvent(EventEditViewModel model)
         {
             model.Event.EventTime.DurationInMinutes = model.DurationHours * 60 + model.DurationMinutes;
@@ -111,9 +209,10 @@ namespace Angora.Web.Controllers
             _eventService.Update(model.Event);
             _unitOfWork.SaveChanges();
 
-            return RedirectToAction("Index", "EventFeed");
+            return RedirectToAction("Details", "Event", new { id = model.Event.Id });
         }
 
+        [Route("{id}/delete")]
         public ActionResult DeleteEvent(long id)
         {
             _eventService.Delete(id);
@@ -122,41 +221,5 @@ namespace Angora.Web.Controllers
 
             return RedirectToAction("Index", "EventFeed");
         }
-
-        [Authorize]
-        public ActionResult ViewEvent(long id)
-        {
-            Event eventView = _eventService.FindById(id);
-
-            return View();
-        }
-
-        private static string GetCoordinates(string address)
-        {
-            var requestUri = string.Format("http://maps.googleapis.com/maps/api/geocode/xml?address={0}&sensor=false", Uri.EscapeDataString(address));
-
-            var request = WebRequest.Create(requestUri);
-            var response = request.GetResponse();
-            var xdoc = XDocument.Load(response.GetResponseStream());
-
-            var result = xdoc.Element("GeocodeResponse").Element("result");
-            string location;
-
-            if (xdoc.Element("GeocodeResponse").Element("status").Value.Equals("OK"))
-            {
-                var locationElement = result.Element("geometry").Element("location");
-                var lat = locationElement.Element("lat");
-                var lng = locationElement.Element("lng");
-
-                location = lat.Value + "," + lng.Value;
-            }
-            else
-            {
-                location = "";
-            }
-
-            return location;
-        }
-
     }
 }
