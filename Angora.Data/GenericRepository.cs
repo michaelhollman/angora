@@ -63,9 +63,9 @@ namespace Angora.Data
             _dbSet.Remove(entity);
         }
 
-        public void Insert(T entity)
+        public T Insert(T entity)
         {
-            _dbSet.Add(entity);
+            return _dbSet.Add(entity);
         }
 
         public void Update(T entity)

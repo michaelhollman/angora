@@ -1,24 +1,139 @@
-﻿@model Angora.Web.Models.EventViewModel
+﻿@using Angora.Data.Models
+@model Angora.Web.Models.EventViewModel
+
+<h2>@Model.Event.Name</h2>
+<hr />
 
 <div class="row">
-    <div class="col-lg-4 event-details">
-        <h2>@Model.Event.Name</h2>
-        <hr />
-        <h4>@Model.Event.Description</h4>
-        <p>Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet </p>
-        <p>Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet </p>
-        <p>Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet </p>
-        <p>Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet </p>
+    <div class="col-md-5 event-details">
+
+        <div class="row">
+            <div class="col-md-12">
+                <h4>RSVP</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="btn-group btn-group-justified">
+                    @*<a class="btn @(t.CurrentUserResponse == Angora.Data.Models.SchedulerResponse.Yes ? "btn-success" : "btn-primary")" href="@Url.Action("FindTime", new { dt = t.Time, response = Angora.Data.Models.SchedulerResponse.Yes })">Yes! (@t.YesCount)</a>*@
+
+                    @*<a class="btn @(t.CurrentUserResponse == Angora.Data.Models.SchedulerResponse.Maybe ? "btn-success" : "btn-primary")" href="@Url.Action("FindTime", new { dt = t.Time, response = Angora.Data.Models.SchedulerResponse.Maybe })">Maybe (@t.MaybeCount)</a>*@
+
+                    @*<a class="btn  @(t.CurrentUserResponse == Angora.Data.Models.SchedulerResponse.No ? "btn-success" : "btn-primary")" href="@Url.Action("FindTime", new { dt = t.Time, response = Angora.Data.Models.SchedulerResponse.No })">No (@t.NoCount)</a>*@
+                    <a class="btn btn-primary" href="#">Yes! (44)</a>
+
+                    <a class="btn btn-primary" href="#">Maybe (44)</a>
+
+                    <a class="btn btn-primary" href="#">No (8)</a>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <h6 class="pull-right">
+                    74 people invited
+                </h6>
+            </div>
+        </div>
+        <div class="row">&nbsp;</div>
+
+        @if (!(Model.Event.EventTime != null && Model.Event.EventTime.StartTime != null || (Model.Event.Scheduler != null && Model.Event.Scheduler.IsTimeSet)))
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="@Url.Action("Index","EventScheduler")" class="btn btn-primary width-100">Find a Time</a>
+                </div>
+            </div>
+            <div class="row">&nbsp;</div>
+        }
+
+        <div class="well well-sm">
+            <h4>Hosted by @Model.Event.Creator.FirstName @Model.Event.Creator.LastName</h4>
+
+            @if (Model.Event.EventTime != null && Model.Event.EventTime.StartTime != null || (Model.Event.Scheduler != null && Model.Event.Scheduler.IsTimeSet))
+            {
+                <h4>
+                    @Model.Event.EventTime.StartTime.ToString("dddd, MMMM d, yyyy")<br />
+                    @Model.Event.EventTime.StartTime.ToString("h:mm tt") <br />
+                    @(Model.DurationHours == 1 ? "1 hour " : Model.DurationHours > 1 ? string.Format("{0} hours ", Model.DurationHours) : "")@(Model.DurationMinutes > 0 ? string.Format("{0} minutes", Model.DurationMinutes) : "")
+                </h4>
+            }
+
+            <h4>@Model.Event.Location.NameOrAddress</h4>
+            <hr />
+            <p>@Model.Event.Description</p>
+        </div>
 
     </div>
 
-    <div class="col-lg-8">
-        <div class="well">
-            <p>Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet </p>
-            <p>Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet </p>
-            <p>Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet Lorem ipsum Dolor sit amet parce boquet </p>
+    <div class="col-md-7">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="well well-sm ">
 
+                    @using (Html.BeginForm("Post", "Event", new { id = Model.Event.Id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <div class="form-group">
+                            <textarea name="text" class="form-control" rows="2" placeholder="Share something with people going to @Model.Event.Name..." required></textarea>
+                        </div>
+                        <div class="form-group row" style="margin-bottom:0">
+                            <div class="col-sm-5">
+                                <label>
+                                    <input type="file" name="picture" accept="image/*" />
+                                </label>
+                            </div>
+                            <div class="col-sm-3">
+                                @if (Model.Viewer.IsLinkedWithFacebook())
+                                {
+                                    <label>
+                                        <input type="checkbox" name="shareOnFacebook" value="True" /> Share on Facebook
+                                    </label>
+                                }
+                            </div>
+                            <div class="col-sm-2">
+                                @if (Model.Viewer.IsLinkedWithTwitter())
+                                {
+                                    <label>
+                                        <input type="checkbox" name="tweet" value="True" /> Tweet
+                                    </label>
+                                }
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="submit" class="btn btn-primary btn-sm width-100" value="Post" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
+
+        @foreach (var p in Model.Event.Posts)
+        {
+            <div class="panel">
+                <div class="panel-heading">
+                    <div class="pull-right">
+                        <span class="small">
+                            @p.PostTime.ToLocalTime().ToString("ddd, MMM d, yyyy  h:mm tt")
+                        </span>
+                    </div>
+                    @p.User.FirstName @p.User.LastName
+                </div>
+                @if (p.MediaItem != null && !string.IsNullOrWhiteSpace(p.MediaItem.FooCDNBlob))
+                {
+                    <img class="panel-body img-responsive no-margin no-padding" src="@p.MediaItem.GetUrl()" />
+                    <div class="panel-footer">@p.PostText</div>
+                }
+                else
+                {
+                    <div class="panel-footer">@p.PostText</div>
+                }
+            </div>
+        }
+
+        @if (Model.Event.Posts == null || Model.Event.Posts.Count == 0)
+        {
+            <p>Nobody has said anything yet...</p>
+        }
+
     </div>
 </div>
-
