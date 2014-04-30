@@ -49,7 +49,6 @@ namespace Angora.Web.Controllers
             var vent = _eventService.FindById(id);
             vent.Posts = vent.Posts != null ? vent.Posts.OrderByDescending(p => p.PostTime).ToList() : new List<Post>();
             vent.RSVPs = vent.RSVPs ?? new List<RSVP>();
-
             var viewer = await _userService.FindUserById(User.Identity.GetUserId());
 
             var viewerRSVP = vent.RSVPs.SingleOrDefault(r => r.User.Id.Equals(viewer.Id));
@@ -87,7 +86,7 @@ namespace Angora.Web.Controllers
                 string blob = _fooCDNService.CreateNewBlob(string.Format("image/{0}", extension));
 
                 //async
-                _fooCDNService.PostToBlob(blob, pictureData, picture.FileName);
+                await _fooCDNService.PostToBlob(blob, pictureData, picture.FileName);
 
                 mediaItem = new MediaItem
                 {
@@ -102,7 +101,7 @@ namespace Angora.Web.Controllers
                 User = await _userService.FindUserById(User.Identity.GetUserId()),
                 MediaItem = mediaItem,
                 PostText = text,
-                PostTime = DateTime.UtcNow,
+                PostTime = DateTime.Now,
             };
 
             _postService.AddOrUpdatePostToEvent(id, post);

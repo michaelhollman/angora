@@ -68,11 +68,16 @@ namespace Angora.Web.Areas.Api.Controllers
             _eventService.Delete(_eventService.FindById(eventId));
         }
 
-        [HttpPost, Route("upload/{eventId}")]
-        public async Task<IHttpActionResult> Upload(long eventId)
+        [HttpPost, Route("{userId}/upload/{eventId}")]
+        public async Task<IHttpActionResult> Upload(string userId, long eventId)
         {
             byte[] picture;
             var fileName = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(userId) || eventId <= 0)
+            {
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotAcceptable, "The userId and eventId in the URL were invalid"));
+            }
 
             if (Request.Content.IsMimeMultipartContent())
             {
@@ -112,7 +117,7 @@ namespace Angora.Web.Areas.Api.Controllers
 
             var post = new Post
             {
-                User = await _userService.FindUserById(User.Identity.GetUserId()),
+                User = await _userService.FindUserById(userId),
                 MediaItem = mediaItem,
                 PostText = string.Empty,
                 PostTime = DateTime.UtcNow,
