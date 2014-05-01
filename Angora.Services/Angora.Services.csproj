@@ -118,7 +118,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ISocialNetworkService.cs" />
-    <Compile Include="IMediaPullService.cs" />
     <Compile Include="ISimplexService.cs" />
     <Compile Include="IRSVPService.cs" />
     <Compile Include="IPostService.cs" />
