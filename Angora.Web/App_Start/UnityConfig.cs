@@ -48,6 +48,7 @@ namespace Angora.Web.App_Start
             container.RegisterType<IPostService, PostService>();
             container.RegisterType<IRSVPService, RSVPService>();
             container.RegisterType<ISocialNetworkService, SocialNetworkService>();
+            container.RegisterType<ISimplexService, SimplexService>();
 
             // DB stuff
             container.RegisterType<DbConfiguration, AngoraDbConfiguration>();

@@ -226,10 +226,10 @@
     <Content Include="Images\Logos\twitter-white.png" />
     <Content Include="Images\EventImage.jpeg" />
     <Content Include="Images\EventImage3.png" />
-    <Content Include="Images\NewAlexComb.jpg" />
-    <Content Include="Images\NewMichaelComb.jpg" />
-    <Content Include="Images\NewRachaelComb.jpg" />
-    <Content Include="Images\NewScottComb.jpg" />
+    <Content Include="Images\AlexComb.jpg" />
+    <Content Include="Images\MichaelComb.jpg" />
+    <Content Include="Images\RachaelComb.jpg" />
+    <Content Include="Images\ScottComb.jpg" />
     <Content Include="Scripts\jquery.geocomplete.js" />
     <Content Include="Scripts\jquery.leanModal.min.js" />
     <Content Include="Scripts\lib\bootstrap.js" />
