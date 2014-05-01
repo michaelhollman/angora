@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Angora.Services
 {
-    interface ISimplexService
+    public interface ISimplexService
     {
         void PerformSimplex();
     }

@@ -65,7 +65,9 @@ namespace Angora.Services
 
         public IEnumerable<Event> FindEventsWithBlobs()
         {
-           return _eventRepo.Find(e => e.Posts != null && e.Posts.Count > 0 && e.Posts.Any(p => p.MediaItem != null && !string.IsNullOrWhiteSpace(p.MediaItem.FooCDNBlob)));
+            var events = _eventRepo.GetAll();
+
+           return events.Where(e => e.Posts != null && e.Posts.Count > 0 && e.Posts.Any(p => p.MediaItem != null && !string.IsNullOrWhiteSpace(p.MediaItem.FooCDNBlob)));
         }
     }
 }

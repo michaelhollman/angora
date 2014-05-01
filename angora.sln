@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Angora.Web", "Angora.Web\Angora.Web.csproj", "{B91D5707-6953-4E4E-AC2C-B47228497947}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Angora.Services", "Angora.S
 	ProjectSection(ProjectDependencies) = postProject
 		{B76C60AA-89BE-42C5-8B8D-B439CF189435} = {B76C60AA-89BE-42C5-8B8D-B439CF189435}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Angora.Simplex", "Angora.Simplex\Angora.Simplex.csproj", "{F8A40A6B-CC22-4E0C-B14E-FF950DB0D2CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +44,10 @@ Global
 		{04829A99-B727-495B-8406-7C31676F0B54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04829A99-B727-495B-8406-7C31676F0B54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04829A99-B727-495B-8406-7C31676F0B54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8A40A6B-CC22-4E0C-B14E-FF950DB0D2CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8A40A6B-CC22-4E0C-B14E-FF950DB0D2CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8A40A6B-CC22-4E0C-B14E-FF950DB0D2CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8A40A6B-CC22-4E0C-B14E-FF950DB0D2CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
