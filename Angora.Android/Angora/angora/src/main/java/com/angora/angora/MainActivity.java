@@ -448,15 +448,7 @@ public class MainActivity extends ActionBarActivity
                 Log.d(TAG, response);
                 SimpleDateFormat parser = new SimpleDateFormat(EVENT_DATE_FORMAT);
                 if (eventsJSON != null) {
-                    //skip uscheduled events
-                    int eventCount = 0;
-                    for (int i = 0; i < eventsJSON.length(); i++){
-                        if (!eventsJSON.getJSONObject(i).isNull(EVENT_KEY_TIME_JSON)){
-                            eventCount++;
-                        }
-                    }
-
-                    AngoraEvent[] events = new AngoraEvent[eventCount];
+                    AngoraEvent[] events = new AngoraEvent[eventsJSON.length()];
                     for (int i = 0; i < eventsJSON.length(); i++) {
                         JSONObject currentEvent = eventsJSON.getJSONObject(i);
                         JSONObject currentEventCreator = currentEvent.getJSONObject(EVENT_KEY_CREATOR_JSON);
@@ -469,12 +461,22 @@ public class MainActivity extends ActionBarActivity
                                     currentEvent.getString(EVENT_KEY_DESC),
                                     currentEventLocation.getString(LOCATION_KEY_NAME_ADDRESS),
                                     parser.parse(currentEventTime.getString(TIME_KEY_START_TIME)));
+                        }else{
+                            events[i] = new AngoraEvent(currentEvent.getString(EVENT_KEY_ID),
+                                    currentEvent.getString(EVENT_KEY_NAME),
+                                    currentEventCreator.getString(USER_KEY_FIRST_NAME) + " " + currentEventCreator.getString(USER_KEY_LAST_NAME),
+                                    currentEvent.getString(EVENT_KEY_DESC),
+                                    currentEventLocation.getString(LOCATION_KEY_NAME_ADDRESS),
+                                    null);
                         }
                     }
 
                     Arrays.sort(events, new Comparator<AngoraEvent>() {
                         @Override
                         public int compare(AngoraEvent e1, AngoraEvent e2) {
+                            if (e1.getStartDate() == null){
+                                return -1;
+                            }
                             return e1.getStartDate().compareTo(e2.getStartDate());
                         }
                     });
@@ -552,8 +554,13 @@ class CustomAdapter extends BaseAdapter{
         name.setText(userEvent[position].getName());
         creator.setText(userEvent[position].getCreator());
         location.setText(userEvent[position].getLocation());
-        date.setText(userEvent[position].getStartDateString());
-        time.setText(userEvent[position].getStartTimeString());
+        if(userEvent[position].getStartDate() != null) {
+            date.setText(userEvent[position].getStartDateString());
+            time.setText(userEvent[position].getStartTimeString());
+        }else{
+            date.setText("Not Scheduled");
+            time.setText("");
+        }
 
         return vi;
     }
