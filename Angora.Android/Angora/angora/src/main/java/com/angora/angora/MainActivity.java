@@ -62,7 +62,7 @@ public class MainActivity extends ActionBarActivity
     public final static String EVENT_KEY_NAME = "Name";
     public final static String EVENT_KEY_DESC = "Description";
     public final static String EVENT_KEY_ID = "Id";
-    public final static String EVENT_KEY_LOCATION = "Location";
+    public final static String EVENT_KEY_LOCATION_JSON = "Location";
     public final static String EVENT_KEY_TIME_JSON = "EventTime";
     public final static String EVENT_KEY_CREATOR_JSON = "Creator";
     public final static String EVENT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
@@ -188,7 +188,6 @@ public class MainActivity extends ActionBarActivity
 
         editor.putLong(PREFS_KEY_LAST_REFRESH, System.nanoTime());
         editor.commit();
-
     }
 
     @Override
@@ -416,19 +415,18 @@ public class MainActivity extends ActionBarActivity
 
     public class GetEventsTask extends AsyncTask<String, Void, AngoraEvent[]> {
 
-
-        private final String SITE_URL = "http://seteam4.azurewebsites.net/api/user/getEvents?";
-
         @Override
         protected AngoraEvent[] doInBackground(String... strings) {
             StringBuilder urlString = new StringBuilder();
-            urlString.append(API_URL).append("/user/getEvents?");
+            urlString.append(API_URL).append("user/getEvents?");
             urlString.append("userId=").append(strings[0]);
 
             HttpURLConnection urlConnection = null;
             URL url = null;
             JSONObject object = null;
             JSONArray eventsJSON = null;
+
+            Log.d(TAG, urlString.toString());
 
             try{
                 url = new URL(urlString.toString());
@@ -447,20 +445,31 @@ public class MainActivity extends ActionBarActivity
                 urlConnection.disconnect();
                 //return (JSONObject) new JSONTokener(response).nextValue();
                 eventsJSON = new JSONArray(response);
+                Log.d(TAG, response);
                 SimpleDateFormat parser = new SimpleDateFormat(EVENT_DATE_FORMAT);
                 if (eventsJSON != null) {
-                    AngoraEvent[] events = new AngoraEvent[eventsJSON.length()];
+                    //skip uscheduled events
+                    int eventCount = 0;
+                    for (int i = 0; i < eventsJSON.length(); i++){
+                        if (!eventsJSON.getJSONObject(i).isNull(EVENT_KEY_TIME_JSON)){
+                            eventCount++;
+                        }
+                    }
+
+                    AngoraEvent[] events = new AngoraEvent[eventCount];
                     for (int i = 0; i < eventsJSON.length(); i++) {
                         JSONObject currentEvent = eventsJSON.getJSONObject(i);
-                        JSONObject currentEventTime = currentEvent.getJSONObject(EVENT_KEY_TIME_JSON);
                         JSONObject currentEventCreator = currentEvent.getJSONObject(EVENT_KEY_CREATOR_JSON);
-                        JSONObject currentEventLocation = currentEvent.getJSONObject(EVENT_KEY_LOCATION);
-                        events[i] = new AngoraEvent(currentEvent.getString(EVENT_KEY_ID),
-                                currentEvent.getString(EVENT_KEY_NAME),
-                                currentEventCreator.getString(USER_KEY_FIRST_NAME) + " " + currentEventCreator.getString(USER_KEY_LAST_NAME),
-                                currentEvent.getString(EVENT_KEY_DESC),
-                                currentEventLocation.getString(LOCATION_KEY_NAME_ADDRESS),
-                                parser.parse(currentEventTime.getString(TIME_KEY_START_TIME)));
+                        JSONObject currentEventLocation = currentEvent.getJSONObject(EVENT_KEY_LOCATION_JSON);
+                        if (!currentEvent.isNull(EVENT_KEY_TIME_JSON)){
+                            JSONObject currentEventTime = currentEvent.getJSONObject(EVENT_KEY_TIME_JSON);
+                            events[i] = new AngoraEvent(currentEvent.getString(EVENT_KEY_ID),
+                                    currentEvent.getString(EVENT_KEY_NAME),
+                                    currentEventCreator.getString(USER_KEY_FIRST_NAME) + " " + currentEventCreator.getString(USER_KEY_LAST_NAME),
+                                    currentEvent.getString(EVENT_KEY_DESC),
+                                    currentEventLocation.getString(LOCATION_KEY_NAME_ADDRESS),
+                                    parser.parse(currentEventTime.getString(TIME_KEY_START_TIME)));
+                        }
                     }
 
                     Arrays.sort(events, new Comparator<AngoraEvent>() {
