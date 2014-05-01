@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -232,6 +234,14 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
 
             try
             {
+                ExifInterface exif = new ExifInterface(fileUri.getPath());
+                String orientation = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
+
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(), options);
+
+
                 FileInputStream fileInputStream = new FileInputStream(new File(fileUri.getPath()) );
 
                 Log.i("SnapNGo", urlServer.toString());
@@ -256,22 +266,28 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
                 outputStream.writeBytes("Content-Type: image/jpeg" + lineEnd);
                 outputStream.writeBytes(lineEnd);
 
-
-                bytesAvailable = fileInputStream.available();
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                buffer = new byte[bufferSize];
-
-                // Read file
-                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-                while (bytesRead > 0)
-                {
-                    outputStream.write(buffer, 0, bufferSize);
+                if (orientation.equals("6")){
+                    //todo rotate +90
+                    outputStream.write(rotateAndConvert(bitmap, 90));
+                }else if (orientation.equals("8")){
+                    //todo rotate -90
+                    outputStream.write(rotateAndConvert(bitmap, -90));
+                }else {
+                    //image is fine as is
                     bytesAvailable = fileInputStream.available();
                     bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-                }
+                    buffer = new byte[bufferSize];
 
+                    // Read file
+                    bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+                    while (bytesRead > 0) {
+                        outputStream.write(buffer, 0, bufferSize);
+                        bytesAvailable = fileInputStream.available();
+                        bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                        bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                    }
+                }
                 outputStream.writeBytes(lineEnd);
                 outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
@@ -291,6 +307,15 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
 
 
             return null;
+        }
+
+        private byte[] rotateAndConvert(Bitmap bitmap, int degrees){
+            Matrix matrix = new Matrix();
+            matrix.postRotate(degrees);
+            Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap , 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            ByteArrayOutputStream bao = new ByteArrayOutputStream();
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bao);
+            return bao.toByteArray();
         }
 
         @Override
