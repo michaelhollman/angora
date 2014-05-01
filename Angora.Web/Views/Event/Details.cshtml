@@ -100,19 +100,11 @@
                                         <input type="file" name="picture" accept="image/*" />
                                     </label>
                                 </div>
-                                <div class="col-sm-3">
+                                <div class="col-sm-4 col-sm-offset-1">
                                     @if (Model.Viewer.IsLinkedWithFacebook())
                                     {
                                         <label>
                                             <input type="checkbox" name="shareOnFacebook" value="True" /> Share on Facebook
-                                        </label>
-                                    }
-                                </div>
-                                <div class="col-sm-2">
-                                    @if (Model.Viewer.IsLinkedWithTwitter())
-                                    {
-                                        <label>
-                                            <input type="checkbox" name="tweet" value="True" /> Tweet
                                         </label>
                                     }
                                 </div>
