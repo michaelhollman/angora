@@ -132,13 +132,11 @@
                 <div class="panel-heading">
                     <div class="pull-right">
                         <span class="small">
-                            
                             @p.PostTime.ToLocalTime().ToString("ddd, MMM d, yyyy  h:mm tt")
-                            
                         </span>
                     </div>
-                    <img src="@p.User.ProfilePictureUrl" class="profile-pic-sm profile-pic-posts"/>
-                       @p.User.FirstName @p.User.LastName
+                    <img src="@p.User.ProfilePictureUrl" class="profile-pic-sm profile-pic-posts" />
+                    @p.User.FirstName @p.User.LastName
                 </div>
                 @if (p.MediaItem != null && !string.IsNullOrWhiteSpace(p.MediaItem.FooCDNBlob))
                 {
