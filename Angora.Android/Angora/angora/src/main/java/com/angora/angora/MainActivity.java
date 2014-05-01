@@ -1,6 +1,8 @@
 package com.angora.angora;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -52,6 +54,7 @@ public class MainActivity extends ActionBarActivity
     public final static String PREFS_KEY_LOGIN_PROVIDER = "LoginProvider";
     public final static String PREFS_KEY_PROVIDER_KEY = "ProviderKey";
     public final static String PREFS_KEY_ANGORA_ID = "AngoraId";
+    public final static String PREFS_KEY_FEED_TUT = "SeeFeedTut";
 
     public final static String USER_KEY_PROFILE_PIC_URL = "ProfilePictureUrl";
     public final static String USER_KEY_ID = "Id";
@@ -279,6 +282,32 @@ public class MainActivity extends ActionBarActivity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_feed, container, false);
+
+            if (preferences.getBoolean(PREFS_KEY_FEED_TUT, true)){
+                AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+                adb.setMessage("Tap an event to open Snap & Go.");
+                adb.setCancelable(false);
+                adb.setPositiveButton("Remind me next time", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        SharedPreferences.Editor prefEditor = preferences.edit();
+                        prefEditor.putBoolean(PREFS_KEY_FEED_TUT, true);
+                        prefEditor.commit();
+                    }
+                });
+                adb.setNegativeButton("Got it", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        SharedPreferences.Editor prefEditor = preferences.edit();
+                        prefEditor.putBoolean(PREFS_KEY_FEED_TUT, false);
+                        prefEditor.commit();
+                    }
+                });
+
+                AlertDialog alert = adb.create();
+
+                alert.show();
+            }
 
             TextView noEventsTextView = (TextView) rootView.findViewById(R.id.textView_noEvents);
 
