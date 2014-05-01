@@ -18,9 +18,9 @@ namespace Angora.Web.Controllers
     public class AccountController : Controller
     {
         private IAngoraUserService _userService;
-        private IMediaPullService _mediaPullService;
+        private ISocialNetworkService _mediaPullService;
 
-        public AccountController(IAngoraUserService userService, IMediaPullService mediaPullService)
+        public AccountController(IAngoraUserService userService, ISocialNetworkService mediaPullService)
         {
             _userService = userService;
             _mediaPullService = mediaPullService;

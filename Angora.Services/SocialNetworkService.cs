@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 
 namespace Angora.Services
 {
-    public class MediaPullService : ServiceBase, IMediaPullService
+    public class SocialNetworkService : ServiceBase, ISocialNetworkService
     {
         private const string TwitterKey = "o8QTwfzt6CdfDGndyqvLrg";
         private const string TwitterSecret = "jqU2tq5QVUkK6JdFA22wtXZNrTumatvG9VpPAfK5M";

@@ -7,7 +7,7 @@ using Angora.Data.Models;
 
 namespace Angora.Services
 {
-    public interface IMediaPullService
+    public interface ISocialNetworkService
     {
         void PullFromFacebook(string accessToken, Event theEvent);
         void PullFromTwitter(string accessToken, string accessSecret, Event theEvent);
