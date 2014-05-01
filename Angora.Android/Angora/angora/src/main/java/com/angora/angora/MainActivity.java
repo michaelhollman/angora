@@ -226,16 +226,6 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        /*
-        if (!mNavigationDrawerFragment.isDrawerOpen()) {
-            // Only show items in the action bar relevant to this screen
-            // if the drawer is not showing. Otherwise, let the drawer
-            // decide what to show in the action bar.
-            getMenuInflater().inflate(R.menu.main, menu);
-            restoreActionBar();
-            return true;
-        }
-        */
         getMenuInflater().inflate(R.menu.main, menu);
 
         return super.onCreateOptionsMenu(menu);
@@ -265,18 +255,12 @@ public class MainActivity extends ActionBarActivity
     }
 
     public static class FeedFragment extends Fragment {
-        private ListView mListView;
-        private CustomAdapter mAdapter;
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
+
+        private ListView listView;
+        private CustomAdapter customAdapter;
+
         private static final String ARG_SECTION_NUMBER = "section_number";
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
         public static FeedFragment newInstance(int sectionNumber) {
             FeedFragment fragment = new FeedFragment();
 
@@ -301,10 +285,10 @@ public class MainActivity extends ActionBarActivity
 
             if (userEvents != null) {
                 if (userEvents.length > 0) {
-                    mAdapter = new CustomAdapter(getActivity(), userEvents);
-                    mListView = (ListView) rootView.findViewById(R.id.list);
-                    mListView.setAdapter(mAdapter);
-                    mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    customAdapter = new CustomAdapter(getActivity(), userEvents);
+                    listView = (ListView) rootView.findViewById(R.id.list);
+                    listView.setAdapter(customAdapter);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                             Intent intent = new Intent(getActivity(), SnapAndGoBuiltIn.class);
