@@ -89,5 +89,4 @@ public class AngoraEvent implements Serializable {
         this.startDate = startDate;
     }
 
-
 }
