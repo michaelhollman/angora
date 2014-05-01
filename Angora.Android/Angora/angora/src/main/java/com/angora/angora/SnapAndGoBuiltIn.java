@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
@@ -13,42 +15,36 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.prefs.Preferences;
 
 /*
- * Adapted from http://www.androidhive.info/2013/09/android-working-with-camera-api/
+ * Heavily adapted from http://www.androidhive.info/2013/09/android-working-with-camera-api/
  */
 public class SnapAndGoBuiltIn extends ActionBarActivity {
     // Activity request codes
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-    public static final int MEDIA_TYPE_IMAGE = 1;
+    private static final int MEDIA_TYPE_IMAGE = 1;
 
     // directory name to store captured images and videos
     private static final String IMAGE_DIRECTORY_NAME = "Auderus";
+    private static final String FILE_URI = "file_uri";
+    private static final String TIME_STAMP_FORMAT = "yyyyMMdd_HHmmss";
+    private static final String NEEDS_ROTATION_90_D = "6";
+    private static final String NEEDS_ROTATION_270_D = "8";
+    private static final String TAG = "SnapNGo";
 
     private Uri fileUri; // file url to store image/video
-    private ImageView imgPreview;
-    private ProgressBar progbar;
-
     private String eventId;
 
     @Override
@@ -58,8 +54,6 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
 
         Intent intent = getIntent();
         eventId = intent.getStringExtra(MainActivity.EXTRA_EVENT_ID);
-
-        progbar = (ProgressBar) findViewById(R.id.progressBarUpload);
 
         captureImage();
 
@@ -90,7 +84,7 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
 
         // save file url in bundle as it will be null on screen orientation
         // changes
-        outState.putParcelable("file_uri", fileUri);
+        outState.putParcelable(FILE_URI, fileUri);
     }
 
     @Override
@@ -98,7 +92,7 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         // get the file url
-        fileUri = savedInstanceState.getParcelable("file_uri");
+        fileUri = savedInstanceState.getParcelable(FILE_URI);
     }
 
 
@@ -132,23 +126,24 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
             if (resultCode == RESULT_OK) {
                 // successfully captured the image
 
-                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
+                SharedPreferences pref = getApplicationContext().getSharedPreferences(MainActivity.PREFS_NAME, 0);
 
-                String angoraId = pref.getString("AngoraId", null);
+                String angoraId = pref.getString(MainActivity.PREFS_KEY_ANGORA_ID, null);
                 if (angoraId != null) {
                     new UploadLastImageTask().execute(angoraId);
                 }else{
-                    //shouldn't have happened
-                    //todo handle
+                    //the user somehow managed to log in without an angora id...
+                    Toast.makeText(getApplicationContext(), "Error: Please log in again. Sorry!", Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor prefEditor = pref.edit();
+                    prefEditor.putBoolean(MainActivity.PREFS_KEY_LOGGED_IN, false);
+                    prefEditor.commit();
+
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
                 }
 
             } else if (resultCode == RESULT_CANCELED) {
                 // user cancelled Image capture
-                /*
-                Toast.makeText(getApplicationContext(),
-                        "User cancelled image capture", Toast.LENGTH_SHORT)
-                        .show();
-                        */
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -194,7 +189,7 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
         }
 
         // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
+        String timeStamp = new SimpleDateFormat(TIME_STAMP_FORMAT,
                 Locale.getDefault()).format(new Date());
         File mediaFile;
         if (type == MEDIA_TYPE_IMAGE) {
@@ -213,8 +208,6 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
         protected String doInBackground(String... strings) {
             HttpURLConnection connection = null;
             DataOutputStream outputStream = null;
-            DataInputStream inputStream = null;
-            String siteUrl = "http://seteam4.azurewebsites.net/api/user/";
             StringBuilder urlServer = new StringBuilder();
             String lineEnd = "\r\n";
             String twoHyphens = "--";
@@ -225,16 +218,19 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
             byte[] buffer;
             int maxBufferSize = 1*1024*1024;
 
-            urlServer.append(siteUrl);
+            urlServer.append(MainActivity.API_URL).append("user/");
             urlServer.append(strings[0]);
             urlServer.append("/upload/");
             urlServer.append(eventId);
 
             try
             {
-                FileInputStream fileInputStream = new FileInputStream(new File(fileUri.getPath()) );
+                ExifInterface exif = new ExifInterface(fileUri.getPath());
+                String orientation = exif.getAttribute(ExifInterface.TAG_ORIENTATION);
 
-                Log.i("SnapNGo", urlServer.toString());
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(), options);
 
                 URL url = new URL(urlServer.toString());
                 connection = (HttpURLConnection) url.openConnection();
@@ -256,41 +252,55 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
                 outputStream.writeBytes("Content-Type: image/jpeg" + lineEnd);
                 outputStream.writeBytes(lineEnd);
 
-
-                bytesAvailable = fileInputStream.available();
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
-                buffer = new byte[bufferSize];
-
-                // Read file
-                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
-
-                while (bytesRead > 0)
-                {
-                    outputStream.write(buffer, 0, bufferSize);
+                if (orientation.equals(NEEDS_ROTATION_90_D)){
+                    outputStream.write(rotateAndConvert(bitmap, 90));
+                }else if (orientation.equals(NEEDS_ROTATION_270_D)){
+                    outputStream.write(rotateAndConvert(bitmap, -90));
+                }else {
+                    //image is fine as is
+                    FileInputStream fileInputStream = new FileInputStream(new File(fileUri.getPath()) );
                     bytesAvailable = fileInputStream.available();
                     bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                    buffer = new byte[bufferSize];
+
+                    // Read file
                     bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+                    while (bytesRead > 0) {
+                        outputStream.write(buffer, 0, bufferSize);
+                        bytesAvailable = fileInputStream.available();
+                        bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                        bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                    }
+                    fileInputStream.close();
+
                 }
 
                 outputStream.writeBytes(lineEnd);
                 outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
-                fileInputStream.close();
                 outputStream.flush();
                 outputStream.close();
 
                 int response = connection.getResponseCode();
                 String responseMessage = connection.getResponseMessage();
-                Log.i("SnapAndGo", "Response is " + response + ":" + responseMessage);
+                Log.i(TAG, "Server Response is " + response + ":" + responseMessage);
             }
-            catch (Exception ex)
+            catch (IOException ie)
             {
-                //todo Exception handling
-                ex.printStackTrace();
+                Toast.makeText(getApplicationContext(), "Error Uploading File: " + ie.getMessage(), Toast.LENGTH_SHORT).show();
             }
-
 
             return null;
+        }
+
+        private byte[] rotateAndConvert(Bitmap bitmap, int degrees){
+            Matrix matrix = new Matrix();
+            matrix.postRotate(degrees);
+            Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap , 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            ByteArrayOutputStream bao = new ByteArrayOutputStream();
+            rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bao);
+            return bao.toByteArray();
         }
 
         @Override
