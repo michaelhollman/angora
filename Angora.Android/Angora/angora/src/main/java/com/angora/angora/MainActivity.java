@@ -492,12 +492,9 @@ public class MainActivity extends ActionBarActivity
                 InputStream is = (InputStream) new URL(strings[0]).getContent();
                 image = BitmapFactory.decodeStream(is);
             } catch (MalformedURLException me) {
-                //todo handle
                 Log.e(TAG, me.getMessage());
-                me.printStackTrace();
             } catch (IOException ie){
                 Log.e(TAG, ie.getMessage());
-                ie.printStackTrace();
             }
             return image;
         }
