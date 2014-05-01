@@ -13,6 +13,7 @@ using System.Xml.Linq;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Web;
+using Facebook;
 
 namespace Angora.Web.Controllers
 {
@@ -103,7 +104,19 @@ namespace Angora.Web.Controllers
                 PostText = text,
                 PostTime = DateTime.Now,
             };
+            if (shareOnFacebook) {
+                AngoraUser user = await _userService.FindUserById(User.Identity.GetUserId());
+                string e = _eventService.FindById(id).Name;
+                var fbUser = new FacebookClient(user.FacebookAccessToken);
+                var parameters = new Dictionary<string, object>{
+                        {"message", "I posted this to the event '" + e + "' on Auderus: \n" + text}};
 
+                if (picture != null){
+                     parameters.Add("picture", post.MediaItem.GetUrl());
+                }
+
+                fbUser.Post("me/feed", parameters);
+            }
             _postService.AddOrUpdatePostToEvent(id, post);
             _unitOfWork.SaveChanges();
 
