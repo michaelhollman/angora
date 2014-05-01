@@ -1,24 +1,17 @@
 package com.angora.angora;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.ListFragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.provider.ContactsContract;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,65 +19,71 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     public final static String EXTRA_EVENT_ID = "com.angora.angora.EVENT_ID";
+    public final static String PREFS_NAME = "MyPrefs";
+    public final static String PREFS_KEY_LOGGED_IN = "IsLoggedIn";
+    public final static String PREFS_KEY_LAST_REFRESH = "LastRefresh";
+    public final static String PREFS_KEY_LOGIN_PROVIDER = "LoginProvider";
+    public final static String PREFS_KEY_PROVIDER_KEY = "ProviderKey";
+    public final static String PREFS_KEY_ANGORA_ID = "AngoraId";
 
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
-    private NavigationDrawerFragment mNavigationDrawerFragment;
+    public final static String USER_KEY_PROFILE_PIC_URL = "ProfilePictureUrl";
+    public final static String USER_KEY_ID = "Id";
+    public final static String USER_KEY_FIRST_NAME = "FirstName";
+    public final static String USER_KEY_LAST_NAME = "LastName";
+    public final static String USER_KEY_LOCATION = "Location";
 
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
-    private CharSequence mTitle;
+    public final static String EVENT_KEY_NAME = "Name";
+    public final static String EVENT_KEY_DESC = "Description";
+    public final static String EVENT_KEY_ID = "Id";
+    public final static String EVENT_KEY_LOCATION = "Location";
+    public final static String EVENT_KEY_TIME_JSON = "EventTime";
+    public final static String EVENT_KEY_CREATOR_JSON = "Creator";
+    public final static String EVENT_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
-    private static JSONObject mUser;
-    private static AngoraEvent[] mEvents;
-    private static Bitmap mProfilePic;
-    private static SharedPreferences pref;
-    private static Context appContext;
+    public final static String TIME_KEY_START_TIME = "StartTime";
 
-    private CacheHelper mCacheHelper;
+    public final static String LOCATION_KEY_NAME_ADDRESS = "NameOrAddress";
 
+    public final static String API_URL = "http://seteam4.azurewebsites.net/api/";
+
+    
     private final long REFRESH_RATE = 60000; //60 seconds, in milliseconds
+    private final String TAG = "MainActivity";
+    
+    private static JSONObject userJson;
+    private static AngoraEvent[] userEvents;
+    private static Bitmap userProfilePic;
+    private static SharedPreferences preferences;
+    
+    private NavigationDrawerFragment mNavigationDrawerFragment;
+    private CharSequence mTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,15 +91,13 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
 
 
-        pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
-        if (!pref.getBoolean("IsLoggedIn", false)){
+        preferences = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
+        if (!preferences.getBoolean(PREFS_KEY_LOGGED_IN, false)){
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
             finish();
             return;
         }
-
-        appContext = getApplicationContext();
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -111,26 +108,26 @@ public class MainActivity extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        mCacheHelper = new CacheHelper(this);
+        CacheHelper cacheHelper = new CacheHelper(this);
 
-        if (System.currentTimeMillis() - pref.getLong("LastRefresh", 0) >= REFRESH_RATE){
+        if (System.currentTimeMillis() - preferences.getLong(PREFS_KEY_LAST_REFRESH, 0) >= REFRESH_RATE){
             refreshData();
         } else {
             try{
-                mUser = mCacheHelper.getStoredUser();
-                mEvents = mCacheHelper.getStoredEvents();
-                if (!mUser.getString("ProfilePictureUrl").startsWith("/")) {
-                    mProfilePic = mCacheHelper.getStoredProfilePic();
+                userJson = cacheHelper.getStoredUser();
+                userEvents = cacheHelper.getStoredEvents();
+                if (!userJson.getString(USER_KEY_PROFILE_PIC_URL).startsWith("/")) {
+                    userProfilePic = cacheHelper.getStoredProfilePic();
                 }
             }catch (IOException ie){
-                Toast.makeText(appContext, "Error: "+ ie.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("Main Activity", ie.getMessage());
+                Toast.makeText(getApplicationContext(), "Error: "+ ie.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, ie.getMessage());
             }catch (ClassNotFoundException ce){
-                Toast.makeText(appContext, "Error: "+ ce.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("Main Activity", ce.getMessage());
+                Toast.makeText(getApplicationContext(), "Error: "+ ce.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, ce.getMessage());
             }catch (JSONException je){
-                Toast.makeText(appContext, "Error: "+ je.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("Main Activity", je.getMessage());
+                Toast.makeText(getApplicationContext(), "Error: "+ je.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, je.getMessage());
             }
         }
 
@@ -143,53 +140,53 @@ public class MainActivity extends ActionBarActivity
 
     private void refreshData(){
         CacheHelper ch = new CacheHelper(this);
-        SharedPreferences.Editor editor = pref.edit();
+        SharedPreferences.Editor editor = preferences.edit();
         try{
-            mUser = new LoginUserTask().execute(pref.getString("LoginProvider", null), pref.getString("ProviderKey", null)).get();
-            if (mUser == null){
+            userJson = new LoginUserTask().execute(preferences.getString(PREFS_KEY_LOGIN_PROVIDER, null), preferences.getString(PREFS_KEY_PROVIDER_KEY, null)).get();
+            if (userJson == null){
                 //user hasn't registered with the site
-                SharedPreferences.Editor prefEditor = pref.edit();
-                prefEditor.putBoolean("IsLoggedIn", false);
+                SharedPreferences.Editor prefEditor = preferences.edit();
+                prefEditor.putBoolean(PREFS_KEY_LOGGED_IN, false);
                 prefEditor.commit();
 
-                Toast.makeText(appContext, "Please register before using the app!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Please register before using the app!", Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(this, LoginActivity.class);
                 startActivity(intent);
                 finish();
                 return;
             }
-            editor.putString("AngoraId", mUser.getString("Id"));
-            ch.storeUser(mUser);
-            mEvents = new GetEventsTask().execute(mUser.getString("Id")).get();
-            ch.storeEvents(mEvents);
+            editor.putString(PREFS_KEY_ANGORA_ID, userJson.getString(USER_KEY_ID));
+            ch.storeUser(userJson);
+            userEvents = new GetEventsTask().execute(userJson.getString(USER_KEY_ID)).get();
+            ch.storeEvents(userEvents);
 
-            String profilePicUrl = mUser.getString("ProfilePictureUrl");
+            String profilePicUrl = userJson.getString(USER_KEY_PROFILE_PIC_URL);
             if (profilePicUrl != null){
                 if (!profilePicUrl.startsWith("/")){
-                    mProfilePic = new GetProfilePicTask().execute(profilePicUrl).get();
-                    ch.storeProfilePic(mProfilePic);
+                    userProfilePic = new GetProfilePicTask().execute(profilePicUrl).get();
+                    ch.storeProfilePic(userProfilePic);
                 }
             }
 
         }catch (IOException ie){
-            Toast.makeText(appContext, "Error Refreshing Data: " + ie.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("Main Activity", ie.getMessage());
+            Toast.makeText(getApplicationContext(), "Error Refreshing Data: " + ie.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e(TAG, ie.getMessage());
             ie.printStackTrace();
         }catch (InterruptedException ine){
-            Toast.makeText(appContext, "Error Refreshing Data: " + ine.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("Main Activity", ine.getMessage());
+            Toast.makeText(getApplicationContext(), "Error Refreshing Data: " + ine.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e(TAG, ine.getMessage());
             ine.printStackTrace();
         }catch (ExecutionException ee){
-            Toast.makeText(appContext, "Error Refreshing Data: " + ee.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("Main Activity", ee.getMessage());
+            Toast.makeText(getApplicationContext(), "Error Refreshing Data: " + ee.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e(TAG, ee.getMessage());
             ee.printStackTrace();
         }catch (JSONException je){
-            Toast.makeText(appContext, "Error Refreshing Data: " + je.getMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("Main Activity", je.getMessage());
+            Toast.makeText(getApplicationContext(), "Error Refreshing Data: " + je.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e(TAG, je.getMessage());
         }
 
-        editor.putLong("LastRefresh", System.nanoTime());
+        editor.putLong(PREFS_KEY_LAST_REFRESH, System.nanoTime());
         editor.commit();
 
     }
@@ -251,9 +248,9 @@ public class MainActivity extends ActionBarActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_logout) {
-            SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
+            SharedPreferences pref = getApplicationContext().getSharedPreferences(PREFS_NAME, 0);
             SharedPreferences.Editor prefEditor = pref.edit();
-            prefEditor.putBoolean("IsLoggedIn", false);
+            prefEditor.putBoolean(PREFS_KEY_LOGGED_IN, false);
             prefEditor.commit();
             Intent intent = new Intent(this, LoginActivity.class);
             startActivity(intent);
@@ -302,30 +299,30 @@ public class MainActivity extends ActionBarActivity
 
             TextView noEventsTextView = (TextView) rootView.findViewById(R.id.textView_noEvents);
 
-            if (mEvents != null) {
-                if (mEvents.length > 0) {
-                    mAdapter = new CustomAdapter(getActivity(), mEvents);
+            if (userEvents != null) {
+                if (userEvents.length > 0) {
+                    mAdapter = new CustomAdapter(getActivity(), userEvents);
                     mListView = (ListView) rootView.findViewById(R.id.list);
                     mListView.setAdapter(mAdapter);
                     mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                             Intent intent = new Intent(getActivity(), SnapAndGoBuiltIn.class);
-                            intent.putExtra(EXTRA_EVENT_ID, mEvents[i].getId());
+                            intent.putExtra(EXTRA_EVENT_ID, userEvents[i].getId());
                             startActivity(intent);
                         }
                     });
 
                     noEventsTextView.setVisibility(View.GONE);
-                } else if (pref.getBoolean("IsLoggedIn", false)) {
+                } else if (preferences.getBoolean(PREFS_KEY_LOGGED_IN, false)) {
                     //if the user is logged in but has no events
                     noEventsTextView.setVisibility(View.VISIBLE);
-                    Toast.makeText(appContext, "No Events to show! Go make some!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity().getApplicationContext(), "No Events to show! Go make some!", Toast.LENGTH_SHORT).show();
                 }
-            }else if (pref.getBoolean("IsLoggedIn", false)) {
+            }else if (preferences.getBoolean(PREFS_KEY_LOGGED_IN, false)) {
                 //if the user is logged in but has no events
                 noEventsTextView.setVisibility(View.VISIBLE);
-                Toast.makeText(appContext, "No Events to show! Go make some!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity().getApplicationContext(), "No Events to show! Go make some!", Toast.LENGTH_SHORT).show();
             }
 
             return rootView;
@@ -335,26 +332,16 @@ public class MainActivity extends ActionBarActivity
         public void onAttach(Activity activity) {
 
             super.onAttach(activity);
-/*
-            ((MainActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
-*/
         }
 
     }
 
     public static class ProfileFragment extends Fragment {
 
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
         private static final String ARG_SECTION_NUMBER = "section_number";
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
+        private final String TAG = "ProfileFragment";
+
         public static ProfileFragment newInstance(int sectionNumber) {
             ProfileFragment fragment = new ProfileFragment();
 
@@ -379,18 +366,18 @@ public class MainActivity extends ActionBarActivity
             TextView locationTextView = (TextView) rootView.findViewById(R.id.textView_location);
             ImageView profilePicImageView = (ImageView) rootView.findViewById(R.id.imageView_profilePic);
             try {
-                nameTextView.setText(mUser.getString("FirstName") + " " + mUser.getString("LastName"));
-                locationTextView.setText((mUser.getString("Location")));
+                nameTextView.setText(userJson.getString(USER_KEY_FIRST_NAME) + " " + userJson.getString(USER_KEY_LAST_NAME));
+                locationTextView.setText((userJson.getString(USER_KEY_LOCATION)));
 
-                if (mProfilePic != null){
-                    profilePicImageView.setImageBitmap(mProfilePic);
+                if (userProfilePic != null){
+                    profilePicImageView.setImageBitmap(userProfilePic);
                 }
 
             }catch (JSONException je) {
                 //TODO Handle
                 je.printStackTrace();
-                Toast.makeText(appContext, "Error Refreshing Profile: " + je.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.e("Feed Activity", je.getMessage());
+                Toast.makeText(getActivity().getApplicationContext(), "Error Refreshing Profile: " + je.getMessage(), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, je.getMessage());
             }
             return rootView;
         }
@@ -409,13 +396,10 @@ public class MainActivity extends ActionBarActivity
 
     public class LoginUserTask extends AsyncTask<String, Void, JSONObject>
     {
-
-        private final String SITE_URL = "http://seteam4.azurewebsites.net/api/user/login?";
-
         @Override
         protected JSONObject doInBackground(String... strings) {
             StringBuilder urlString = new StringBuilder();
-            urlString.append(SITE_URL);
+            urlString.append(API_URL).append("user/login?");
             urlString.append("provider=").append(strings[0]);
             urlString.append("&providerKey=").append(strings[1]);
 
@@ -460,7 +444,7 @@ public class MainActivity extends ActionBarActivity
         @Override
         protected AngoraEvent[] doInBackground(String... strings) {
             StringBuilder urlString = new StringBuilder();
-            urlString.append(SITE_URL);
+            urlString.append(API_URL).append("/user/getEvents?");
             urlString.append("userId=").append(strings[0]);
 
             HttpURLConnection urlConnection = null;
@@ -470,7 +454,7 @@ public class MainActivity extends ActionBarActivity
 
             try{
                 url = new URL(urlString.toString());
-                Log.i("Getting Events", urlString.toString());
+
                 urlConnection = (HttpURLConnection) url.openConnection();
                 urlConnection.setRequestMethod("GET");
                 urlConnection.connect();
@@ -485,20 +469,20 @@ public class MainActivity extends ActionBarActivity
                 urlConnection.disconnect();
                 //return (JSONObject) new JSONTokener(response).nextValue();
                 eventsJSON = new JSONArray(response);
-                SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                SimpleDateFormat parser = new SimpleDateFormat(EVENT_DATE_FORMAT);
                 if (eventsJSON != null) {
                     AngoraEvent[] events = new AngoraEvent[eventsJSON.length()];
                     for (int i = 0; i < eventsJSON.length(); i++) {
                         JSONObject currentEvent = eventsJSON.getJSONObject(i);
-                        JSONObject currentEventTime = currentEvent.getJSONObject("EventTime");
-                        JSONObject currentEventCreator = currentEvent.getJSONObject("Creator");
-                        JSONObject currentEventLocation = currentEvent.getJSONObject("Location");
-                        events[i] = new AngoraEvent(currentEvent.getString("Id"),
-                                currentEvent.getString("Name"),
-                                currentEventCreator.getString("FirstName") + " " + currentEventCreator.getString("LastName"),
-                                currentEvent.getString("Description"),
-                                currentEventLocation.getString("NameOrAddress"),
-                                parser.parse(currentEventTime.getString("StartTime")));
+                        JSONObject currentEventTime = currentEvent.getJSONObject(EVENT_KEY_TIME_JSON);
+                        JSONObject currentEventCreator = currentEvent.getJSONObject(EVENT_KEY_CREATOR_JSON);
+                        JSONObject currentEventLocation = currentEvent.getJSONObject(EVENT_KEY_LOCATION);
+                        events[i] = new AngoraEvent(currentEvent.getString(EVENT_KEY_ID),
+                                currentEvent.getString(EVENT_KEY_NAME),
+                                currentEventCreator.getString(USER_KEY_FIRST_NAME) + " " + currentEventCreator.getString(USER_KEY_LAST_NAME),
+                                currentEvent.getString(EVENT_KEY_DESC),
+                                currentEventLocation.getString(LOCATION_KEY_NAME_ADDRESS),
+                                parser.parse(currentEventTime.getString(TIME_KEY_START_TIME)));
                     }
 
                     Arrays.sort(events, new Comparator<AngoraEvent>() {
@@ -531,10 +515,10 @@ public class MainActivity extends ActionBarActivity
                 image = BitmapFactory.decodeStream(is);
             } catch (MalformedURLException me) {
                 //todo handle
-                Log.e("MainActivity", me.getMessage());
+                Log.e(TAG, me.getMessage());
                 me.printStackTrace();
             } catch (IOException ie){
-                Log.e("MainActivity", ie.getMessage());
+                Log.e(TAG, ie.getMessage());
                 ie.printStackTrace();
             }
             return image;

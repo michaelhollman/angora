@@ -42,11 +42,10 @@ import java.util.prefs.Preferences;
 public class SnapAndGoBuiltIn extends ActionBarActivity {
     // Activity request codes
     private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-    public static final int MEDIA_TYPE_IMAGE = 1;
+    private static final int MEDIA_TYPE_IMAGE = 1;
 
     // directory name to store captured images and videos
     private static final String IMAGE_DIRECTORY_NAME = "Auderus";
-
     private Uri fileUri; // file url to store image/video
     private ImageView imgPreview;
     private ProgressBar progbar;
@@ -242,8 +241,6 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
                 Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(), options);
 
 
-                FileInputStream fileInputStream = new FileInputStream(new File(fileUri.getPath()) );
-
                 Log.i("SnapNGo", urlServer.toString());
 
                 URL url = new URL(urlServer.toString());
@@ -267,13 +264,12 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
                 outputStream.writeBytes(lineEnd);
 
                 if (orientation.equals("6")){
-                    //todo rotate +90
                     outputStream.write(rotateAndConvert(bitmap, 90));
                 }else if (orientation.equals("8")){
-                    //todo rotate -90
                     outputStream.write(rotateAndConvert(bitmap, -90));
                 }else {
                     //image is fine as is
+                    FileInputStream fileInputStream = new FileInputStream(new File(fileUri.getPath()) );
                     bytesAvailable = fileInputStream.available();
                     bufferSize = Math.min(bytesAvailable, maxBufferSize);
                     buffer = new byte[bufferSize];
@@ -287,11 +283,13 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
                         bufferSize = Math.min(bytesAvailable, maxBufferSize);
                         bytesRead = fileInputStream.read(buffer, 0, bufferSize);
                     }
+                    fileInputStream.close();
+
                 }
+
                 outputStream.writeBytes(lineEnd);
                 outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
 
-                fileInputStream.close();
                 outputStream.flush();
                 outputStream.close();
 
