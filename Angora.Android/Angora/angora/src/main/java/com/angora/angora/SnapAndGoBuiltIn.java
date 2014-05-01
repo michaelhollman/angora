@@ -15,30 +15,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.MalformedInputException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.prefs.Preferences;
 
 /*
- * Adapted from http://www.androidhive.info/2013/09/android-working-with-camera-api/
+ * Heavily adapted from http://www.androidhive.info/2013/09/android-working-with-camera-api/
  */
 public class SnapAndGoBuiltIn extends ActionBarActivity {
     // Activity request codes
@@ -54,9 +47,6 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
     private static final String TAG = "SnapNGo";
 
     private Uri fileUri; // file url to store image/video
-    private ImageView imgPreview;
-    private ProgressBar progbar;
-
     private String eventId;
 
     @Override
@@ -66,8 +56,6 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
 
         Intent intent = getIntent();
         eventId = intent.getStringExtra(MainActivity.EXTRA_EVENT_ID);
-
-        progbar = (ProgressBar) findViewById(R.id.progressBarUpload);
 
         captureImage();
 
