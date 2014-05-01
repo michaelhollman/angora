@@ -323,6 +323,7 @@
     <Compile Include="Controllers\EventFeedController.cs" />
     <Compile Include="Controllers\EventSchedulerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SimplexController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -438,6 +439,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Api\Models\" />
     <Folder Include="Areas\Api\Views\Shared\" />
+    <Folder Include="Views\Simplex\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Angora.Data\Angora.Data.csproj">
