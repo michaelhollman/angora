@@ -7,8 +7,8 @@
         android:orderInCategory="100"
         app:showAsAction="never" />
 
-    <item android:id="@+id/action_snap_and_go"
-        android:title="@string/action_snap_and_go"
-        android:icon="@android:drawable/ic_menu_camera"
+    <item android:id="@+id/action_refresh"
+        android:title="@string/action_refresh"
+        android:icon="@android:drawable/ic_menu_rotate"
         app:showAsAction="withText|ifRoom"/>
 </menu>
