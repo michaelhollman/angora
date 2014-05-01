@@ -8,12 +8,16 @@
     </div>
 </div>
 <div class="container">
-
     <h4>Auderus is a brand new social networking site designed to make planning and sharing events easier.</h4>
     <h4>Creating an event is as simple as specifiying as answering <em>what</em>, <em>where,</em> and <em>when</em> your event is.</h4>
     <h4>If you don't know when you want to have your event, Auderus can help you and your event goers find a time.</h4>
     <h4>You can easily share photos and comment on events.</h4>
     <h4>Auderus is completely free, and always will be for you.</h4>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <br />
+        <h4>Head over to your <a href="@Url.Action("Index","EventFeed")">event feed</a> to see what's up.</h4>
+    }
 </div>
 
 @if (!User.Identity.IsAuthenticated)
