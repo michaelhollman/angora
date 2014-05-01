@@ -1,6 +1,7 @@
 package com.angora.angora;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -17,15 +18,21 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.prefs.Preferences;
 
 /*
  * Adapted from http://www.androidhive.info/2013/09/android-working-with-camera-api/
@@ -39,15 +46,18 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
     private static final String IMAGE_DIRECTORY_NAME = "Auderus";
 
     private Uri fileUri; // file url to store image/video
-
     private ImageView imgPreview;
-
     private ProgressBar progbar;
+
+    private String eventId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_snap_and_go_built_in);
+
+        Intent intent = getIntent();
+        eventId = intent.getStringExtra(MainActivity.EXTRA_EVENT_ID);
 
         progbar = (ProgressBar) findViewById(R.id.progressBarUpload);
 
@@ -78,7 +88,7 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        // save file url in bundle as it will be null on scren orientation
+        // save file url in bundle as it will be null on screen orientation
         // changes
         outState.putParcelable("file_uri", fileUri);
     }
@@ -121,10 +131,16 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
         if (requestCode == CAMERA_CAPTURE_IMAGE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 // successfully captured the image
-                // display it in image view
-                //todo upload the image
-                new UploadLastImageTask().execute();
 
+                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
+
+                String angoraId = pref.getString("AngoraId", null);
+                if (angoraId != null) {
+                    new UploadLastImageTask().execute(angoraId);
+                }else{
+                    //shouldn't have happened
+                    //todo handle
+                }
 
             } else if (resultCode == RESULT_CANCELED) {
                 // user cancelled Image capture
@@ -135,6 +151,7 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
                         */
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
+                finish();
 
             } else {
                 // failed to capture image
@@ -197,22 +214,27 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
             HttpURLConnection connection = null;
             DataOutputStream outputStream = null;
             DataInputStream inputStream = null;
+            String siteUrl = "http://seteam4.azurewebsites.net/api/user/";
             StringBuilder urlServer = new StringBuilder();
-            String siteUrl = "http://seteam4.azurewebsites.net/api/user/upload/";
             String lineEnd = "\r\n";
             String twoHyphens = "--";
             String boundary =  "*****";
+
 
             int bytesRead, bytesAvailable, bufferSize;
             byte[] buffer;
             int maxBufferSize = 1*1024*1024;
 
             urlServer.append(siteUrl);
-            urlServer.append(1);
+            urlServer.append(strings[0]);
+            urlServer.append("/upload/");
+            urlServer.append(eventId);
 
             try
             {
                 FileInputStream fileInputStream = new FileInputStream(new File(fileUri.getPath()) );
+
+                Log.i("SnapNGo", urlServer.toString());
 
                 URL url = new URL(urlServer.toString());
                 connection = (HttpURLConnection) url.openConnection();
@@ -226,12 +248,14 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
                 connection.setRequestMethod("POST");
 
                 connection.setRequestProperty("Connection", "Keep-Alive");
-                connection.setRequestProperty("Content-Type", "multipart/form-data;boundary="+boundary);
+                connection.setRequestProperty("Content-Type", "multipart/form-data; boundary="+boundary);
 
                 outputStream = new DataOutputStream( connection.getOutputStream() );
                 outputStream.writeBytes(twoHyphens + boundary + lineEnd);
-                outputStream.writeBytes("Content-Disposition: form-data; name=\"picture\";filename=\"" + fileUri.getPath() +"\"" + lineEnd);
+                outputStream.writeBytes("Content-Disposition: form-data; name=\"picture\"; filename=\"" + fileUri.getPath() +"\"" + lineEnd);
+                outputStream.writeBytes("Content-Type: image/jpeg" + lineEnd);
                 outputStream.writeBytes(lineEnd);
+
 
                 bytesAvailable = fileInputStream.available();
                 bufferSize = Math.min(bytesAvailable, maxBufferSize);
@@ -256,13 +280,16 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
                 outputStream.close();
 
                 int response = connection.getResponseCode();
-                Log.d("SnapAndGo", "Response is " + response);
+                String responseMessage = connection.getResponseMessage();
+                Log.i("SnapAndGo", "Response is " + response + ":" + responseMessage);
             }
             catch (Exception ex)
             {
                 //todo Exception handling
                 ex.printStackTrace();
             }
+
+
             return null;
         }
 

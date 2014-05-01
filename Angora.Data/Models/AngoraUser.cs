@@ -7,6 +7,11 @@ namespace Angora.Data.Models
 {
     public class AngoraUser : IdentityUser
     {
+        public AngoraUser()
+        {
+            ProfilePictureUrl = "/Images/default-user-profile.png";
+        }
+
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string EmailAddress { get; set; }
@@ -16,10 +21,6 @@ namespace Angora.Data.Models
         public string FacebookAccessToken { get; set; }
         public string TwitterAccessToken { get; set; }
         public string TwitterAccessSecret { get; set; }
-
-        // TODO actually have lots of real non-placeholder user information in here
-
-        // TODO research if this needs to be changed structurally for having multiple services associated with one account
     }
 
     public static class AngoraUserExtensions

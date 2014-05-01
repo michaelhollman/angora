@@ -68,12 +68,14 @@ public class AngoraEvent implements Serializable {
         this.id = id;
     }
 
+
     private String id;
     private String name;
     private String creator;
     private String location;
     private String description;
     private Date startDate;
+
 
     public AngoraEvent(){};
 
