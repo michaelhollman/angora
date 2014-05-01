@@ -53,6 +53,11 @@ public class LoginActivity extends ActionBarActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        //do nothing (causes errors)
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
