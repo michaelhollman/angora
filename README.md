@@ -2,7 +2,7 @@
 
 #### RAIK 383H Software Engineering Project
 
-The final release (v0.3) is (or at least was at some point in the past) [available here](http://seteam4.azurewebsites.net/).
+####The final release (v0.3) is (or at least was at some point in the past) [available here](http://seteam4.azurewebsites.net/).
 
 ---
 
