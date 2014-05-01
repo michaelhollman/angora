@@ -2,7 +2,7 @@
 @model Angora.Web.Models.ManageAccountViewModel
 
 
-<h2>@(Model.IsFirstTimeLogin ? "Welcome to Angora... but first a little about you" : "Manage your profile")</h2>
+<h1>@(Model.IsFirstTimeLogin ? "Welcome to Angora... but first a little about you" : "Manage your profile")</h1>
 
 
 @foreach (var success in Model.Errors)

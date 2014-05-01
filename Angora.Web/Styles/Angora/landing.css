@@ -7,54 +7,38 @@
   border-collapse: separate;
   width: 100%;
 }
-#RachaelImg {
+.about-page-img {
   padding: 0px;
-  background: url(/Images/NewRachaelComb.jpg);
   width: 168px;
   height: 135px;
+  -moz-background-size: 371px 135px;
   background-size: 371px 135px;
   background-repeat: no-repeat;
   margin: auto;
+}
+#RachaelImg {
+  background-image: url(/Images/RachaelComb.jpg);
 }
 #RachaelImg:hover {
   background-position-x: -191px;
 }
 #MichaelImg {
-  padding: 0px;
-  background: url(/Images/NewMichaelComb.jpg);
-  width: 168px;
-  height: 135px;
-  background-size: 383px 135px;
-  background-repeat: no-repeat;
-  margin: auto;
+  background-image: url(/Images/MichaelComb.jpg);
 }
 #MichaelImg:hover {
   background-position-x: -202px;
 }
 #AlexImg {
-  padding: 0px;
-  background: url(/Images/NewAlexComb.jpg);
-  width: 168px;
-  height: 135px;
-  background-size: 366px 135px;
-  background-repeat: no-repeat;
-  margin: auto;
+  background-image: url(/Images/AlexComb.jpg);
 }
 #AlexImg:hover {
   background-position-x: -189px;
 }
 #ScottImg {
-  padding: 0px;
-  background: url(/Images/NewScottComb.jpg);
-  width: 168px;
-  height: 135px;
-  background-size: 423px 135px;
-  background-position-x: -22px;
-  background-repeat: no-repeat;
-  margin: auto;
+  background-image: url(/Images/ScottComb.jpg);
 }
 #ScottImg:hover {
-  background-position-x: -234px;
+  background-position-x: -195px;
 }
 .teamName {
   padding-top: 10px;
@@ -63,5 +47,17 @@
 .teamTitle {
   padding-top: 5px;
   text-align: center;
+}
+.about-tile > h4,
+.about-tile > h5 {
+  text-align: center;
+}
+.landing-jumbo {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  margin-top: 45px;
+}
+.landing-jumbo-first {
+  margin-top: -30px;
 }
 /*# sourceMappingURL=landing.css.map */

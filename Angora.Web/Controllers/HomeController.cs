@@ -18,5 +18,12 @@ namespace Angora.Web.Controllers
         {
             return View();
         }
+
+        [Route("~/oops")]
+        public ActionResult Error()
+        {
+            return View();
+        }
+
 	}
 }

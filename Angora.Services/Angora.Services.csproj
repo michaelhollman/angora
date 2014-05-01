@@ -117,11 +117,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IMediaPullService.cs" />
+    <Compile Include="ISocialNetworkService.cs" />
     <Compile Include="ISimplexService.cs" />
     <Compile Include="IRSVPService.cs" />
     <Compile Include="IPostService.cs" />
-    <Compile Include="MediaPullService.cs" />
+    <Compile Include="SocialNetworkService.cs" />
     <Compile Include="EventSchedulerService.cs" />
     <Compile Include="EventService.cs" />
     <Compile Include="IEventService.cs" />

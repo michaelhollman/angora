@@ -6,64 +6,26 @@
 }
 
 <div class="row event-feed-header">
-    <div class="col-md-9">
-        <h1>Your Events</h1>
+    <div class="col-sm-9">
+        <h1>Events</h1>
     </div>
-    <div class="col-md-3">
+    <div class="col-sm-3">
         <a class="btn btn-primary btn-lg width-100" href="@Url.Action("Create", "Event")"><span class="glyphicon gl glyphicon-plus"></span>  Create New Event</a>
     </div>
 </div>
 
-@if (Model.Events.Count() == 0)
-{
-    <p>There's nothing to see here... you should make some events!</p>
-}
 
-
-@foreach (var e in Model.Events)
-{
-    var ev = e.Event;
-
-    <div class="panel panel-success event-feed-item">
-        <div class="panel-heading">
-            <div class="btn-group event-feed-title-btns pull-right">
-                @if (!(ev.EventTime != null && ev.EventTime.StartTime != null || (ev.Scheduler != null && ev.Scheduler.IsTimeSet)))
-                {
-                    <a href="@Url.Action("Index", "EventScheduler", new { id = ev.Id })" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Help find a time">
-                        <span class="glyphicon glyphicon-calendar"></span>
-                    </a>
-                }
-                @if (e.ViewerIsCreator)
-                {
-                    <a href="@Url.Action("Edit", "Event", new { id = ev.Id })" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Edit details">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                    </a>
-                    <a href="@Url.Action("DeleteEvent", "Event", new { id = ev.Id })" class="btn btn-success" data-toggle="tooltip" data-placement="bottom" title="Delete event">
-                        <span class="glyphicon glyphicon-remove"></span>
-                    </a>
-                }
-            </div>
-            <a href="@Url.Action("Details", "Event", new { id=ev.Id})">
-                <h2 class="panel-title text-overflow-ellipses">@ev.Name</h2>
-            </a>
-        </div>
-        <a href="@Url.Action("Details", "Event", new { id = ev.Id })">
-
-            <div class="panel-body">
-                Hosted by @ev.Creator.FirstName @ev.Creator.LastName <br />
-                @if (ev.EventTime != null && ev.EventTime.StartTime != null || (ev.Scheduler != null && ev.Scheduler.IsTimeSet))
-                {
-                    @ev.EventTime.StartTime.ToString("dddd, MMMM d, yyyy 'at' h:mm tt") <br />
-                }
-                @ev.Location.NameOrAddress
-            </div>
-
-            <div class="panel-footer">
-                <p class="text-overflow-ellipses no-margin">@ev.Description</p>
-            </div>
-        </a>
+<div class="row">
+    <div class="col-sm-6">
+        <h4>Your events and events you're going to</h4>
+        @Html.Partial("_EventList", Model.ViewersEvents)
     </div>
-}
+    <div class="col-sm-6">
+        <h4>Other events from Auderus users</h4>
+        @Html.Partial("_EventList", Model.OtherEvents)
+    </div>
+</div>
+
 
 <script>
     $('.btn').tooltip({ container: 'body' });

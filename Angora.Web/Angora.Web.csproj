@@ -226,10 +226,10 @@
     <Content Include="Images\Logos\twitter-white.png" />
     <Content Include="Images\EventImage.jpeg" />
     <Content Include="Images\EventImage3.png" />
-    <Content Include="Images\NewAlexComb.jpg" />
-    <Content Include="Images\NewMichaelComb.jpg" />
-    <Content Include="Images\NewRachaelComb.jpg" />
-    <Content Include="Images\NewScottComb.jpg" />
+    <Content Include="Images\AlexComb.jpg" />
+    <Content Include="Images\MichaelComb.jpg" />
+    <Content Include="Images\RachaelComb.jpg" />
+    <Content Include="Images\ScottComb.jpg" />
     <Content Include="Scripts\jquery.geocomplete.js" />
     <Content Include="Scripts\jquery.leanModal.min.js" />
     <Content Include="Scripts\lib\bootstrap.js" />
@@ -316,14 +316,12 @@
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="App_Start\UnityWebApiActivator.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Areas\Api\Controllers\FooController.cs" />
     <Compile Include="Areas\Api\Controllers\UserController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\EventFeedController.cs" />
     <Compile Include="Controllers\EventSchedulerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\SimplexController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -427,6 +425,9 @@
       <DependentUpon>event.css</DependentUpon>
     </Content>
     <Content Include="Views\Home\About.cshtml" />
+    <Content Include="Views\EventFeed\_EventList.cshtml" />
+    <Content Include="Views\Shared\_LandingLayout.cshtml" />
+    <Content Include="Views\Home\Error.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -439,7 +440,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Api\Models\" />
     <Folder Include="Areas\Api\Views\Shared\" />
-    <Folder Include="Views\Simplex\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Angora.Data\Angora.Data.csproj">

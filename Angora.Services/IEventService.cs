@@ -11,6 +11,7 @@ namespace Angora.Services
         void Delete(long id);
 
         Event FindById(long id);
+        IEnumerable<Event> GetAllEvents();
         IEnumerable<Event> FindEventsCreatedByUser(string userId);
         IEnumerable<Event> FindEventsWithBlobs();
     }
