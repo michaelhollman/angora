@@ -13,14 +13,27 @@ namespace Angora.Services
 {
     public class MediaPullService : ServiceBase, IMediaPullService
     {
+        private const string TwitterKey = "o8QTwfzt6CdfDGndyqvLrg";
+        private const string TwitterSecret = "jqU2tq5QVUkK6JdFA22wtXZNrTumatvG9VpPAfK5M";
+
 
         public string GetFacebookProfilePic(string accessToken)
         {
+            if (string.IsNullOrWhiteSpace(accessToken)) return string.Empty;
+
             var user = new FacebookClient(accessToken);
             var json = user.Get<JsonObject>("me/picture?redirect=false&height=200&width=200");
             return ((JsonObject)json["data"])["url"].ToString();
         }
 
+        public string GetTwitterProfilePic(string accessToken, string accessSecret)
+        {
+            if (string.IsNullOrWhiteSpace(accessToken) || string.IsNullOrWhiteSpace(accessSecret)) return string.Empty;
+
+            var service = new TwitterService("o8QTwfzt6CdfDGndyqvLrg", "jqU2tq5QVUkK6JdFA22wtXZNrTumatvG9VpPAfK5M", accessToken, accessSecret);
+            var user = service.GetUserProfile(new GetUserProfileOptions() { SkipStatus = true });
+            return user.ProfileImageUrl;
+        }
 
 
         public void PullFromFacebook(string accessToken, Event theEvent)

@@ -6124,6 +6124,7 @@ body {
   height: 300px;
 }
 .profile-pic-posts {
-  margin: 0 7px 0 -5px;
+  margin-left: -5px;
+  margin-right: 7px;
 }
 /*# sourceMappingURL=angora.css.map */

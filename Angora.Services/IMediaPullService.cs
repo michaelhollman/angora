@@ -12,6 +12,7 @@ namespace Angora.Services
         void PullFromFacebook(string accessToken, Event theEvent);
         void PullFromTwitter(string accessToken, string accessSecret, Event theEvent);
         string GetFacebookProfilePic(string accessToken);
+        string GetTwitterProfilePic(string accessToken, string accessSecret);
 
     }
 }

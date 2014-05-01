@@ -152,7 +152,7 @@ namespace Angora.Web.Controllers
                     model.User = user;
                     model.Successes.Add("Welcome to Angora! Please fill out your information.");
                     model.IsFirstTimeLogin = true;
-                    return View("Index", model);
+                    return await Index(model);
                 }
             }
             // TODO .... uhhhhh
@@ -180,19 +180,38 @@ namespace Angora.Web.Controllers
             if (loginInfo == null)
             {
                 model.Errors.Add("Uhoh... something didn't quite go right with that. Sorry.");
-                return View("Index", model);
+                return await Index(model);
             }
 
             var result = await _userService.AddLogin(User.Identity.GetUserId(), loginInfo.Login);
-            if (result.Succeeded)
+            if (!result.Succeeded)
             {
-                model.User = await _userService.FindUserById(User.Identity.GetUserId());
-                model.Successes.Add(string.Format("Successfully added your {0} account!", loginInfo.Login.LoginProvider));
-                return View("Index", model);
+                model.Errors.Add("Uhoh... something didn't quite go right with that. Sorry.");
+                return await Index(model);
             }
 
-            model.Errors.Add("Uhoh... something didn't quite go right with that. Sorry.");
-            return View("Index", model);
+            var user = await _userService.FindUserById(User.Identity.GetUserId());
+
+            var addingFacebook = "Facebook".Equals(loginInfo.Login.LoginProvider, StringComparison.OrdinalIgnoreCase);
+            var addingTwitter = "Twitter".Equals(loginInfo.Login.LoginProvider, StringComparison.OrdinalIgnoreCase);
+
+            if (addingFacebook)
+            {
+                ClaimsIdentity externalCookie = await HttpContext.GetOwinContext().Authentication.GetExternalIdentityAsync(DefaultAuthenticationTypes.ExternalCookie);
+                user.FacebookAccessToken = GetExtendedFacebookAccessToken(externalCookie.Claims.First(x => x.Type.Contains("FacebookAccessToken")).Value);
+            }
+            else if (addingTwitter)
+            {
+                ClaimsIdentity externalCookie = await HttpContext.GetOwinContext().Authentication.GetExternalIdentityAsync(DefaultAuthenticationTypes.ExternalCookie);
+                user.TwitterAccessToken = externalCookie.Claims.First(x => x.Type.Contains("TwitterAccessToken")).Value;
+                user.TwitterAccessSecret = externalCookie.Claims.First(x => x.Type.Contains("TwitterAccessSecret")).Value;
+            }
+
+            await _userService.UpdateUser(user);
+            model.User = await _userService.FindUserById(User.Identity.GetUserId());
+            model.Successes.Add(string.Format("Successfully added your {0} account!", loginInfo.Login.LoginProvider));
+
+            return await Index(model);
         }
 
         [Authorize]
@@ -214,7 +233,7 @@ namespace Angora.Web.Controllers
             }
 
             model.User = await _userService.FindUserById(User.Identity.GetUserId());
-            return View("Index", model);
+            return await Index(model);
         }
 
 
@@ -269,8 +288,12 @@ namespace Angora.Web.Controllers
         public async Task<ActionResult> Index(ManageAccountViewModel param = null)
         {
             var model = param ?? new ManageAccountViewModel();
-            model.User = await _userService.FindUserById(User.Identity.GetUserId());
-            model.FacebookPic = _mediaPullService.GetFacebookProfilePic(model.User.FacebookAccessToken);
+            model.User = model.User ?? await _userService.FindUserById(User.Identity.GetUserId());
+            if (model.User != null)
+            {
+                model.FacebookPic = _mediaPullService.GetFacebookProfilePic(model.User.FacebookAccessToken);
+                model.TwitterPic = _mediaPullService.GetTwitterProfilePic(model.User.TwitterAccessToken, model.User.TwitterAccessSecret);
+            }
 
             return View("Index", model);
         }
@@ -311,14 +334,15 @@ namespace Angora.Web.Controllers
         {
             var user = await _userService.FindUserById(User.Identity.GetUserId());
 
-            if ( provider.Equals("facebook", StringComparison.OrdinalIgnoreCase) && user.IsLinkedWithFacebook())
+            if (provider.Equals("facebook", StringComparison.OrdinalIgnoreCase) && user.IsLinkedWithFacebook())
             {
                 user.ProfilePictureUrl = _mediaPullService.GetFacebookProfilePic(user.FacebookAccessToken);
                 await _userService.UpdateUser(user);
             }
-            else if ( provider.Equals("twitter", StringComparison.OrdinalIgnoreCase) && user.IsLinkedWithTwitter())
+            else if (provider.Equals("twitter", StringComparison.OrdinalIgnoreCase) && user.IsLinkedWithTwitter())
             {
-
+                user.ProfilePictureUrl = _mediaPullService.GetTwitterProfilePic(user.TwitterAccessToken, user.TwitterAccessSecret);
+                await _userService.UpdateUser(user);
             }
             return RedirectToAction("Index");
         }
