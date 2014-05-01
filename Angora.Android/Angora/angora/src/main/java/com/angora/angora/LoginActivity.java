@@ -14,6 +14,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.facebook.*;
 import com.facebook.model.*;
@@ -35,9 +36,10 @@ public class LoginActivity extends ActionBarActivity {
     private final String TWITTER_CONSUMER_SECRET = "jqU2tq5QVUkK6JdFA22wtXZNrTumatvG9VpPAfK5M";
     private final String TWITTER_CALLBACK_URL = "http://seteam4.azurewebsites.net";
     private final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
+    private final String PROVIDER_NAME_FACEBOOK = "Facebook";
+    private final String PROVIDER_NAME_TWITTER = "Twitter";
 
-
-    private Activity mActivity;
+    private Activity activity;
     private RequestToken requestToken;
     private Twitter twitter;
     private AccessToken accessToken;
@@ -46,7 +48,7 @@ public class LoginActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        mActivity = this;
+        activity = this;
         registerButtons();
 
     }
@@ -85,7 +87,7 @@ public class LoginActivity extends ActionBarActivity {
             @Override
             public void onClick(View view) {
                 // start Facebook Login
-                Session.openActiveSession(mActivity, true, new Session.StatusCallback() {
+                Session.openActiveSession(activity, true, new Session.StatusCallback() {
 
                     // callback when session changes state
                     @Override
@@ -98,11 +100,11 @@ public class LoginActivity extends ActionBarActivity {
                                 @Override
                                 public void onCompleted(GraphUser user, Response response) {
                                     if (user != null) {
-                                        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
+                                        SharedPreferences pref = getApplicationContext().getSharedPreferences(MainActivity.PREFS_NAME, 0);
                                         SharedPreferences.Editor prefEditor = pref.edit();
-                                        prefEditor.putBoolean("IsLoggedIn", true);
-                                        prefEditor.putString("LoginProvider", "Facebook");
-                                        prefEditor.putString("ProviderKey", user.getId());
+                                        prefEditor.putBoolean(MainActivity.PREFS_KEY_LOGGED_IN, true);
+                                        prefEditor.putString(MainActivity.PREFS_KEY_LOGIN_PROVIDER, PROVIDER_NAME_FACEBOOK);
+                                        prefEditor.putString(MainActivity.PREFS_KEY_PROVIDER_KEY, user.getId());
 
                                         prefEditor.commit();
 
@@ -158,7 +160,7 @@ public class LoginActivity extends ActionBarActivity {
                     Uri uri = Uri.parse(url);
                     // oAuth verifier
                     String verifier = uri.getQueryParameter(URL_TWITTER_OAUTH_VERIFIER);
-                    Log.e("Made it ", verifier);
+
                     try {
                         // Get the access token
                         accessToken = new GetTwitterAccessTokenTask().execute(verifier).get();
@@ -166,23 +168,21 @@ public class LoginActivity extends ActionBarActivity {
                         // Getting user details from twitter
                         long userID = accessToken.getUserId();
 
-                        Log.e("UserID=", String.valueOf(userID));
-
-                        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
+                        SharedPreferences pref = getApplicationContext().getSharedPreferences(MainActivity.PREFS_NAME, 0);
                         SharedPreferences.Editor prefEditor = pref.edit();
 
-                        prefEditor.putBoolean("IsLoggedIn", true);
-                        prefEditor.putString("LoginProvider", "Twitter");
-                        prefEditor.putString("ProviderKey", String.valueOf(userID));
+                        prefEditor.putBoolean(MainActivity.PREFS_KEY_LOGGED_IN, true);
+                        prefEditor.putString(MainActivity.PREFS_KEY_LOGIN_PROVIDER, PROVIDER_NAME_TWITTER);
+                        prefEditor.putString(MainActivity.PREFS_KEY_PROVIDER_KEY, String.valueOf(userID));
 
                         prefEditor.commit();
 
                         openMainActivity();
 
-
-                    } catch (Exception e) {
-                        // Check log for login errors
-                        Log.e("Twitter Login Error", "> " + e.getMessage());
+                    } catch (InterruptedException ie) {
+                        Toast.makeText(getApplicationContext(), "Twitter Error: " + ie.getMessage(), Toast.LENGTH_SHORT).show();
+                    } catch (ExecutionException ee){
+                        Toast.makeText(getApplicationContext(), "Twitter Error: " + ee.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }else{
                     view.loadUrl(url);
@@ -195,15 +195,11 @@ public class LoginActivity extends ActionBarActivity {
 
         try {
             requestToken = new GetTwitterRequestTokenTask().execute().get();
-            //this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
-            //        .parse(requestToken.getAuthenticationURL())));
             webview.loadUrl(requestToken.getAuthenticationURL());
-        }catch (InterruptedException e){
-            //todo handle
-            e.printStackTrace();
-        }catch (ExecutionException e2){
-            //todo handle
-            e2.printStackTrace();
+        }catch (InterruptedException ie){
+            Toast.makeText(getApplicationContext(), "Twitter Error: " + ie.getMessage(), Toast.LENGTH_SHORT).show();
+        }catch (ExecutionException ee){
+            Toast.makeText(getApplicationContext(), "Twitter Error: " + ee.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -214,9 +210,8 @@ public class LoginActivity extends ActionBarActivity {
         protected RequestToken doInBackground(String... strings) {
             try {
                 return twitter.getOAuthRequestToken(TWITTER_CALLBACK_URL);
-            } catch (TwitterException e) {
-                //TODO HANDLE
-                e.printStackTrace();
+            } catch (TwitterException te) {
+                Toast.makeText(getApplicationContext(), "Twitter Error: " + te.getMessage(), Toast.LENGTH_SHORT).show();
             }
             return null;
         }
@@ -228,9 +223,8 @@ public class LoginActivity extends ActionBarActivity {
         protected AccessToken doInBackground(String... strings) {
             try {
                 return twitter.getOAuthAccessToken(requestToken, strings[0]);
-            } catch (TwitterException e) {
-                //TODO HANDLE
-                e.printStackTrace();
+            } catch (TwitterException te) {
+                Toast.makeText(getApplicationContext(), "Twitter Error: " + te.getMessage(), Toast.LENGTH_SHORT).show();
             }
             return null;
         }

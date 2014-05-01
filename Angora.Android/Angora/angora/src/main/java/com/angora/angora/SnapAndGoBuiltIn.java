@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.MalformedInputException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -46,6 +47,12 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
 
     // directory name to store captured images and videos
     private static final String IMAGE_DIRECTORY_NAME = "Auderus";
+    private static final String FILE_URI = "file_uri";
+    private static final String TIME_STAMP_FORMAT = "yyyyMMdd_HHmmss";
+    private static final String NEEDS_ROTATION_90_D = "6";
+    private static final String NEEDS_ROTATION_270_D = "8";
+    private static final String TAG = "SnapNGo";
+
     private Uri fileUri; // file url to store image/video
     private ImageView imgPreview;
     private ProgressBar progbar;
@@ -91,7 +98,7 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
 
         // save file url in bundle as it will be null on screen orientation
         // changes
-        outState.putParcelable("file_uri", fileUri);
+        outState.putParcelable(FILE_URI, fileUri);
     }
 
     @Override
@@ -99,7 +106,7 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         // get the file url
-        fileUri = savedInstanceState.getParcelable("file_uri");
+        fileUri = savedInstanceState.getParcelable(FILE_URI);
     }
 
 
@@ -133,23 +140,24 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
             if (resultCode == RESULT_OK) {
                 // successfully captured the image
 
-                SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPrefs", 0);
+                SharedPreferences pref = getApplicationContext().getSharedPreferences(MainActivity.PREFS_NAME, 0);
 
-                String angoraId = pref.getString("AngoraId", null);
+                String angoraId = pref.getString(MainActivity.PREFS_KEY_ANGORA_ID, null);
                 if (angoraId != null) {
                     new UploadLastImageTask().execute(angoraId);
                 }else{
-                    //shouldn't have happened
-                    //todo handle
+                    //the user somehow managed to log in without an angora id...
+                    Toast.makeText(getApplicationContext(), "Error: Please log in again. Sorry!", Toast.LENGTH_SHORT).show();
+                    SharedPreferences.Editor prefEditor = pref.edit();
+                    prefEditor.putBoolean(MainActivity.PREFS_KEY_LOGGED_IN, false);
+                    prefEditor.commit();
+
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    startActivity(intent);
                 }
 
             } else if (resultCode == RESULT_CANCELED) {
                 // user cancelled Image capture
-                /*
-                Toast.makeText(getApplicationContext(),
-                        "User cancelled image capture", Toast.LENGTH_SHORT)
-                        .show();
-                        */
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 finish();
@@ -195,7 +203,7 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
         }
 
         // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",
+        String timeStamp = new SimpleDateFormat(TIME_STAMP_FORMAT,
                 Locale.getDefault()).format(new Date());
         File mediaFile;
         if (type == MEDIA_TYPE_IMAGE) {
@@ -214,8 +222,6 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
         protected String doInBackground(String... strings) {
             HttpURLConnection connection = null;
             DataOutputStream outputStream = null;
-            DataInputStream inputStream = null;
-            String siteUrl = "http://seteam4.azurewebsites.net/api/user/";
             StringBuilder urlServer = new StringBuilder();
             String lineEnd = "\r\n";
             String twoHyphens = "--";
@@ -226,7 +232,7 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
             byte[] buffer;
             int maxBufferSize = 1*1024*1024;
 
-            urlServer.append(siteUrl);
+            urlServer.append(MainActivity.API_URL).append("user/");
             urlServer.append(strings[0]);
             urlServer.append("/upload/");
             urlServer.append(eventId);
@@ -239,9 +245,6 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
                 BitmapFactory.Options options = new BitmapFactory.Options();
                 options.inPreferredConfig = Bitmap.Config.ARGB_8888;
                 Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(), options);
-
-
-                Log.i("SnapNGo", urlServer.toString());
 
                 URL url = new URL(urlServer.toString());
                 connection = (HttpURLConnection) url.openConnection();
@@ -263,9 +266,9 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
                 outputStream.writeBytes("Content-Type: image/jpeg" + lineEnd);
                 outputStream.writeBytes(lineEnd);
 
-                if (orientation.equals("6")){
+                if (orientation.equals(NEEDS_ROTATION_90_D)){
                     outputStream.write(rotateAndConvert(bitmap, 90));
-                }else if (orientation.equals("8")){
+                }else if (orientation.equals(NEEDS_ROTATION_270_D)){
                     outputStream.write(rotateAndConvert(bitmap, -90));
                 }else {
                     //image is fine as is
@@ -295,14 +298,12 @@ public class SnapAndGoBuiltIn extends ActionBarActivity {
 
                 int response = connection.getResponseCode();
                 String responseMessage = connection.getResponseMessage();
-                Log.i("SnapAndGo", "Response is " + response + ":" + responseMessage);
+                Log.i(TAG, "Server Response is " + response + ":" + responseMessage);
             }
-            catch (Exception ex)
+            catch (IOException ie)
             {
-                //todo Exception handling
-                ex.printStackTrace();
+                Toast.makeText(getApplicationContext(), "Error Uploading File: " + ie.getMessage(), Toast.LENGTH_SHORT).show();
             }
-
 
             return null;
         }
