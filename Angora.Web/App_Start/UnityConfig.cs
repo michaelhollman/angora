@@ -47,6 +47,7 @@ namespace Angora.Web.App_Start
             container.RegisterType<IAngoraUserService, AngoraUserService>();
             container.RegisterType<IPostService, PostService>();
             container.RegisterType<IRSVPService, RSVPService>();
+            container.RegisterType<IMediaPullService, MediaPullService>();
 
             // DB stuff
             container.RegisterType<DbConfiguration, AngoraDbConfiguration>();

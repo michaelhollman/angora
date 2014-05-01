@@ -20,6 +20,9 @@ namespace Angora.Web.Models
 
         public bool IsFirstTimeLogin { get; set; }
 
+        public string FacebookPic { get; set; }
+        public string TwitterPic { get; set; }
+
         public List<string> Errors { get; set; }
         public List<string> Successes { get; set; }
         public List<string> Infos { get; set; }
