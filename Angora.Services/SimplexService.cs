@@ -9,7 +9,7 @@ using Angora.Data.Models;
 
 namespace Angora.Services
 {
-    public class SimplexService: ISimplexService
+    public class SimplexService : ServiceBase, ISimplexService
     {
         private IFooCDNService _fooCDNService;
         private IEventService _eventService;

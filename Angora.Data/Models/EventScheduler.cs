@@ -14,7 +14,6 @@ namespace Angora.Data.Models
             Responses = new List<EventSchedulerResponse>();
         }
 
-
         public bool IsTimeSet { get; set; }
         public virtual List<EventTime> ProposedTimes { get; set; }
         public virtual List<EventSchedulerResponse> Responses { get; set; }

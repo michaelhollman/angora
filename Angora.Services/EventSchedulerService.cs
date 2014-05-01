@@ -8,7 +8,7 @@ using Angora.Data.Models;
 
 namespace Angora.Services
 {
-    public class EventSchedulerService : IEventSchedulerService
+    public class EventSchedulerService : ServiceBase, IEventSchedulerService
     {
         private IEventService _eventService { get; set; }
         private IAngoraUserService _userService { get; set; }

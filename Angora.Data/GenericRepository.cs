@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 namespace Angora.Data
 {
     // TODO implement IDisposable
-    public class GenericRepository<T> : IRepository<T> where T : BaseModel
+    public class GenericRepository<T> : IDisposable, IRepository<T> where T : BaseModel
     {
         private DbSet<T> _dbSet;
         private DbContext _dbContext;
@@ -72,5 +72,33 @@ namespace Angora.Data
         {
             _dbContext.Entry(entity).State = EntityState.Modified;
         }
+
+        # region IDisposable
+
+        private bool _disposed;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~GenericRepository()
+        {
+            Dispose(false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+            }
+            _disposed = true;
+        }
+
+        # endregion
     }
 }

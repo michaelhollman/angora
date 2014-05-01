@@ -8,8 +8,7 @@ namespace Angora.Data
     {
         public AngoraDbConfiguration()
         {
-           SetExecutionStrategy("System.Data.SqlClient", () => new SqlAzureExecutionStrategy());
-            //SetDefaultConnectionFactory(new SqlAzureExecutionStrategy());
+            SetExecutionStrategy("System.Data.SqlClient", () => new SqlAzureExecutionStrategy());
             SetDatabaseInitializer(new DropCreateDatabaseIfModelChanges<AngoraDbContext>());
         }
     }

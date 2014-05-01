@@ -8,7 +8,7 @@ using Angora.Data.Models;
 
 namespace Angora.Services
 {
-    public class RSVPService : IRSVPService
+    public class RSVPService : ServiceBase, IRSVPService
     {
         private IRepository<RSVP> _rsvpRepo;
         private IEventService _eventService;
