@@ -17,6 +17,14 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="@+id/textView_Event_Creator"
+        android:id="@+id/textView_Event_Creator"
+        android:layout_alignLeft="@+id/textView_Event_Name"
+        android:layout_below="@+id/textView_Event_Name" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -24,7 +32,7 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="@+id/textView_Event_Location"
         android:id="@+id/textView_Event_Location"
-        android:layout_below="@+id/textView_Event_Name"
+        android:layout_below="@+id/textView_Event_Creator"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
@@ -48,14 +56,5 @@
         android:layout_alignLeft="@+id/textView_Event_Date"
         android:layout_alignStart="@+id/textView_Event_Date" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="@+id/textView_Event_Creator"
-        android:id="@+id/textView_Event_Creator"
-        android:layout_alignBottom="@+id/textView_Event_Name"
-        android:layout_toRightOf="@+id/textView_Event_Name"
-        android:layout_marginLeft="5dp"/>
 
 </RelativeLayout>

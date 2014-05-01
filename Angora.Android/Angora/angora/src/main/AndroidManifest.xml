@@ -65,9 +65,9 @@
         <activity
             android:name="com.angora.angora.SnapAndGoBuiltIn"
             android:label="@string/title_activity_snap_and_go_built_in"
-            android:parentActivityName="com.angora.angora.MainActivity" >
-            android:configChanges="orientation|keyboard|keyboardHidden"
-            android:screenOrientation="landscape">
+            android:parentActivityName="com.angora.angora.MainActivity"
+            >
+
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="MainActivity" />
