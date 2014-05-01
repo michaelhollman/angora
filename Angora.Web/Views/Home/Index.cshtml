@@ -1,35 +1,37 @@
 ﻿@{
-    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_LandingLayout.cshtml";
 }
-<div style="width: 100%; height: 200px; margin: 0px; background: url(/Images/EventImage3.png); background-size:cover; background-repeat: no-repeat; background-position-y:90%; margin-top:-20px">
-    <h1 style="color: #fff; font-size: 5em; text-align: center; line-height:200px; font-weight:600">Welcome to Auderus</h1>
-</div>
-<div>
-    <h1>About Auderus</h1>
-    <p>
-        Auderus is a brand new social networking site designed to make planning and chronicling events easier.
-        Creating an event is as simple as specifiying a start time, choosing a location, and inviting facebook friends or twitter followers.
-        After the event, Auderus will automatically pull in media that attendees posted during the event either on
-        Facebook or Twitter and put it all in one spot. There's no more need to search through multiple social networks to
-        find photos or videos from an event you attended. In the near future, Auderus will also be able to suggest events
-        in your area that you may be interested in attending. And the best part is Auderus is completely free,
-        so there is no reason not to try it. Just sign in with your Facebook or Twitter account to start taking
-        advantage of Auderus' amazing features today.
-    </p>
 
+<div class="jumbotron landing-jumbo landing-jumbo-first">
+    <div class="container">
+        <h1>Welcome to Auderus</h1>
+    </div>
 </div>
-@if (!User.Identity.IsAuthenticated) { 
-    <section style="margin-top: 40px;">
-        <h4>Please login with your Facebook or Twitter account.</h4>
+<div class="container">
 
-        <a href="@Url.Action("ExternalLogin", "Account", new { provider = "Facebook", returnUrl = Url.Action("Index", "Home") })" class="btn btn-primary" id="Facebook">
-            <img src="/images/logos/fb-white-50.png" class="login-social-img" />
-            Facebook
-        </a>
-        <a href="@Url.Action("ExternalLogin", "Account", new { provider = "Twitter", returnUrl = Url.Action("Index", "Home") })" class="btn btn-primary" id="Twitter">
-            <img src="/images/logos/twitter-white.png" class="login-social-img" />
-            Twitter
-        </a>
-    </section>
+    <h4>Auderus is a brand new social networking site designed to make planning and sharing events easier.</h4>
+    <h4>Creating an event is as simple as specifiying as answering <em>what</em>, <em>where,</em> and <em>when</em> your event is.</h4>
+    <h4>If you don't know when you want to have your event, Auderus can help you and your event goers find a time.</h4>
+    <h4>You can easily share photos and comment on events.</h4>
+    <h4>Auderus is completely free, and always will be for you.</h4>
+</div>
+
+@if (!User.Identity.IsAuthenticated)
+{
+    <div class="jumbotron landing-jumbo">
+        <div class="container">
+            <h3>Log in with your Facebook or Twitter account.</h3>
+
+            <a href="@Url.Action("ExternalLogin", "Account", new { provider = "Facebook", returnUrl = Url.Action("Index", "Home") })" class="btn btn-primary" id="Facebook">
+                <img src="/images/logos/fb-white-50.png" class="login-social-img" />
+                Facebook
+            </a>
+            <a href="@Url.Action("ExternalLogin", "Account", new { provider = "Twitter", returnUrl = Url.Action("Index", "Home") })" class="btn btn-primary" id="Twitter">
+                <img src="/images/logos/twitter-white.png" class="login-social-img" />
+                Twitter
+            </a>
+            <div class="row">&nbsp</div>
+        </div>
+    </div>
 }
 

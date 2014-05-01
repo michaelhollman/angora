@@ -316,7 +316,6 @@
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="App_Start\UnityWebApiActivator.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Areas\Api\Controllers\FooController.cs" />
     <Compile Include="Areas\Api\Controllers\UserController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\EventController.cs" />
@@ -427,6 +426,7 @@
     </Content>
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\EventFeed\_EventList.cshtml" />
+    <Content Include="Views\Shared\_LandingLayout.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

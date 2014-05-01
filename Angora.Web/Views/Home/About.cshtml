@@ -1,30 +1,58 @@
 ﻿@{
-    ViewBag.Title = "About";
+    Layout = "~/Views/Shared/_LandingLayout.cshtml";
 }
-<div id="aboutContainer">
-<h1>About Auderus</h1>
-<p>
-    Auderus is a brand new social networking site designed to make planning and chronicling events easier.
-    Creating an event is as simple as specifiying a start time, choosing a location, and inviting facebook friends or twitter followers.
-    After the event, Auderus will automatically pull in media that attendees posted during the event either on Facebook or Twitter and put it all in one spot.
-    There's no more need to search through multiple social networks to find photos or videos from an event you attended.
-    In the near future, Auderus will also be able to suggest events in your area that you may be interested in attending.
-    And the best part is Auderus is completely free, so there is no reason not to try it.
-    Just sign in with your Facebook or Twitter account to start taking advantage of Auderus' amazing features today.
-</p>
-<br />
-<h1>About the Auderus Team</h1>
-<p>
-    The four members of the development team for Auderus are students at the Jeffrey S. Raikes School of Computer Science and Management
-    at the University of Nebraska-Lincoln. Frustrated by the hastle of managing events and event media via existing social networks,
-    the team set out to build a revolutionary new product to make event planning and media aggregation easier.
-    After a semester of hard work, the team is proud to unveil our initial version of Auderus.
-    Please send any feedback to contact.Auderus@Auderus.com.
-</p>
-<br />
-<table id ="TeamPhotoTable">
-    <tr><td><div id="MichaelImg"></div></td><td><div id="AlexImg"></div></td><td><div id="RachaelImg"></div></td><td><div id="ScottImg"></div></td></tr>
-    <tr><td class="teamName"><b>Michael Hollman</b></td><td class="teamName"><b>Alex Bainter</b></td><td class="teamName"><b>Rachael Dahlman</b></td><td class="teamName"><b>Scott Johnson</b></td></tr>
-    <tr><td class="teamTitle">Chief Architect</td><td class="teamTitle">Mobile Development Specialist</td><td class="teamTitle">User Interaction Designer</td><td class="teamTitle">Business Development Lead</td></tr>
-</table>
+
+<div class="jumbotron landing-jumbo landing-jumbo-first">
+    <div class="container">
+        <h1>About Auderus</h1>
+    </div>
+</div>
+<div class="container">
+    <p>
+        Auderus is a brand new social networking site designed to make planning and chronicling events easier.
+        Creating an event is as simple as specifiying a start time, choosing a location, and inviting facebook friends or twitter followers.
+        After the event, Auderus will automatically pull in media that attendees posted during the event either on Facebook or Twitter and put it all in one spot.
+        There's no more need to search through multiple social networks to find photos or videos from an event you attended.
+        In the near future, Auderus will also be able to suggest events in your area that you may be interested in attending.
+        And the best part is Auderus is completely free, so there is no reason not to try it.
+        Just sign in with your Facebook or Twitter account to start taking advantage of Auderus' amazing features today.
+    </p>
+
+</div>
+<div class="jumbotron landing-jumbo">
+    <div class="container">
+        <h1>About the Auderus Team</h1>
+    </div>
+</div>
+<div class="container">
+
+    <p>
+        The four members of the development team for Auderus are students at the Jeffrey S. Raikes School of Computer Science and Management
+        at the University of Nebraska-Lincoln. Frustrated by the hastle of managing events and event media via existing social networks,
+        the team set out to build a revolutionary new product to make event planning and media aggregation easier.
+        After a semester of hard work, the team is proud to unveil our initial version of Auderus.
+    </p>
+    <br />
+    <div class="row">
+        <div class="col-sm-3 about-tile">
+            <h4>Michael Hollman</h4>
+            <div id="MichaelImg" class="about-page-img"></div>
+            <h5>Chief Architect</h5>
+        </div>
+        <div class="col-sm-3 about-tile">
+            <h4>Alex Bainter</h4>
+            <div id="AlexImg" class="about-page-img"></div>
+            <h5>Mobile Development Specialist</h5>
+        </div>
+        <div class="col-sm-3 about-tile">
+            <h4>Rachael Dahlman</h4>
+            <div id="RachaelImg" class="about-page-img"></div>
+            <h5>User Interaction Designer</h5>
+        </div>
+        <div class="col-sm-3 about-tile">
+            <h4>Scott Johnson</h4>
+            <div id="ScottImg" class="about-page-img"></div>
+            <h5>Business Development Lead</h5>
+        </div>
+    </div>
 </div>
