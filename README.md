@@ -18,7 +18,7 @@ A few notes on building and running locally:
 ### Android:
 Made with Android Studio ver 0.5.4 (using Gradle 0.9+).
 Please download Android studio and import the project with that.
-Building the project manually with Gradle currently requires you create your own settings.gradle file, not to mention it is generally untested.
+Building the project manually with Gradle currently requires you create your own settings.gradle file, and is generally difficult to get working.
 
 *HELP! I'm getting an error!*
 
