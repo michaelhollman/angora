@@ -1,6 +1,8 @@
-# Angora
+# ![Auderus logo](/Angora.Web/Images/AuderusLogos/LogoFull.png)
 
 #### RAIK 383H Software Engineering Project
+
+The final release (v0.3) is (or at least was at some point in the past) [available here](http://seteam4.azurewebsites.net/).
 
 ---
 
@@ -8,7 +10,7 @@
 
 To run Auderus locally, clone/download the repo and open the solution `angora.sln` in Visual Studio 2013. Make sure that NuGet is allowed to download missing packages *(Tools > Options > Package Manager >>> Check both check boxes)*. Make sure that `Angora.Web` is set as your startup project. You can now build and run the solution.
 
-A few notes on building and running:
+A few notes on building and running locally:
 - The web app is currently configured to use localdb. It is managed and configured using Entity Framework's code first approach. Occasionally the local `.mdf` file gets in a wonky state and the program will crash and burn with lots of exceptions. If this happens, delete the `.mdf` and `.ldf` files in `Angora.Web\App_Data`.
 - LESS compilation is currently handled by Web Essentials 2013. While the entirety of the compiled CSS is in the git repo, any changes made to any .less files will need to be recompiled using Web Essentials.
 - The simplex solver depends on Microsoft.Solver.Foundation, which is self contained in the repo at `/Microsoft.Sover.Foundation/Microsoft.Solver.Foundation.dll`. Occasionally, the reference to this dll will be reset and it cannot be found. If this happens, remove the reference in the `Angora.Services` project and manually re-add it.
