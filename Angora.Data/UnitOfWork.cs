@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace Angora.Data
 {
-    public class UnitOfWork : IUnitOfWork
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private DbContext _dbContext;
 
@@ -21,5 +21,33 @@ namespace Angora.Data
         {
             _dbContext.SaveChanges();
         }
+
+         # region IDisposable
+
+        private bool _disposed;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        ~UnitOfWork()
+        {
+            Dispose(false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
+            {
+            }
+            _disposed = true;
+        }
+
+        # endregion
     }
 }

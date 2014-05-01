@@ -8,7 +8,7 @@ using Angora.Data.Models;
 
 namespace Angora.Services
 {
-    public class PostService : IPostService
+    public class PostService : ServiceBase, IPostService
     {
         private IRepository<Post> _postRepo;
         private IEventService _eventService;

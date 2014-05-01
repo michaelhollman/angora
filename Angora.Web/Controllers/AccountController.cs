@@ -298,7 +298,6 @@ namespace Angora.Web.Controllers
             return View("Index", model);
         }
 
-
         [HttpPost]
         [Authorize]
         [Route("update")]
@@ -333,21 +332,23 @@ namespace Angora.Web.Controllers
         public async Task<ActionResult> SetProfilePic(string provider)
         {
             var user = await _userService.FindUserById(User.Identity.GetUserId());
+            var model = new ManageAccountViewModel();
 
             if (provider.Equals("facebook", StringComparison.OrdinalIgnoreCase) && user.IsLinkedWithFacebook())
             {
                 user.ProfilePictureUrl = _mediaPullService.GetFacebookProfilePic(user.FacebookAccessToken);
                 await _userService.UpdateUser(user);
+                model.Successes.Add("You're now using your Facebook profile picutre.");
             }
             else if (provider.Equals("twitter", StringComparison.OrdinalIgnoreCase) && user.IsLinkedWithTwitter())
             {
                 user.ProfilePictureUrl = _mediaPullService.GetTwitterProfilePic(user.TwitterAccessToken, user.TwitterAccessSecret);
                 await _userService.UpdateUser(user);
+                model.Successes.Add("You're now using your Twitter profile picutre.");
             }
-            return RedirectToAction("Index");
+
+            return await Index(model);
         }
-
-
         #endregion
     }
 }
