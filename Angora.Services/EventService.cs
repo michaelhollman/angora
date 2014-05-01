@@ -57,17 +57,19 @@ namespace Angora.Services
             return _eventRepo.GetById(id);
         }
 
+        public IEnumerable<Event> GetAllEvents()
+        {
+            return _eventRepo.GetAll();
+        }
+
         public IEnumerable<Event> FindEventsCreatedByUser(string userId)
         {
-            IEnumerable<Event> events = _eventRepo.Find(e => e.Creator.Id.Equals(userId));
-            return events;
+            return _eventRepo.Find(e => e.Creator.Id.Equals(userId));
         }
 
         public IEnumerable<Event> FindEventsWithBlobs()
         {
-            var events = _eventRepo.GetAll();
-
-           return events.Where(e => e.Posts != null && e.Posts.Count > 0 && e.Posts.Any(p => p.MediaItem != null && !string.IsNullOrWhiteSpace(p.MediaItem.FooCDNBlob)));
+            return _eventRepo.GetAll().Where(e => e.Posts != null && e.Posts.Count > 0 && e.Posts.Any(p => p.MediaItem != null && !string.IsNullOrWhiteSpace(p.MediaItem.FooCDNBlob)));
         }
     }
 }

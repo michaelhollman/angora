@@ -10,6 +10,8 @@ namespace Angora.Web.Models
 {
     public class EventFeedViewModel
     {
-        public IEnumerable<EventViewModel> Events { get; set; }
+        public IEnumerable<EventViewModel> ViewersEvents { get; set; }
+        public IEnumerable<EventViewModel> OtherEvents { get; set; }
+
     }
 }
