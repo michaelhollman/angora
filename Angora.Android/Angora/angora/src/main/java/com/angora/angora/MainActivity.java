@@ -55,6 +55,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
@@ -116,7 +119,9 @@ public class MainActivity extends ActionBarActivity
             try{
                 mUser = mCacheHelper.getStoredUser();
                 mEvents = mCacheHelper.getStoredEvents();
-                mProfilePic = mCacheHelper.getStoredProfilePic();
+                if (!mUser.getString("ProfilePictureUrl").startsWith("/")) {
+                    mProfilePic = mCacheHelper.getStoredProfilePic();
+                }
             }catch (IOException ie){
                 Toast.makeText(appContext, "Error: "+ ie.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("Main Activity", ie.getMessage());
@@ -495,6 +500,14 @@ public class MainActivity extends ActionBarActivity
                                 currentEventLocation.getString("NameOrAddress"),
                                 parser.parse(currentEventTime.getString("StartTime")));
                     }
+
+                    Arrays.sort(events, new Comparator<AngoraEvent>() {
+                        @Override
+                        public int compare(AngoraEvent e1, AngoraEvent e2) {
+                            return e1.getStartDate().compareTo(e2.getStartDate());
+                        }
+                    });
+
                     return events;
                 }
             }catch (Exception e){
