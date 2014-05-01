@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.app.ListFragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
@@ -73,6 +75,7 @@ public class MainActivity extends ActionBarActivity
 
     private static JSONObject mUser;
     private static AngoraEvent[] mEvents;
+    private static Bitmap mProfilePic;
     private static SharedPreferences pref;
     private static Context appContext;
 
@@ -113,6 +116,7 @@ public class MainActivity extends ActionBarActivity
             try{
                 mUser = mCacheHelper.getStoredUser();
                 mEvents = mCacheHelper.getStoredEvents();
+                mProfilePic = mCacheHelper.getStoredProfilePic();
             }catch (IOException ie){
                 Toast.makeText(appContext, "Error: "+ ie.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("Main Activity", ie.getMessage());
@@ -154,6 +158,15 @@ public class MainActivity extends ActionBarActivity
             ch.storeUser(mUser);
             mEvents = new GetEventsTask().execute(mUser.getString("Id")).get();
             ch.storeEvents(mEvents);
+
+            String profilePicUrl = mUser.getString("ProfilePictureUrl");
+            if (profilePicUrl != null){
+                if (!profilePicUrl.startsWith("/")){
+                    mProfilePic = new GetProfilePicTask().execute(profilePicUrl).get();
+                    ch.storeProfilePic(mProfilePic);
+                }
+            }
+
         }catch (IOException ie){
             Toast.makeText(appContext, "Error Refreshing Data: " + ie.getMessage(), Toast.LENGTH_SHORT).show();
             Log.e("Main Activity", ie.getMessage());
@@ -359,13 +372,15 @@ public class MainActivity extends ActionBarActivity
 
             TextView nameTextView = (TextView) rootView.findViewById(R.id.textView_name);
             TextView locationTextView = (TextView) rootView.findViewById(R.id.textView_location);
+            ImageView profilePicImageView = (ImageView) rootView.findViewById(R.id.imageView_profilePic);
             try {
                 nameTextView.setText(mUser.getString("FirstName") + " " + mUser.getString("LastName"));
                 locationTextView.setText((mUser.getString("Location")));
-                String profilePicUrl = mUser.getString("ProfilePictureUrl");
-                if (profilePicUrl != null){
-                    //todo use picture
+
+                if (mProfilePic != null){
+                    profilePicImageView.setImageBitmap(mProfilePic);
                 }
+
             }catch (JSONException je) {
                 //TODO Handle
                 je.printStackTrace();
@@ -490,6 +505,26 @@ public class MainActivity extends ActionBarActivity
 
 
             return null;
+        }
+    }
+
+    public class GetProfilePicTask extends AsyncTask<String, Void, Bitmap>{
+
+        @Override
+        protected Bitmap doInBackground(String... strings) {
+            Bitmap image = null;
+            try {
+                InputStream is = (InputStream) new URL(strings[0]).getContent();
+                image = BitmapFactory.decodeStream(is);
+            } catch (MalformedURLException me) {
+                //todo handle
+                Log.e("MainActivity", me.getMessage());
+                me.printStackTrace();
+            } catch (IOException ie){
+                Log.e("MainActivity", ie.getMessage());
+                ie.printStackTrace();
+            }
+            return image;
         }
     }
 }

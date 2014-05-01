@@ -2,6 +2,9 @@ package com.angora.angora;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -15,6 +18,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 
 /**
  * Created by Alex on 4/22/2014.
@@ -51,5 +55,19 @@ public class CacheHelper {
         AngoraEvent[] events = (AngoraEvent[]) in.readObject();
         in.close();
         return events;
+    }
+
+    public void storeProfilePic(Bitmap image) throws IOException{
+        FileOutputStream out = new FileOutputStream(new File(mActivity.getCacheDir(),"profile_pic")+USER_STORAGE);
+        image.compress(Bitmap.CompressFormat.JPEG, 100, out);
+        out.flush();
+        out.close();
+    }
+
+    public Bitmap getStoredProfilePic() throws IOException, ClassNotFoundException{
+        FileInputStream in = new FileInputStream(new File(new File(mActivity.getCacheDir(),"profile_pic")+USER_STORAGE));
+        Bitmap image = BitmapFactory.decodeStream(in);
+        in.close();
+        return image;
     }
 }
